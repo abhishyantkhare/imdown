@@ -181,7 +181,7 @@ def createEvent():
     return e.jsonifyEvent()
 
 
-@app.route("/get_events", methods=["GET"])
+@application.route("/get_events", methods=["GET"])
 def getEvents():
     args = request.args
     ok, err = validateArgsInRequest(args, "group_id")
@@ -190,3 +190,14 @@ def getEvents():
     g_id = args["group_id"]
     events = Event.Query.filter(Event.group_id.equals(g_id)).all()
     return jsonify(events=[e.eventDict() for e in events])
+
+
+@application.route("/get_event_responses", methods=["GET"])
+def getEventResponses():
+    args = request.args
+    ok, err = validateArgsInRequest(args, "event_id")
+    if not ok:
+        return err, 400
+    eventResponses = EventResponse.Query.filter(
+        EventResponse.event_id.equals(args["event_id"])).all()
+    return jsonify(event_responses=[er.eventResponseDict() for er in eventResponses])
