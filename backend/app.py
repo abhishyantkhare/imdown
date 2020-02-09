@@ -81,24 +81,33 @@ def respond_to_event():
     response = content["response"]
     return respondToEvent(user_id, event_id, response)
 
-
 def respondToEvent(user_id, event_id, response):
-    event_response = EventResponse.query.filter_by(
-        event_id=event_id, user_id=user_id).first()
+    event = Event.query.filter_by(event_id=event_id).first()
+    if event == None:
+        response_msg = "No event found for event {}. Erroring".format(event_id)
+        print(response_msg)
+        return response_msg, 400
+    event_group_id = event.group_id
+    group_membership = GroupMembership.query.filter_by(group_id=event_group_id, user_id=user_id)
+    if group_membership == None:
+        response_msg = "User {} is not part of group {} that event {} was made for. Erroring".format(user_id, event_group_id, event_id)
+        print(response_msg)
+        return response_msg, 400
+    event_response = EventResponse.query.filter_by(event_id=event_id, user_id=user_id).first()
     if event_response is not None:
         if event_response.response is not response:
-            print("User {} already responded to event {} with response of {}."
-               " Overwriting it with response of {}".format(user_id, event_id, event_response.response, response))
+            response_msg = "User {} already responded to event {} with response of {}." \
+               " Overwriting it with response of {}".format(user_id, event_id, event_response.response, response)
+            print(response_msg)
         elif event_response.response is response:
-            print("User {} already responded to event {} with response of {}. User gave same response."
-                  .format(user_id, event_id, event_response.response))
-            return None, 200
-    event_response_to_add = EventResponse(
-        user_id=user_id, event_id=event_id, response=response)
+            response_msg = "User {} already responded to event {} with response of {}. User gave same response." \
+                  .format(user_id, event_id, event_response.response)
+            print(response_msg)
+            return response_msg, 200
+    event_response_to_add = EventResponse(user_id=user_id, event_id=event_id, response=response)
     db.session.add(event_response_to_add)
     db.session.commit()
     return event_response_to_add.jsonifyEventResponse(), 200
-
 
 def addUserToGroup(invite_link, auth_hash):
   group_obj = Group.query.filter_by(invite_link=invite_link).first()
@@ -119,7 +128,6 @@ def addUserToGroup(invite_link, auth_hash):
       db.session.add(to_insert)
       db.session.commit()
       return to_insert.jsonifyGroupMembership(), 200
-    return to_insert.jsonifyGroupMembership()
 
 
 @app.route("/create_event", methods=["POST"])
