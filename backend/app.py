@@ -26,7 +26,7 @@ def validateArgsInRequest(content, *args):
 def hello():
     return "Hello, World!"
 
-@app.route("/signin", methods=['POST'])
+@app.route("/sign_in", methods=['POST'])
 def signIn():
   content = request.get_json()
   ok, err = validateArgsInRequest(content, 'username', 'auth_hash')
@@ -45,17 +45,38 @@ def signIn():
 
 @app.route("/add_to_group", methods=['POST'])
 def add_to_group():
+  # Check if user already part of group
+  # Check for auth_hash
   content = request.get_json()
   ok, err = validateArgsInRequest(content, 'user_id', 'invite_link')
   if not ok:
     return err, 400
   user_id = content['user_id']
   invite_link = content['invite_link']
+  return addUserToGroup(invite_link, user_id)
+  
+@app.route("/create_group", methods=["POST"])
+def createGroup():
+  content = request.get_json()
+  ok, err = validateArgsInRequest(content, "username", "auth_hash", "group_name")
+  if not ok:
+    return err, 400
+  auth_hash = content["auth_hash"]
+  user = User.query.filter_by(auth_hash=auth_hash).first()
+  if user is None:
+    return 'User does not exist!', 400
+  group = Group(name=content["group_name"])
+  group.generate_invite_link()
+  db.session.add(group)
+  db.session.commit()
+  return addUserToGroup(group.invite_link, auth_hash)
+
+def addUserToGroup(invite_link, auth_hash):
   group_obj = Group.query.filter_by(invite_link=invite_link).first()
   if group_obj is None:
     print("Failure adding to group. Invite link is not valid")
     return "Invite link not valid. It is {}".format(invite_link), 400
-  to_insert = GroupMembership(group_id=group_obj.id, user_id=user_id)
+  to_insert = GroupMembership(group_id=group_obj.id, user_id=auth_hash)
   db.session.add(to_insert)
   db.session.commit()
   return to_insert.jsonifyGroupMembership()
