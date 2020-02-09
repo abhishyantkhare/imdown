@@ -52,9 +52,11 @@ class GroupTableVC: UITableViewController {
         var request = URLRequest(url: serviceUrl)
         request.httpMethod = "POST"
         request.setValue("Application/json", forHTTPHeaderField: "Content-Type")
-        guard let httpBody = try? JSONSerialization.data(withJSONObject: params, options: []) else {
+        request.setValue("Application/json", forHTTPHeaderField: "mimetype")
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: params, options: .prettyPrinted) else {
             return
         }
+        print(String(data: httpBody, encoding: .utf8))
         request.httpBody = httpBody
 
         let session = URLSession.shared
@@ -87,12 +89,16 @@ class GroupTableVC: UITableViewController {
         ac.addTextField()
 
         let submitAction = UIAlertAction(title: "Create", style: .default) { [unowned ac] _ in
-            
+        var uniqueAuth = "testUniqueAuth"
+        var username = "testUsername"
+        var groupname = "testGroupName"
             #warning("@VIVEK Add Groups using API /create group - idk if it's a get or not")
-            
-//            simplePostRequest(endPoint: "https://ourserver.com/create_group", params: ["username": username, "authkey": uniqueAuth]) { data, err  in
-//                print(data)
-//            }
+            //testing sign in endpoint
+            self.simplePostRequest(endPoint: "http://127.0.0.1:5000/sign_in", params: ["username": username, "auth_hash": uniqueAuth]) { data, err  in
+            }
+            //endpoint to create group
+            self.simplePostRequest(endPoint: "http://127.0.0.1:5000/create_group", params: ["username": username, "auth_hash": uniqueAuth, "group_name" : groupname ]) { data, err  in
+            }
             
             let newGroup = ac.textFields![0]
             self.groupNames.append(newGroup.text!)
