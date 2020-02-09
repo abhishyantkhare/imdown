@@ -1,6 +1,6 @@
 from flask import request
 from flask import abort
-from init import app, db, migrate
+from init import application, db, migrate
 from models.user import User
 from models.event_response import EventResponse
 from models.event import Event
@@ -15,12 +15,12 @@ def validateArgsInRequest(content, *args):
     return True, None
 
 
-@app.route("/")
+@application.route("/")
 def hello():
     return "Hello, World!"
 
 
-@app.route("/sign_in", methods=['POST'])
+@application.route("/sign_in", methods=['POST'])
 def signIn():
     content = request.get_json()
     ok, err = validateArgsInRequest(content, 'username', 'auth_hash')
@@ -37,7 +37,7 @@ def signIn():
     return u.jsonifyUser()
 
 
-@app.route("/add_to_group", methods=['POST'])
+@application.route("/add_to_group", methods=['POST'])
 def add_to_group():
   content = request.get_json()
   ok, err = validateArgsInRequest(content, 'auth_hash', 'invite_link')
@@ -48,7 +48,7 @@ def add_to_group():
   return addUserToGroup(invite_link, auth_hash)
 
 
-@app.route("/create_group", methods=["POST"])
+@application.route("/create_group", methods=["POST"])
 def createGroup():
     content = request.get_json()
     ok, err = validateArgsInRequest(
@@ -69,7 +69,7 @@ def createGroup():
     return group.jsonifyGroup()
 
 
-@app.route("/respond_to_event", methods=["POST"])
+@application.route("/respond_to_event", methods=["POST"])
 def respond_to_event():
     content = request.get_json()
     ok, err = validateArgsInRequest(
@@ -130,7 +130,7 @@ def addUserToGroup(invite_link, auth_hash):
       return to_insert.jsonifyGroupMembership(), 200
 
 
-@app.route("/create_event", methods=["POST"])
+@application.route("/create_event", methods=["POST"])
 def createEvent():
     content = request.get_json()
     ok, err = validateArgsInRequest(content, "auth_hash", "title",
