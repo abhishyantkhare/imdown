@@ -68,6 +68,46 @@ def createGroup():
     return group.jsonifyGroup()
 
 
+@app.route("/respond_to_event", methods=["POST"])
+def respond_to_event():
+    content = request.get_json()
+    ok, err = validateArgsInRequest(
+        content, "user_id", "event_id", "response")
+    if not ok:
+        return err, 400
+    user_id = content["user_id"]
+    event_id = content["event_id"]
+    response = content["response"]
+    return respondToEvent(user_id, event_id, response)
+
+def respondToEvent(user_id, event_id, response):
+    event = Event.query.filter_by(event_id=event_id).first()
+    if event == None:
+        response_msg = "No event found for event {}. Erroring".format(event_id)
+        print(response_msg)
+        return response_msg, 400
+    event_group_id = event.group_id
+    group_membership = GroupMembership.query.filter_by(group_id=event_group_id, user_id=user_id)
+    if group_membership == None:
+        response_msg = "User {} is not part of group {} that event {} was made for. Erroring".format(user_id, event_group_id, event_id)
+        print(response_msg)
+        return response_msg, 400
+    event_response = EventResponse.query.filter_by(event_id=event_id, user_id=user_id).first()
+    if event_response is not None:
+        if event_response.response is not response:
+            response_msg = "User {} already responded to event {} with response of {}." \
+               " Overwriting it with response of {}".format(user_id, event_id, event_response.response, response)
+            print(response_msg)
+        elif event_response.response is response:
+            response_msg = "User {} already responded to event {} with response of {}. User gave same response." \
+                  .format(user_id, event_id, event_response.response)
+            print(response_msg)
+            return response_msg, 200
+    event_response_to_add = EventResponse(user_id=user_id, event_id=event_id, response=response)
+    db.session.add(event_response_to_add)
+    db.session.commit()
+    return event_response_to_add.jsonifyEventResponse(), 200
+
 def addUserToGroup(invite_link, auth_hash):
   group_obj = Group.query.filter_by(invite_link=invite_link).first()
   if group_obj is None:
@@ -80,9 +120,9 @@ def addUserToGroup(invite_link, auth_hash):
   user_group_existing_membership = GroupMembership.query.filter_by(user_id=user_obj.id, group_id=group_obj.id).first()
   if (user_group_existing_membership != None):
       print("User is already in group, not adding")
-      return None
+      return "User is already in group, not adding", 200
   else:
       to_insert = GroupMembership(group_id=group_obj.id, user_id=user_obj.id)
       db.session.add(to_insert)
       db.session.commit()
-      return to_insert.jsonifyGroupMembership()
+      return to_insert.jsonifyGroupMembership(), 200
