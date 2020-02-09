@@ -41,3 +41,11 @@ class AddEventVC: UIViewController {
     }
     
 }
+
+
+
+extension AddEventVC : UITextViewDelegate, UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+    }
+}
