@@ -11,5 +11,11 @@ class EventResponse(db.Model):
     def __repr__(self):
         return 'EventResponse event_id: {} user_id:{} response: {}'.format(self.event_id, self.user_id, self.response)
 
+    def eventResponseDict(self):
+        return {
+            'user_id': self.user_id,
+            'response': self.response
+        }
+
     def jsonifyEventResponse(self):
         return jsonify(event_id=self.event_id, user_id=self.user_id, response=self.response)
