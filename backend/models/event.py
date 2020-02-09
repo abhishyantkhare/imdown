@@ -1,12 +1,13 @@
 from init import db
+from flask import jsonify
 
 
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(64), index=False, unique=False)
     description = db.Column(db.String(64), index=False, unique=False)
-    start_time = db.Column(db.DateTime, index=False, unique=False)
-    end_time = db.Column(db.DateTime, index=False, unique=False)
+    start_time = db.Column(db.Integer, index=False, unique=False)
+    end_time = db.Column(db.Integer, index=False, unique=False)
     address = db.Column(db.String(256), index=False, unique=False)
     lat = db.Column(db.Float, index=True, unique=False)
     lng = db.Column(db.Float, index=True, unique=False)
@@ -14,3 +15,6 @@ class Event(db.Model):
 
     def __repr__(self):
         return 'Event id {} with title {} and group {}'.format(self.id, self.title, self.group_id)
+
+    def jsonifyEvent(self):
+        return jsonify(id=self.id, title=self.title, description=self.description, start_time=self.start_time, end_time=self.end_time, address=self.address, lat=self.lat, lng=self.lng)

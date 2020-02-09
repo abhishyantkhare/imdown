@@ -47,6 +47,7 @@ def add_to_group():
   invite_link = content['invite_link']
   return addUserToGroup(invite_link, auth_hash)
 
+
 @app.route("/create_group", methods=["POST"])
 def createGroup():
     content = request.get_json()
@@ -117,7 +118,8 @@ def addUserToGroup(invite_link, auth_hash):
   if user_obj is None:
     print("Failure adding to group. User with user auth hash {} does not exist".format(auth_hash))
     return "User hash is not valid. It is {}".format(auth_hash), 400
-  user_group_existing_membership = GroupMembership.query.filter_by(user_id=user_obj.id, group_id=group_obj.id).first()
+  user_group_existing_membership = GroupMembership.query.filter_by(
+      user_id=user_obj.id, group_id=group_obj.id).first()
   if (user_group_existing_membership != None):
       print("User is already in group, not adding")
       return "User is already in group, not adding", 200
@@ -126,3 +128,39 @@ def addUserToGroup(invite_link, auth_hash):
       db.session.add(to_insert)
       db.session.commit()
       return to_insert.jsonifyGroupMembership(), 200
+
+
+@app.route("/create_event", methods=["POST"])
+def createEvent():
+    content = request.get_json()
+    ok, err = validateArgsInRequest(content, "auth_hash", "title",
+                                    "description", "start_time", "end_time", "address", "group_id")
+    if not ok:
+        return err, 400
+    u = User.query.filter_by(auth_hash=content["auth_hash"]).first()
+    if u is None:
+        return "User does not exist!", 400
+    g = Group.query.filter_by(id=content["group_id"]).first()
+    if g is None:
+        return "Group does not exist!", 400
+    membership = GroupMembership.query.filter_by(
+        user_id=u.id, group_id=g.id).First()
+    if membership is None:
+        return "User is not a member of group!", 400
+    title = content["title"]
+    desc = content["description"]
+    start_time = content["start_time"]
+    end_time = content["end_time"]
+    address = content["address"]
+    lat = ""
+    lng = ""
+    if "lat" in content and "lng" in content:
+        lat = content["lat"]
+        lng = content["lng"]
+    group_id = content["group_id"]
+    e = Event(title=title, description=desc, start_time=start_time,
+              end_time=end_time, address=address, lat=lat, lng=lng, group_id=group_id)
+    db.session.add(e)
+    db.session.commit()
+    respondToEvent(u.id, e.id, True)
+    return e.jsonifyEvent()
