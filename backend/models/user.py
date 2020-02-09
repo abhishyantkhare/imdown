@@ -12,4 +12,4 @@ class User(db.Model):
 
     def jsonifyUser(self):
         return jsonify(username=self.username, auth_hash=self.auth_hash)
-        
+
