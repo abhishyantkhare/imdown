@@ -1,4 +1,5 @@
-from app import db
+from init import db
+
 
 class EventResponse(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -7,4 +8,4 @@ class EventResponse(db.Model):
     response = db.Column(db.Boolean,  index=False, unique=True)
 
     def __repr__(self):
-      return 'EventResponse event_id: {} user_id:{} response: {}'.format(self.event_id, self.user_id, self.response)
+        return 'EventResponse event_id: {} user_id:{} response: {}'.format(self.event_id, self.user_id, self.response)
