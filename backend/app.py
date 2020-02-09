@@ -9,6 +9,10 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 from models.user import User
+from models.event_response import EventResponse
+from models.event import Event
+from models.group import Group
+from models.groupmembership import GroupMembership
 
 @app.route("/")
 def hello():
