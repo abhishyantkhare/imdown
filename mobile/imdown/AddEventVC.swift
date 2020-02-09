@@ -23,6 +23,8 @@ class AddEventVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        eventNameLabel.delegate = self
+        eventDescription.delegate = self
         // Do any additional setup after loading the view.
     }
     
@@ -47,5 +49,13 @@ class AddEventVC: UIViewController {
 extension AddEventVC : UITextViewDelegate, UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
+    }
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        if(text == "\n") {
+            textView.resignFirstResponder()
+            return false
+        }
+        return true
     }
 }
