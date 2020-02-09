@@ -1,4 +1,4 @@
-from app import db
+from init import db
 
 
 class Event(db.Model):
@@ -12,6 +12,5 @@ class Event(db.Model):
     lng = db.Column(db.Float, index=True, unique=False)
     group_id = db.Column(db.Integer, index=True, unique=False)
 
-
     def __repr__(self):
-      return 'Event id {} with title {} and group {}'.format(self.id, self.title, self.group_id)
+        return 'Event id {} with title {} and group {}'.format(self.id, self.title, self.group_id)
