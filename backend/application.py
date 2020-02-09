@@ -73,17 +73,21 @@ def createGroup():
 def respond_to_event():
     content = request.get_json()
     ok, err = validateArgsInRequest(
-        content, "user_id", "event_id", "response")
+        content, "auth_hash", "event_id", "response")
     if not ok:
         return err, 400
-    user_id = content["user_id"]
+    auth_hash = content["auth_hash"]
     event_id = content["event_id"]
     response = content["response"]
-    return respondToEvent(user_id, event_id, response)
+    return respondToEvent(auth_hash, event_id, response)
 
 
-def respondToEvent(user_id, event_id, response):
+def respondToEvent(auth_hash, event_id, response):
     existing_entry_exists = False
+    user = User.query.filter_by(auth_hash=auth_hash).first()
+    if user is None:
+        return "Can't find user with auth hash {}, so can't respond to event {}".format(auth_hash, event_id), 400
+    user_id = user.id
     event = Event.query.filter_by(id=event_id).first()
     if event == None:
         response_msg = "No event found for event {}. Erroring".format(event_id)
