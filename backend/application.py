@@ -1,7 +1,6 @@
 from flask import request
 from flask import jsonify
-from flask import abort
-from init import application, db, migrate
+from init import app, db, migrate
 from models.user import User
 from models.event_response import EventResponse
 from models.event import Event
@@ -114,7 +113,7 @@ def respondToEvent(user_id, event_id, response):
         user_id=user_id, event_id=event_id, response=response)
     db.session.add(event_response_to_add)
     db.session.commit()
-    return event_response_to_add.jsonifyEventResponse(), 200
+    return event_response_to_add.jsonifyEventResponse()
 
 
 def addUserToGroup(invite_link, auth_hash):
@@ -201,3 +200,26 @@ def getEventResponses():
     eventResponses = EventResponse.Query.filter(
         EventResponse.event_id.equals(args["event_id"])).all()
     return jsonify(event_responses=[er.eventResponseDict() for er in eventResponses])
+
+
+@app.route("/get_groups", methods=["GET"])
+def get_groups():
+    args = request.args
+    ok, err = validateArgsInRequest(
+        args, "auth_hash")
+    if not ok:
+        return err, 400
+    auth_hash = args["auth_hash"]
+    user = User.query.filter_by(auth_hash=auth_hash).first()
+    if user is None:
+        return 'User with auth hash of {} does not exist!'.format(auth_hash), 400
+    user_id = user.id
+    user_group_memberships = GroupMembership.query.filter_by(user_id=user_id).all()
+    groups_lst = []
+    for user_group_membership in user_group_memberships:
+        group_id = user_group_membership.group_id
+        group = Group.query.filter_by(id=group_id).first()
+        if group is None:
+            return "User {} is a member of group {}, but group could not be retrieved".format(user_id, group_id), 400
+        groups_lst.append(group)
+    return jsonify(groups=[group.groupDict() for group in groups_lst])

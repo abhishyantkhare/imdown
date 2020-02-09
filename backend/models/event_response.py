@@ -18,4 +18,4 @@ class EventResponse(db.Model):
         }
 
     def jsonifyEventResponse(self):
-        return jsonify(event_id=self.event_id, user_id=self.user_id, response=self.response)
+        return jsonify(id=self.id, event_id=self.event_id, user_id=self.user_id, response=self.response)
