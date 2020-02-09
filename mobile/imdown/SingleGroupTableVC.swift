@@ -18,6 +18,14 @@ class SingleGroupTableVC: UITableViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Create", style: .done, target: self, action: #selector(addTapped))
+        
+        self.eventsList = self.getEvents()
+    }
+    
+    func getEvents() -> [String] {
+        print("make the /get_events call")
+        #warning("@VIVEK Get Events from API /get_events")
+        return ["Rush", "Beers + Die", "Hangout Squad"]
     }
     
     @objc func addTapped(){
@@ -104,8 +112,59 @@ class SingleGroupTableVC: UITableViewController {
 
 extension SingleGroupTableVC: AddEventDelegate {
     func eventAddedWith(name: String, location: String, date: Date, description: String) {
+        
+        #warning("run /create_event to add to group, and reload on response")
+        
+        /*
+         
+
+         - create_event
+             - pass_in
+                 - auth_hash
+                 - title
+                 - description
+                 - start_time: this is in ms
+                 - end_time: this is in ms
+                 - address
+                 - lat (optional)
+                 - lng (optional)
+                 - group_id 
+         
+         
+         */
+        
+        //            simplePostRequest(endPoint: "https://ourserver.com/create_event", params: ["username": username, "authkey": uniqueAuth]) { data, err  in
+        //                print(data)
+        //            }
+        
         self.eventsList.append(name)
         self.tableView.reloadData()
         self.presentedViewController?.dismiss(animated: true, completion: nil)
+    }
+    
+    
+    
+    func simplePostRequest(endPoint: String, params: [String: String], completion: @escaping (_ response: Any?, _ error: Error?) -> Void){
+        let Url = String(format: endPoint)
+        guard let serviceUrl = URL(string: Url) else { return }
+        var request = URLRequest(url: serviceUrl)
+        request.httpMethod = "POST"
+        request.setValue("Application/json", forHTTPHeaderField: "Content-Type")
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: params, options: []) else {
+            return
+        }
+        request.httpBody = httpBody
+
+        let session = URLSession.shared
+        session.dataTask(with: request) { (data, response, error) in
+            if let data = data {
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data, options: [])
+                    completion(json, error)
+                } catch {
+                    completion(nil, error)
+                }
+            }
+            }.resume()
     }
 }

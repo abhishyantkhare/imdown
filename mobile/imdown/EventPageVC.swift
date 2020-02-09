@@ -38,11 +38,77 @@ class EventPageVC: UIViewController {
     }
     */
     @IBAction func downVote(_ sender: Any) {
-        
+        /*
+         we probably also want a response
+         
+
+         - respond_to_event
+             - pass in
+                 - user_id
+                 - event_id
+                 - response: response user inputted
+                     - True → Down
+                     - False → Not down
+             - returns
+                 - no error
+                     - EventResponse obj
+                         - event_id
+                         - user_id
+                         - response
+                     - 200
+                 - error
+                     - 400 Bad request
+         
+         */
     }
     
     @IBAction func upVote(_ sender: Any) {
-        
+        /*
+         we probably also want a response
+         
+
+         - respond_to_event
+             - pass in
+                 - user_id
+                 - event_id
+                 - response: response user inputted
+                     - True → Down
+                     - False → Not down
+             - returns
+                 - no error
+                     - EventResponse obj
+                         - event_id
+                         - user_id
+                         - response
+                     - 200
+                 - error
+                     - 400 Bad request
+         
+         */
     }
     
+    
+    func simplePostRequest(endPoint: String, params: [String: String], completion: @escaping (_ response: Any?, _ error: Error?) -> Void){
+        let Url = String(format: endPoint)
+        guard let serviceUrl = URL(string: Url) else { return }
+        var request = URLRequest(url: serviceUrl)
+        request.httpMethod = "POST"
+        request.setValue("Application/json", forHTTPHeaderField: "Content-Type")
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: params, options: []) else {
+            return
+        }
+        request.httpBody = httpBody
+
+        let session = URLSession.shared
+        session.dataTask(with: request) { (data, response, error) in
+            if let data = data {
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data, options: [])
+                    completion(json, error)
+                } catch {
+                    completion(nil, error)
+                }
+            }
+            }.resume()
+    }
 }

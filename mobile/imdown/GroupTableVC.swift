@@ -11,11 +11,11 @@ import UIKit
 class GroupTableVC: UITableViewController {
 
     var username : String?
+    var authKey : String?
     
+    var groupNames : [String] = []
     
-    var groupNames = ["SEP", "Berkeley", "Girlfriend"]
-    
-    var groupData = [["Rush", "Beers + Die", "Hangout Squad"], ["The Hub", "Sather Gate", "Wheeler Hall"], ["Romantic Dinner", "Trip to Italy", "Wholesome Dinner"]]
+//    var groupData : [[String]] = []
     
     
     override func viewDidLoad() {
@@ -26,12 +26,53 @@ class GroupTableVC: UITableViewController {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Create", style: .done, target: self, action: #selector(addTapped))
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .done, target: self, action: #selector(logoutTapped))
 
+        
+        self.groupNames = getGroups()
+        
+        self.username = UserDefaults.standard.string(forKey: "username")
+        self.authKey = UserDefaults.standard.string(forKey: "authKey")
+//        self.groupData = self.getGroupsEventsFake()
+    }
+    
+    func getGroups() -> [String] {
+        #warning("@VIVEK Get Groups from API /get_groups")
+        
+        
+        return ["SEP", "Berkeley", "Girlfriend"]
+    }
+    
+//    func getGroupsEventsFake() -> [[String]]{
+//        return [["Rush", "Beers + Die", "Hangout Squad"], ["The Hub", "Sather Gate", "Wheeler Hall"], ["Romantic Dinner", "Trip to Italy", "Wholesome Dinner"]]
+//    }
+    
+    
+    func simplePostRequest(endPoint: String, params: [String: String], completion: @escaping (_ response: Any?, _ error: Error?) -> Void){
+        let Url = String(format: endPoint)
+        guard let serviceUrl = URL(string: Url) else { return }
+        var request = URLRequest(url: serviceUrl)
+        request.httpMethod = "POST"
+        request.setValue("Application/json", forHTTPHeaderField: "Content-Type")
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: params, options: []) else {
+            return
+        }
+        request.httpBody = httpBody
 
-
+        let session = URLSession.shared
+        session.dataTask(with: request) { (data, response, error) in
+            if let data = data {
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data, options: [])
+                    completion(json, error)
+                } catch {
+                    completion(nil, error)
+                }
+            }
+            }.resume()
     }
     
     @objc func logoutTapped(){
         UserDefaults.standard.removeObject(forKey: "username")
+        UserDefaults.standard.removeObject(forKey: "authKey")
         UserDefaults.standard.synchronize()
         
         let vc = storyboard?.instantiateViewController(identifier: "SignInVC") as! SimpleSigninVC
@@ -40,19 +81,27 @@ class GroupTableVC: UITableViewController {
     }
     
     @objc func addTapped(){
-
-        
         
         let ac = UIAlertController(title: "Create Group", message: nil, preferredStyle: .alert)
         
         ac.addTextField()
 
         let submitAction = UIAlertAction(title: "Create", style: .default) { [unowned ac] _ in
+            
+            #warning("@VIVEK Add Groups using API /create group - idk if it's a get or not")
+            
+//            simplePostRequest(endPoint: "https://ourserver.com/create_group", params: ["username": username, "authkey": uniqueAuth]) { data, err  in
+//                print(data)
+//            }
+            
             let newGroup = ac.textFields![0]
             self.groupNames.append(newGroup.text!)
-            self.groupData.append([])
+//            self.groupData.append([])
             self.tableView.reloadData()
         }
+        
+        
+        
 
         let dismissAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         
@@ -106,7 +155,7 @@ class GroupTableVC: UITableViewController {
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let singleGroup = storyboard?.instantiateViewController(identifier: "SingleGroupTable") as! SingleGroupTableVC
-        singleGroup.eventsList = groupData[indexPath.row]
+//        singleGroup.eventsList = groupData[indexPath.row]
         singleGroup.title = groupNames[indexPath.row]
         self.navigationController?.pushViewController(singleGroup, animated: true)
     }
@@ -159,10 +208,19 @@ class GroupTableVC: UITableViewController {
 }
 
 extension GroupTableVC: SignInDelegate {
-    func signedIn(username: String) {
+    func signedIn(username: String, uniqueAuth: String) {
         self.username = username
         UserDefaults.standard.set(username, forKey: "username")
+        UserDefaults.standard.set(uniqueAuth, forKey: "authKey")
         UserDefaults.standard.synchronize()
+        
+        
+        #warning("I (@sh) wrote this post call, checkit out if it's not working. Getting a client to work well with an api can take a second – headers, right response body, etc.")
+        simplePostRequest(endPoint: "https://ourserver.com/sign_in", params: ["username": username, "authkey": uniqueAuth]) { data, err  in
+            print(data)
+        }
+        
+        
         self.presentedViewController?.dismiss(animated: true, completion: nil)
     }
 }

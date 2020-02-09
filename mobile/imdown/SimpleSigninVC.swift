@@ -9,7 +9,7 @@
 import UIKit
 
 protocol SignInDelegate: class {
-    func signedIn(username: String)
+    func signedIn(username: String, uniqueAuth: String)
 }
 
 class SimpleSigninVC: UIViewController {
@@ -30,8 +30,8 @@ class SimpleSigninVC: UIViewController {
 
 extension SimpleSigninVC: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        print("username is \(self.usernameField.text ?? "no username")")
-        self.signInDelegate?.signedIn(username: textField.text!)
+        let uuid = UUID().uuidString
+        self.signInDelegate?.signedIn(username: textField.text!, uniqueAuth: uuid)
         return true
     }
 }

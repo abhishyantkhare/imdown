@@ -16,7 +16,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="GroupCell" rowHeight="99" id="7gx-UG-tJg">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="GroupCell" rowHeight="99" id="7gx-UG-tJg" customClass="GroupCell" customModule="imdown" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="414" height="99"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="7gx-UG-tJg" id="dbZ-cB-tNh">
@@ -29,10 +29,19 @@
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q2O-Cb-ONd">
+                                            <rect key="frame" x="354" y="34.5" width="40" height="30"/>
+                                            <state key="normal" title="Share"/>
+                                            <connections>
+                                                <action selector="shareTapped:" destination="7gx-UG-tJg" eventType="touchUpInside" id="P0T-ez-4YZ"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                     <constraints>
                                         <constraint firstItem="ctL-ZQ-KYU" firstAttribute="leading" secondItem="dbZ-cB-tNh" secondAttribute="leading" constant="20" id="Q9k-il-uaW"/>
                                         <constraint firstItem="ctL-ZQ-KYU" firstAttribute="centerY" secondItem="dbZ-cB-tNh" secondAttribute="centerY" id="SVg-zG-Qq2"/>
+                                        <constraint firstAttribute="trailing" secondItem="q2O-Cb-ONd" secondAttribute="trailing" constant="20" id="ec5-4L-aMi"/>
+                                        <constraint firstItem="q2O-Cb-ONd" firstAttribute="centerY" secondItem="dbZ-cB-tNh" secondAttribute="centerY" id="ekM-pY-huQ"/>
                                     </constraints>
                                 </tableViewCellContentView>
                             </tableViewCell>

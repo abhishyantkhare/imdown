@@ -14,6 +14,8 @@
 		8B7BA09D23EF75F7007740AC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8B7BA09B23EF75F7007740AC /* LaunchScreen.storyboard */; };
 		8B7BA0A523EFAD2B007740AC /* EventPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7BA0A423EFAD2B007740AC /* EventPageVC.swift */; };
 		8B7BA0A723EFB19C007740AC /* AddEventVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7BA0A623EFB19C007740AC /* AddEventVC.swift */; };
+		8B7BA0AA23EFBFEA007740AC /* ToDos.rtfd in Resources */ = {isa = PBXBuildFile; fileRef = 8B7BA0A923EFBFEA007740AC /* ToDos.rtfd */; };
+		8B7BA0AC23EFC249007740AC /* GroupCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7BA0AB23EFC249007740AC /* GroupCell.swift */; };
 		BD07F85E23EF93E20054D259 /* SimpleSigninVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD07F85D23EF93E20054D259 /* SimpleSigninVC.swift */; };
 		BD65F02423EF7CA600FEC806 /* GroupTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD65F02323EF7CA600FEC806 /* GroupTableVC.swift */; };
 		BD65F02623EF819800FEC806 /* SingleGroupTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD65F02523EF819800FEC806 /* SingleGroupTableVC.swift */; };
@@ -30,6 +32,8 @@
 		8B7BA09E23EF75F7007740AC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8B7BA0A423EFAD2B007740AC /* EventPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventPageVC.swift; sourceTree = "<group>"; };
 		8B7BA0A623EFB19C007740AC /* AddEventVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEventVC.swift; sourceTree = "<group>"; };
+		8B7BA0A923EFBFEA007740AC /* ToDos.rtfd */ = {isa = PBXFileReference; lastKnownFileType = wrapper.rtfd; path = ToDos.rtfd; sourceTree = "<group>"; };
+		8B7BA0AB23EFC249007740AC /* GroupCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupCell.swift; sourceTree = "<group>"; };
 		BD07F85C23EF90970054D259 /* imdown.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = imdown.entitlements; sourceTree = "<group>"; };
 		BD07F85D23EF93E20054D259 /* SimpleSigninVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleSigninVC.swift; sourceTree = "<group>"; };
 		BD65F02323EF7CA600FEC806 /* GroupTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupTableVC.swift; sourceTree = "<group>"; };
@@ -74,14 +78,24 @@
 				BD65F02523EF819800FEC806 /* SingleGroupTableVC.swift */,
 				8B7BA0A423EFAD2B007740AC /* EventPageVC.swift */,
 				8B7BA0A623EFB19C007740AC /* AddEventVC.swift */,
+				8B7BA0AB23EFC249007740AC /* GroupCell.swift */,
 				8B7BA09623EF75F5007740AC /* Main.storyboard */,
 				BD07F85D23EF93E20054D259 /* SimpleSigninVC.swift */,
-				BD65F02723EF8B3200FEC806 /* SignInVC.swift */,
+				8B7BA0A823EFB8A9007740AC /* Signin with Auth */,
 				8B7BA09923EF75F7007740AC /* Assets.xcassets */,
 				8B7BA09B23EF75F7007740AC /* LaunchScreen.storyboard */,
 				8B7BA09E23EF75F7007740AC /* Info.plist */,
+				8B7BA0A923EFBFEA007740AC /* ToDos.rtfd */,
 			);
 			path = imdown;
+			sourceTree = "<group>";
+		};
+		8B7BA0A823EFB8A9007740AC /* Signin with Auth */ = {
+			isa = PBXGroup;
+			children = (
+				BD65F02723EF8B3200FEC806 /* SignInVC.swift */,
+			);
+			path = "Signin with Auth";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -142,6 +156,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8B7BA0AA23EFBFEA007740AC /* ToDos.rtfd in Resources */,
 				8B7BA09D23EF75F7007740AC /* LaunchScreen.storyboard in Resources */,
 				8B7BA09A23EF75F7007740AC /* Assets.xcassets in Resources */,
 				8B7BA09823EF75F5007740AC /* Main.storyboard in Resources */,
@@ -155,6 +170,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8B7BA0AC23EFC249007740AC /* GroupCell.swift in Sources */,
 				BD07F85E23EF93E20054D259 /* SimpleSigninVC.swift in Sources */,
 				8B7BA09123EF75F5007740AC /* AppDelegate.swift in Sources */,
 				BD65F02623EF819800FEC806 /* SingleGroupTableVC.swift in Sources */,
