@@ -1,6 +1,6 @@
 from flask import request
 from flask import jsonify
-from init import app, db, migrate
+from init import application, db, migrate
 from models.user import User
 from models.event_response import EventResponse
 from models.event import Event
