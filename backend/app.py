@@ -1,4 +1,5 @@
 from flask import request
+from flask import jsonify
 from flask import abort
 from init import application, db, migrate
 from models.user import User
@@ -39,13 +40,13 @@ def signIn():
 
 @application.route("/add_to_group", methods=['POST'])
 def add_to_group():
-  content = request.get_json()
-  ok, err = validateArgsInRequest(content, 'auth_hash', 'invite_link')
-  if not ok:
-    return err, 400
-  auth_hash = content['auth_hash']
-  invite_link = content['invite_link']
-  return addUserToGroup(invite_link, auth_hash)
+    content = request.get_json()
+    ok, err = validateArgsInRequest(content, 'auth_hash', 'invite_link')
+    if not ok:
+        return err, 400
+    auth_hash = content['auth_hash']
+    invite_link = content['invite_link']
+    return addUserToGroup(invite_link, auth_hash)
 
 
 @application.route("/create_group", methods=["POST"])
@@ -81,6 +82,7 @@ def respond_to_event():
     response = content["response"]
     return respondToEvent(user_id, event_id, response)
 
+
 def respondToEvent(user_id, event_id, response):
     event = Event.query.filter_by(event_id=event_id).first()
     if event == None:
@@ -88,46 +90,54 @@ def respondToEvent(user_id, event_id, response):
         print(response_msg)
         return response_msg, 400
     event_group_id = event.group_id
-    group_membership = GroupMembership.query.filter_by(group_id=event_group_id, user_id=user_id)
+    group_membership = GroupMembership.query.filter_by(
+        group_id=event_group_id, user_id=user_id)
     if group_membership == None:
-        response_msg = "User {} is not part of group {} that event {} was made for. Erroring".format(user_id, event_group_id, event_id)
+        response_msg = "User {} is not part of group {} that event {} was made for. Erroring".format(
+            user_id, event_group_id, event_id)
         print(response_msg)
         return response_msg, 400
-    event_response = EventResponse.query.filter_by(event_id=event_id, user_id=user_id).first()
+    event_response = EventResponse.query.filter_by(
+        event_id=event_id, user_id=user_id).first()
     if event_response is not None:
         if event_response.response is not response:
             response_msg = "User {} already responded to event {} with response of {}." \
-               " Overwriting it with response of {}".format(user_id, event_id, event_response.response, response)
+                " Overwriting it with response of {}".format(
+                    user_id, event_id, event_response.response, response)
             print(response_msg)
         elif event_response.response is response:
             response_msg = "User {} already responded to event {} with response of {}. User gave same response." \
-                  .format(user_id, event_id, event_response.response)
+                .format(user_id, event_id, event_response.response)
             print(response_msg)
             return response_msg, 200
-    event_response_to_add = EventResponse(user_id=user_id, event_id=event_id, response=response)
+    event_response_to_add = EventResponse(
+        user_id=user_id, event_id=event_id, response=response)
     db.session.add(event_response_to_add)
     db.session.commit()
     return event_response_to_add.jsonifyEventResponse(), 200
 
+
 def addUserToGroup(invite_link, auth_hash):
-  group_obj = Group.query.filter_by(invite_link=invite_link).first()
-  if group_obj is None:
-    print("Failure adding to group. Invite link is not valid")
-    return "Invite link not valid. It is {}".format(invite_link), 400
-  user_obj = User.query.filter_by(user_auth=auth_hash).first()
-  if user_obj is None:
-    print("Failure adding to group. User with user auth hash {} does not exist".format(auth_hash))
-    return "User hash is not valid. It is {}".format(auth_hash), 400
-  user_group_existing_membership = GroupMembership.query.filter_by(
-      user_id=user_obj.id, group_id=group_obj.id).first()
-  if (user_group_existing_membership != None):
-      print("User is already in group, not adding")
-      return "User is already in group, not adding", 200
-  else:
-      to_insert = GroupMembership(group_id=group_obj.id, user_id=user_obj.id)
-      db.session.add(to_insert)
-      db.session.commit()
-      return to_insert.jsonifyGroupMembership(), 200
+    group_obj = Group.query.filter_by(invite_link=invite_link).first()
+    if group_obj is None:
+        print("Failure adding to group. Invite link is not valid")
+        return "Invite link not valid. It is {}".format(invite_link), 400
+    user_obj = User.query.filter_by(user_auth=auth_hash).first()
+    if user_obj is None:
+        print("Failure adding to group. User with user auth hash {} does not exist".format(
+            auth_hash))
+        return "User hash is not valid. It is {}".format(auth_hash), 400
+    user_group_existing_membership = GroupMembership.query.filter_by(
+        user_id=user_obj.id, group_id=group_obj.id).first()
+    if (user_group_existing_membership != None):
+        print("User is already in group, not adding")
+        return "User is already in group, not adding"
+    else:
+        to_insert = GroupMembership(group_id=group_obj.id, user_id=user_obj.id)
+        db.session.add(to_insert)
+        db.session.commit()
+        return to_insert.jsonifyGroupMembership()
+    return to_insert.jsonifyGroupMembership()
 
 
 @application.route("/create_event", methods=["POST"])
@@ -163,4 +173,20 @@ def createEvent():
     db.session.add(e)
     db.session.commit()
     respondToEvent(u.id, e.id, True)
+    # set every other user in group to false
+    userIdsInGroup = GroupMembership.Query.filter(
+        GroupMembership.group_id.equals(group_id)).all()
+    for userId in userIdsInGroup:
+        respondToEvent(userId, e.id, False)
     return e.jsonifyEvent()
+
+
+@app.route("/get_events", methods=["GET"])
+def getEvents():
+    args = request.args
+    ok, err = validateArgsInRequest(args, "group_id")
+    if not ok:
+        return err, 400
+    g_id = args["group_id"]
+    events = Event.Query.filter(Event.group_id.equals(g_id)).all()
+    return jsonify(events=[e.eventDict() for e in events])
