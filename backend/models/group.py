@@ -15,4 +15,4 @@ class Group(db.Model):
         self.invite_link = invite_link
 
     def jsonifyGroup(self):
-        return jsonify(group_name=self.name, invite_link=self.invite_link)
+        return jsonify(group_name=self.name, invite_link=self.invite_link, group_id=self.id)
