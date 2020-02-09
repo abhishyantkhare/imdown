@@ -1,4 +1,4 @@
-from app import db
+from init import db
 from flask import jsonify
 
 
@@ -12,4 +12,3 @@ class User(db.Model):
 
     def jsonifyUser(self):
         return jsonify(username=self.username, auth_hash=self.auth_hash)
-
