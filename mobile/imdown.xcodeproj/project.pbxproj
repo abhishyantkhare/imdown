@@ -9,21 +9,32 @@
 /* Begin PBXBuildFile section */
 		8B7BA09123EF75F5007740AC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7BA09023EF75F5007740AC /* AppDelegate.swift */; };
 		8B7BA09323EF75F5007740AC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7BA09223EF75F5007740AC /* SceneDelegate.swift */; };
-		8B7BA09523EF75F5007740AC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7BA09423EF75F5007740AC /* ViewController.swift */; };
 		8B7BA09823EF75F5007740AC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8B7BA09623EF75F5007740AC /* Main.storyboard */; };
 		8B7BA09A23EF75F7007740AC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8B7BA09923EF75F7007740AC /* Assets.xcassets */; };
 		8B7BA09D23EF75F7007740AC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8B7BA09B23EF75F7007740AC /* LaunchScreen.storyboard */; };
+		8B7BA0A523EFAD2B007740AC /* EventPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7BA0A423EFAD2B007740AC /* EventPageVC.swift */; };
+		8B7BA0A723EFB19C007740AC /* AddEventVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7BA0A623EFB19C007740AC /* AddEventVC.swift */; };
+		BD07F85E23EF93E20054D259 /* SimpleSigninVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD07F85D23EF93E20054D259 /* SimpleSigninVC.swift */; };
+		BD65F02423EF7CA600FEC806 /* GroupTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD65F02323EF7CA600FEC806 /* GroupTableVC.swift */; };
+		BD65F02623EF819800FEC806 /* SingleGroupTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD65F02523EF819800FEC806 /* SingleGroupTableVC.swift */; };
+		BD65F02823EF8B3200FEC806 /* SignInVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD65F02723EF8B3200FEC806 /* SignInVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		8B7BA08D23EF75F5007740AC /* imdown.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = imdown.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B7BA09023EF75F5007740AC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8B7BA09223EF75F5007740AC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		8B7BA09423EF75F5007740AC /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		8B7BA09723EF75F5007740AC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		8B7BA09923EF75F7007740AC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8B7BA09C23EF75F7007740AC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8B7BA09E23EF75F7007740AC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8B7BA0A423EFAD2B007740AC /* EventPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventPageVC.swift; sourceTree = "<group>"; };
+		8B7BA0A623EFB19C007740AC /* AddEventVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEventVC.swift; sourceTree = "<group>"; };
+		BD07F85C23EF90970054D259 /* imdown.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = imdown.entitlements; sourceTree = "<group>"; };
+		BD07F85D23EF93E20054D259 /* SimpleSigninVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleSigninVC.swift; sourceTree = "<group>"; };
+		BD65F02323EF7CA600FEC806 /* GroupTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupTableVC.swift; sourceTree = "<group>"; };
+		BD65F02523EF819800FEC806 /* SingleGroupTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleGroupTableVC.swift; sourceTree = "<group>"; };
+		BD65F02723EF8B3200FEC806 /* SignInVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,10 +67,16 @@
 		8B7BA08F23EF75F5007740AC /* imdown */ = {
 			isa = PBXGroup;
 			children = (
+				BD07F85C23EF90970054D259 /* imdown.entitlements */,
 				8B7BA09023EF75F5007740AC /* AppDelegate.swift */,
 				8B7BA09223EF75F5007740AC /* SceneDelegate.swift */,
-				8B7BA09423EF75F5007740AC /* ViewController.swift */,
+				BD65F02323EF7CA600FEC806 /* GroupTableVC.swift */,
+				BD65F02523EF819800FEC806 /* SingleGroupTableVC.swift */,
+				8B7BA0A423EFAD2B007740AC /* EventPageVC.swift */,
+				8B7BA0A623EFB19C007740AC /* AddEventVC.swift */,
 				8B7BA09623EF75F5007740AC /* Main.storyboard */,
+				BD07F85D23EF93E20054D259 /* SimpleSigninVC.swift */,
+				BD65F02723EF8B3200FEC806 /* SignInVC.swift */,
 				8B7BA09923EF75F7007740AC /* Assets.xcassets */,
 				8B7BA09B23EF75F7007740AC /* LaunchScreen.storyboard */,
 				8B7BA09E23EF75F7007740AC /* Info.plist */,
@@ -138,9 +155,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8B7BA09523EF75F5007740AC /* ViewController.swift in Sources */,
+				BD07F85E23EF93E20054D259 /* SimpleSigninVC.swift in Sources */,
 				8B7BA09123EF75F5007740AC /* AppDelegate.swift in Sources */,
+				BD65F02623EF819800FEC806 /* SingleGroupTableVC.swift in Sources */,
 				8B7BA09323EF75F5007740AC /* SceneDelegate.swift in Sources */,
+				8B7BA0A523EFAD2B007740AC /* EventPageVC.swift in Sources */,
+				BD65F02423EF7CA600FEC806 /* GroupTableVC.swift in Sources */,
+				BD65F02823EF8B3200FEC806 /* SignInVC.swift in Sources */,
+				8B7BA0A723EFB19C007740AC /* AddEventVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -284,6 +306,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = imdown/imdown.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 42GHD9BHRK;
 				INFOPLIST_FILE = imdown/Info.plist;
@@ -291,7 +314,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.berkeley.imdown;
+				PRODUCT_BUNDLE_IDENTIFIER = com.berk.imdown;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -302,6 +325,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = imdown/imdown.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 42GHD9BHRK;
 				INFOPLIST_FILE = imdown/Info.plist;
@@ -309,7 +333,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.berkeley.imdown;
+				PRODUCT_BUNDLE_IDENTIFIER = com.berk.imdown;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
