@@ -28,6 +28,10 @@ class SingleGroupTableVC: UITableViewController {
         return ["Rush", "Beers + Die", "Hangout Squad"]
     }
     
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100
+    }
+    
     @objc func addTapped(){
         let addEventPopup = self.storyboard?.instantiateViewController(identifier: "AddEvent") as! AddEventVC
         addEventPopup.addEventDelegate = self
@@ -128,7 +132,7 @@ extension SingleGroupTableVC: AddEventDelegate {
                  - address
                  - lat (optional)
                  - lng (optional)
-                 - group_id 
+                 - group_id
          
          
          */

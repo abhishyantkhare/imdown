@@ -153,6 +153,10 @@ class GroupTableVC: UITableViewController {
         return cell
     }
 
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100
+    }
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let singleGroup = storyboard?.instantiateViewController(identifier: "SingleGroupTable") as! SingleGroupTableVC
 //        singleGroup.eventsList = groupData[indexPath.row]
