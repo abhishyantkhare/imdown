@@ -129,7 +129,7 @@ def addUserToGroup(invite_link, auth_hash):
     if group_obj is None:
         print("Failure adding to group. Invite link is not valid")
         return "Invite link not valid. It is {}".format(invite_link), 400
-    user_obj = User.query.filter_by(user_auth=auth_hash).first()
+    user_obj = User.query.filter_by(auth_hash=auth_hash).first()
     if user_obj is None:
         print("Failure adding to group. User with user auth hash {} does not exist".format(
             auth_hash))
