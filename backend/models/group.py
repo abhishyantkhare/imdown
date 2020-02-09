@@ -6,5 +6,5 @@ class Group(db.Model):
     name = db.Column(db.String(64), index=True, unique=False)
     invite_link = db.Column(db.String(64), index=True, unique=False)
 
-  def __repr__(self):
-    return 'Group {}'.format(self.name)
+    def __repr__(self):
+      return 'Group {}'.format(self.name)
