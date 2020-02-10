@@ -1,0 +1,7 @@
+#!/bin/bash
+echo "You must request an access key to continue."
+read -r -p "Press enter"
+cd -P -- "$(dirname -- "$0")/.." || exit
+brew install awsebcli
+eb init -r us-west-1 imdown
+eb status
