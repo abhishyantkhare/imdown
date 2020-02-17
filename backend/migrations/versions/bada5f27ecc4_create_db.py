@@ -1,8 +1,8 @@
-"""users table
+"""create db
 
-Revision ID: 1169158460b5
+Revision ID: bada5f27ecc4
 Revises: 
-Create Date: 2020-02-08 18:01:41.090245
+Create Date: 2020-02-16 16:58:56.705890
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '1169158460b5'
+revision = 'bada5f27ecc4'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,45 +22,45 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=64), nullable=True),
     sa.Column('description', sa.String(length=64), nullable=True),
-    sa.Column('start_time', sa.DateTime(), nullable=True),
-    sa.Column('end_time', sa.DateTime(), nullable=True),
+    sa.Column('start_time', sa.Integer(), nullable=True),
+    sa.Column('end_time', sa.Integer(), nullable=True),
     sa.Column('address', sa.String(length=256), nullable=True),
     sa.Column('lat', sa.Float(), nullable=True),
     sa.Column('lng', sa.Float(), nullable=True),
-    sa.Column('group_id', sa.Integer(), nullable=True),
+    sa.Column('squad_id', sa.Integer(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_event_group_id'), 'event', ['group_id'], unique=False)
     op.create_index(op.f('ix_event_lat'), 'event', ['lat'], unique=False)
     op.create_index(op.f('ix_event_lng'), 'event', ['lng'], unique=False)
+    op.create_index(op.f('ix_event_squad_id'), 'event', ['squad_id'], unique=False)
     op.create_table('event_response',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('event_id', sa.Integer(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('response', sa.Boolean(), nullable=True),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('response')
+    sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_event_response_event_id'), 'event_response', ['event_id'], unique=True)
-    op.create_index(op.f('ix_event_response_user_id'), 'event_response', ['user_id'], unique=True)
-    op.create_table('group',
+    op.create_index(op.f('ix_event_response_event_id'), 'event_response', ['event_id'], unique=False)
+    op.create_index(op.f('ix_event_response_user_id'), 'event_response', ['user_id'], unique=False)
+    op.create_table('squad',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=64), nullable=True),
     sa.Column('invite_link', sa.String(length=64), nullable=True),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('invite_link')
     )
-    op.create_table('group_membership',
+    op.create_table('squad_membership',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('group_id', sa.Integer(), nullable=True),
+    sa.Column('squad_id', sa.Integer(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_group_membership_group_id'), 'group_membership', ['group_id'], unique=False)
-    op.create_index(op.f('ix_group_membership_user_id'), 'group_membership', ['user_id'], unique=False)
+    op.create_index(op.f('ix_squad_membership_squad_id'), 'squad_membership', ['squad_id'], unique=False)
+    op.create_index(op.f('ix_squad_membership_user_id'), 'squad_membership', ['user_id'], unique=False)
     op.create_table('user',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('username', sa.String(length=64), nullable=True),
-    sa.Column('auth_hash', sa.String(length=128), nullable=True),
+    sa.Column('username', sa.String(length=64), nullable=False),
+    sa.Column('auth_hash', sa.String(length=128), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_user_auth_hash'), 'user', ['auth_hash'], unique=True)
@@ -73,15 +73,15 @@ def downgrade():
     op.drop_index(op.f('ix_user_username'), table_name='user')
     op.drop_index(op.f('ix_user_auth_hash'), table_name='user')
     op.drop_table('user')
-    op.drop_index(op.f('ix_group_membership_user_id'), table_name='group_membership')
-    op.drop_index(op.f('ix_group_membership_group_id'), table_name='group_membership')
-    op.drop_table('group_membership')
-    op.drop_table('group')
+    op.drop_index(op.f('ix_squad_membership_user_id'), table_name='squad_membership')
+    op.drop_index(op.f('ix_squad_membership_squad_id'), table_name='squad_membership')
+    op.drop_table('squad_membership')
+    op.drop_table('squad')
     op.drop_index(op.f('ix_event_response_user_id'), table_name='event_response')
     op.drop_index(op.f('ix_event_response_event_id'), table_name='event_response')
     op.drop_table('event_response')
+    op.drop_index(op.f('ix_event_squad_id'), table_name='event')
     op.drop_index(op.f('ix_event_lng'), table_name='event')
     op.drop_index(op.f('ix_event_lat'), table_name='event')
-    op.drop_index(op.f('ix_event_group_id'), table_name='event')
     op.drop_table('event')
     # ### end Alembic commands ###

@@ -15,7 +15,6 @@ class GroupTableVC: UITableViewController {
     
     var groupNames : [String] = []
     
-//    var groupData : [[String]] = []
     
     
     override func viewDidLoad() {
@@ -27,23 +26,53 @@ class GroupTableVC: UITableViewController {
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .done, target: self, action: #selector(logoutTapped))
 
         
-        self.groupNames = getGroups()
+        getGroups(){data in
+            if let data = data{
+                self.groupNames = data
+            }
+            
+        }
         
         self.username = UserDefaults.standard.string(forKey: "username")
         self.authKey = UserDefaults.standard.string(forKey: "authKey")
-//        self.groupData = self.getGroupsEventsFake()
     }
     
-    func getGroups() -> [String] {
-        #warning("@VIVEK Get Groups from API /get_groups")
+    func getGroups(completion: @escaping ([String]?)->())  {
+        var squads:Any = 0;
+        var uniqueAuth = "testUniqueAuth"
+        //get request for groups goes here
+        let Url = "http://127.0.0.1:5000/get_squads?auth_hash=" + uniqueAuth
+        let serviceUrl = URL(string: Url)
+        var request = URLRequest(url: serviceUrl!)
+        request.httpMethod = "GET"
+        let session = URLSession.shared
+
+        session.dataTask(with: request) {data, response, err in
+            print("Entered the completionHandler")
+            guard let data = data, err == nil else { return }
+            
+            do {
+                let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any]
+                squads = json?["squads"] as? [[String: Any]] ?? []
+                print(json)
+                print(squads)
+                var display_squads:[String] = []
+                       for squad in squads as! [[String:Any]]{
+                           display_squads.append(squad["name"] as! String)
+                       
+                       }
+                           
+                       return completion(display_squads)
+            } catch {
+                print(err)
+                return completion(nil)
+            }
+           
+        }.resume()
         
-        
-        return ["SEP", "Berkeley", "Girlfriend"]
+       
     }
-    
-//    func getGroupsEventsFake() -> [[String]]{
-//        return [["Rush", "Beers + Die", "Hangout Squad"], ["The Hub", "Sather Gate", "Wheeler Hall"], ["Romantic Dinner", "Trip to Italy", "Wholesome Dinner"]]
-//    }
+
     
     
     func simplePostRequest(endPoint: String, params: [String: String], completion: @escaping (_ response: Any?, _ error: Error?) -> Void){
@@ -91,18 +120,17 @@ class GroupTableVC: UITableViewController {
         let submitAction = UIAlertAction(title: "Create", style: .default) { [unowned ac] _ in
         var uniqueAuth = "testUniqueAuth"
         var username = "testUsername"
-        var groupname = "testGroupName"
-            #warning("@VIVEK Add Groups using API /create group - idk if it's a get or not")
             //testing sign in endpoint
-            self.simplePostRequest(endPoint: "http://127.0.0.1:5000/sign_in", params: ["username": username, "auth_hash": uniqueAuth]) { data, err  in
+          /*  APIHelper.simplePostRequest(endPoint: "http://127.0.0.1:5000/sign_in", params: ["username": username, "auth_hash": uniqueAuth]) { data, err  in
             }
-            //endpoint to create group
-            self.simplePostRequest(endPoint: "http://127.0.0.1:5000/create_group", params: ["username": username, "auth_hash": uniqueAuth, "group_name" : groupname ]) { data, err  in
-            }
+            */
             
             let newGroup = ac.textFields![0]
             self.groupNames.append(newGroup.text!)
-//            self.groupData.append([])
+            
+            //endpoint to create group
+            APIHelper.simplePostRequest(endPoint: "http://127.0.0.1:5000/create_squad", params: ["username": username, "auth_hash": uniqueAuth, "squad_name" : newGroup.text! ]) { data, err  in
+            }
             self.tableView.reloadData()
         }
         

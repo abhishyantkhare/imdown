@@ -12,10 +12,10 @@ class Event(db.Model):
     address = db.Column(db.String(256), index=False, unique=False)
     lat = db.Column(db.Float, index=True, unique=False)
     lng = db.Column(db.Float, index=True, unique=False)
-    group_id = db.Column(db.Integer, index=True, unique=False)
+    squad_id = db.Column(db.Integer, index=True, unique=False)
 
     def __repr__(self):
-        return 'Event id {} with title {} and group {}'.format(self.id, self.title, self.group_id)
+        return 'Event id {} with title {} and squad {}'.format(self.id, self.title, self.squad_id)
 
     def eventDict(self):
         return {
