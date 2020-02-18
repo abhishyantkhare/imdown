@@ -15,7 +15,9 @@ class GroupTableVC: UITableViewController {
     
     var groupNames : [String] = []
     
-    
+    override func viewWillAppear(_ animated: Bool) {
+       
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,18 +28,16 @@ class GroupTableVC: UITableViewController {
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .done, target: self, action: #selector(logoutTapped))
 
         
-        getGroups(){data in
-            if let data = data{
-                self.groupNames = data
-            }
-            
-        }
+        
+        print("TEST")
+        getGroups()
+
         
         self.username = UserDefaults.standard.string(forKey: "username")
         self.authKey = UserDefaults.standard.string(forKey: "authKey")
     }
     
-    func getGroups(completion: @escaping ([String]?)->())  {
+    func getGroups()  {
         var squads:Any = 0;
         var uniqueAuth = "testUniqueAuth"
         //get request for groups goes here
@@ -61,15 +61,19 @@ class GroupTableVC: UITableViewController {
                            display_squads.append(squad["name"] as! String)
                        
                        }
+                       self.groupNames = display_squads
+                DispatchQueue.main.async{
+                       self.tableView.reloadData()
+                }
+                      
                            
-                       return completion(display_squads)
+                       
             } catch {
                 print(err)
-                return completion(nil)
+                
             }
            
         }.resume()
-        
        
     }
 
