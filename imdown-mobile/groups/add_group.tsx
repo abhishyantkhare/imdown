@@ -1,35 +1,30 @@
-import React, { Component } from "react";
+import React, {useState } from "react";
 import { View, Modal, TextInput, TouchableHighlight, Text } from "react-native";
+import {AddGroupStyles} from "./add_group_styles"
 
-export default class AddGroupModal extends Component {
-  state = {
-    modalVisible: false
-  };
+type OwnProps = {
+  visible: boolean,
+  onPress: (groupName: string) => void
+}
 
-  setModalVisible(visible) {
-    this.setState({ modalVisible: visible });
-  }
+const AddGroupModal = (props: OwnProps) => {
+    const [groupName, setGroupName] = useState("")
 
-  onAddGroup() {
-    this.setModalVisible(false);
-  }
 
-  render() {
     return (
-      <View>
         <Modal
           transparent={false}
-          visible={this.state.modalVisible}
+          visible={props.visible}
           presentationStyle={"formSheet"}
         >
-          <View>
-            <TextInput placeholder={"Add group name"} />
-            <TouchableHighlight onPress={this.onAddGroup}>
+          <View style={AddGroupStyles.container}>
+            <TextInput placeholder={"Add group name"} onChangeText={(name) => setGroupName(name)}/>
+            <TouchableHighlight onPress={() => props.onPress(groupName)} style={AddGroupStyles.add_group_button}>
               <Text>Add Group</Text>
             </TouchableHighlight>
           </View>
         </Modal>
-      </View>
     );
-  }
 }
+
+export default AddGroupModal;

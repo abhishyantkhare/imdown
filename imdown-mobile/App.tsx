@@ -17,15 +17,6 @@ export default function App() {
         <Stack.Screen
           name="Groups"
           component={Groups}
-          options={({ navigation }) => ({
-            headerRight: () => (
-              <Button
-                onPress={() => navigation.navigate("Add Group")}
-                title="Add"
-                color="#000"
-              />
-            )
-          })}
         />
         <Stack.Screen name="Add Group" component={AddGroupModal} />
       </Stack.Navigator>

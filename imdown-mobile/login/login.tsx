@@ -2,7 +2,7 @@ import React from "react";
 import { View, TextInput, Button } from "react-native";
 import { login_styles } from "./login_styles";
 
-export default function Login({ navigation }) {
+const Login = ({navigation}) => {
   const goToGroups = () => {
     navigation.navigate("Groups", {
       groups: ["SEP", "CodeBase", "BangerBrozz"]
@@ -17,4 +17,6 @@ export default function Login({ navigation }) {
       </View>
     </View>
   );
-}
+};
+
+export default Login;
