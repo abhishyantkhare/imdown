@@ -1,5 +1,5 @@
 //
-//  GroupCell.swift
+//  SquadCell.swift
 //  imdown
 //
 //  Created by Developer on 2/8/20.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class GroupCell: UITableViewCell {
+class SquadCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()

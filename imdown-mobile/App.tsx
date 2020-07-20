@@ -1,10 +1,10 @@
 import React from "react";
 import Login from "./login/login";
-import AddGroupModal from "./groups/add_group";
+import AddSquadModal from "./squads/add_squad";
 import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import Groups from "./groups/groups";
+import Squads from "./squads/squads";
 import { Button, ShadowPropTypesIOS } from "react-native";
 
 const Stack = createStackNavigator();
@@ -15,10 +15,10 @@ export default function App() {
       <Stack.Navigator>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen
-          name="Groups"
-          component={Groups}
+          name="Squads"
+          component={Squads}
         />
-        <Stack.Screen name="Add Group" component={AddGroupModal} />
+        <Stack.Screen name="Add Squad" component={AddSquadModal} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,13 +1,18 @@
 import { StyleSheet } from "react-native";
-export const AddGroupStyles = StyleSheet.create({
-  container: {
+export const squad_styles = StyleSheet.create({
+  squads_container: {
     flex: 1,
     flexDirection: "column",
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center"
   },
-  add_group_button: {
-    paddingTop: 15
+  squad_item: {
+    flex: 1,
+    paddingBottom: 10,
+    paddingTop: 10
+  },
+  squad_list: {
+    height: "100%"
   }
 });

@@ -1,5 +1,5 @@
 //
-//  GroupTableVC.swift
+//  SquadTableVC.swift
 //  imdown
 //
 //  Created by Vivek Jain on 2/8/20.
@@ -8,12 +8,12 @@
 
 import UIKit
 
-class GroupTableVC: UITableViewController {
+class SquadTableVC: UITableViewController {
 
     var username : String?
     var authKey : String?
     
-    var groupNames : [String] = []
+    var squadNames : [String] = []
     
     
     
@@ -26,9 +26,9 @@ class GroupTableVC: UITableViewController {
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .done, target: self, action: #selector(logoutTapped))
 
         
-        getGroups(){data in
+        getSquads(){data in
             if let data = data{
-                self.groupNames = data
+                self.squadNames = data
             }
             
         }
@@ -37,10 +37,10 @@ class GroupTableVC: UITableViewController {
         self.authKey = UserDefaults.standard.string(forKey: "authKey")
     }
     
-    func getGroups(completion: @escaping ([String]?)->())  {
+    func getSquads(completion: @escaping ([String]?)->())  {
         var squads:Any = 0;
         var uniqueAuth = "testUniqueAuth"
-        //get request for groups goes here
+        //get request for squads goes here
         let Url = "http://127.0.0.1:5000/get_squads?auth_hash=" + uniqueAuth
         let serviceUrl = URL(string: Url)
         var request = URLRequest(url: serviceUrl!)
@@ -113,7 +113,7 @@ class GroupTableVC: UITableViewController {
     
     @objc func addTapped(){
         
-        let ac = UIAlertController(title: "Create Group", message: nil, preferredStyle: .alert)
+        let ac = UIAlertController(title: "Create Squad", message: nil, preferredStyle: .alert)
         
         ac.addTextField()
 
@@ -125,11 +125,11 @@ class GroupTableVC: UITableViewController {
             }
             */
             
-            let newGroup = ac.textFields![0]
-            self.groupNames.append(newGroup.text!)
+            let newSquad = ac.textFields![0]
+            self.squadNames.append(newSquad.text!)
             
-            //endpoint to create group
-            APIHelper.simplePostRequest(endPoint: "http://127.0.0.1:5000/create_squad", params: ["username": username, "auth_hash": uniqueAuth, "squad_name" : newGroup.text! ]) { data, err  in
+            //endpoint to create squad
+            APIHelper.simplePostRequest(endPoint: "http://127.0.0.1:5000/create_squad", params: ["username": username, "auth_hash": uniqueAuth, "squad_name" : newSquad.text! ]) { data, err  in
             }
             self.tableView.reloadData()
         }
@@ -173,15 +173,15 @@ class GroupTableVC: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return groupNames.count
+        return squadNames.count
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "GroupCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "SquadCell", for: indexPath)
 
         let label = cell.viewWithTag(3) as! UILabel
-        label.text = self.groupNames[indexPath.row]
+        label.text = self.squadNames[indexPath.row]
         // Configure the cell...
 
         return cell
@@ -192,10 +192,10 @@ class GroupTableVC: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let singleGroup = storyboard?.instantiateViewController(identifier: "SingleGroupTable") as! SingleGroupTableVC
-//        singleGroup.eventsList = groupData[indexPath.row]
-        singleGroup.title = groupNames[indexPath.row]
-        self.navigationController?.pushViewController(singleGroup, animated: true)
+        let singleSquad = storyboard?.instantiateViewController(identifier: "SingleSquadTable") as! SingleSquadTableVC
+//        singleSquad.eventsList = squadData[indexPath.row]
+        singleSquad.title = squadNames[indexPath.row]
+        self.navigationController?.pushViewController(singleSquad, animated: true)
     }
 
     /*
@@ -245,7 +245,7 @@ class GroupTableVC: UITableViewController {
 
 }
 
-extension GroupTableVC: SignInDelegate {
+extension SquadTableVC: SignInDelegate {
     func signedIn(username: String, uniqueAuth: String) {
         self.username = username
         UserDefaults.standard.set(username, forKey: "username")

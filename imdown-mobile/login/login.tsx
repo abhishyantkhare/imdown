@@ -3,9 +3,9 @@ import { View, TextInput, Button } from "react-native";
 import { login_styles } from "./login_styles";
 
 const Login = ({navigation}) => {
-  const goToGroups = () => {
-    navigation.navigate("Groups", {
-      groups: ["SEP", "CodeBase", "BangerBrozz"]
+  const goToSquads = () => {
+    navigation.navigate("Squads", {
+      squads: ["SEP", "CodeBase", "BangerBrozz"]
     });
   };
 
@@ -13,7 +13,7 @@ const Login = ({navigation}) => {
     <View style={login_styles.login_container}>
       <TextInput placeholder="Please sign in" style={login_styles.text_input} />
       <View style={login_styles.button}>
-        <Button title="Sign In" onPress={goToGroups} />
+        <Button title="Sign In" onPress={goToSquads} />
       </View>
     </View>
   );

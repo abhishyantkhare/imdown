@@ -7,16 +7,16 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Groups-->
+        <!--Squads-->
         <scene sceneID="uNp-jz-P31">
             <objects>
-                <tableViewController title="Groups" id="eFM-ep-drh" customClass="GroupTableVC" customModule="imdown" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController title="Squads" id="eFM-ep-drh" customClass="SquadTableVC" customModule="imdown" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="oJv-xD-g08">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="GroupCell" rowHeight="99" id="7gx-UG-tJg" customClass="GroupCell" customModule="imdown" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SquadCell" rowHeight="99" id="7gx-UG-tJg" customClass="SquadCell" customModule="imdown" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="414" height="99"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="7gx-UG-tJg" id="dbZ-cB-tNh">
@@ -51,16 +51,16 @@
                             <outlet property="delegate" destination="eFM-ep-drh" id="dcK-UH-Mr4"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Groups" largeTitleDisplayMode="always" id="bs7-sY-7Bm"/>
+                    <navigationItem key="navigationItem" title="Squads" largeTitleDisplayMode="always" id="bs7-sY-7Bm"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="w6f-HG-YXK" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1753.6231884057972" y="12.723214285714285"/>
         </scene>
-        <!--Single Group TableVC-->
+        <!--Single Squad TableVC-->
         <scene sceneID="GUk-K8-rnI">
             <objects>
-                <tableViewController storyboardIdentifier="SingleGroupTable" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Llw-Tr-W9o" customClass="SingleGroupTableVC" customModule="imdown" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="SingleSquadTable" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Llw-Tr-W9o" customClass="SingleSquadTableVC" customModule="imdown" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="ueI-dR-Knl">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

@@ -1,5 +1,5 @@
 //
-//  SingleGroupTableVC.swift
+//  SingleSquadTableVC.swift
 //  imdown
 //
 //  Created by Vivek Jain on 2/8/20.
@@ -8,7 +8,7 @@
  
 import UIKit
 
-class SingleGroupTableVC: UITableViewController {
+class SingleSquadTableVC: UITableViewController {
     
     var eventsList :[String] = []
     
@@ -114,10 +114,10 @@ class SingleGroupTableVC: UITableViewController {
 
 }
 
-extension SingleGroupTableVC: AddEventDelegate {
+extension SingleSquadTableVC: AddEventDelegate {
     func eventAddedWith(name: String, location: String, date: Date, description: String) {
         
-        #warning("run /create_event to add to group, and reload on response")
+        #warning("run /create_event to add to squad, and reload on response")
         
         /*
          
@@ -132,7 +132,7 @@ extension SingleGroupTableVC: AddEventDelegate {
                  - address
                  - lat (optional)
                  - lng (optional)
-                 - group_id
+                 - squad_id
          
          
          */
