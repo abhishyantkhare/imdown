@@ -1,6 +1,6 @@
 import React, {useLayoutEffect, useState} from "react";
 import { View, Text, FlatList } from "react-native";
-import Divider from "./divider";
+import Divider from "../components/divider/divider";
 import { squad_styles } from "./squads_styles";
 import { Button } from "react-native";
 import AddSquadModal from "./add_squad"
@@ -28,10 +28,16 @@ const Squads = (props) => {
     setAddSquadModalVisble(false)
   }
 
+  const goToEvents = () => {
+    props.navigation.navigate("Events", {
+      events: ["Beach BBQ", "Playland", "Zoom+Drinks"]
+    })
+  }
+
 
   const renderSquadItem = ({ item, index, separators }) => {
     return (
-      <View style={squad_styles.squad_item}>
+      <View style={squad_styles.squad_item} onPress={goToEvents}>
         <Text>{item}</Text>
       </View>
     );

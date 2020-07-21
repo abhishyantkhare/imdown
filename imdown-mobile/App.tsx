@@ -5,6 +5,7 @@ import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Squads from "./squads/squads";
+import Events from "./events/events";
 import { Button, ShadowPropTypesIOS } from "react-native";
 
 const Stack = createStackNavigator();
@@ -19,6 +20,7 @@ export default function App() {
           component={Squads}
         />
         <Stack.Screen name="Add Squad" component={AddSquadModal} />
+        <Stack.Screen name="Events" component={Events} />
       </Stack.Navigator>
     </NavigationContainer>
   );
