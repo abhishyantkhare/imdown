@@ -1,5 +1,5 @@
 import React, {useLayoutEffect, useState} from "react";
-import { View, Text, FlatList } from "react-native";
+import { View, Text, FlatList, TouchableHighlight } from "react-native";
 import Divider from "../components/divider/divider";
 import { squad_styles } from "./squads_styles";
 import { Button } from "react-native";
@@ -29,6 +29,7 @@ const Squads = (props) => {
   }
 
   const goToEvents = () => {
+    console.log("CLICKED")
     props.navigation.navigate("Events", {
       events: ["Beach BBQ", "Playland", "Zoom+Drinks"]
     })
@@ -37,8 +38,10 @@ const Squads = (props) => {
 
   const renderSquadItem = ({ item, index, separators }) => {
     return (
-      <View style={squad_styles.squad_item} onPress={goToEvents}>
+      <View style={squad_styles.squad_item}>
+      <TouchableHighlight onPress={goToEvents}>
         <Text>{item}</Text>
+      </TouchableHighlight>
       </View>
     );
   };

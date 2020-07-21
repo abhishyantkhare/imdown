@@ -1,5 +1,5 @@
-import React from "react";
-import {View, FlatList} from "react-native";
+import React, { useState, useLayoutEffect } from "react";
+import { View, FlatList, Text, Button } from "react-native";
 import Divider from "../components/divider/divider";
 import { event_styles } from "./events_styles";
 import AddEventModal from "./add_event"

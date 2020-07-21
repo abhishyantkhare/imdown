@@ -1,6 +1,6 @@
 import React, {useState } from "react";
 import { View, Modal, TextInput, TouchableHighlight, Text } from "react-native";
-import {AddeventStyles} from "./add_event_styles"
+import {AddEventStyles} from "./add_event_styles"
 
 type OwnProps = {
   visible: boolean,
