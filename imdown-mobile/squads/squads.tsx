@@ -4,25 +4,33 @@ import Divider from "../components/divider/divider";
 import { squad_styles } from "./squads_styles";
 import { Button } from "react-native";
 import AddSquadModal from "./add_squad"
+import { Event } from "../events/events"
 
 
 type Squad = {
   name: string,
-  events: string[]
+  events: Event[]
 }
 
 const dummySquads: Squad[] = [
   {
     name: "BangerBrozz",
-    events: ["Beach BBQ"]
+    events: [
+      {
+        name: "Beach BBQ",
+        description: "A fun beach BBQ!",
+        start_ms: 1587424800000,
+        end_ms: 1587428400000
+      }
+    ]
   },
   {
     name: "SEP",
-    events: ["Playland"]
+    events: [{ name: "Playland", description: "Can we just talk" }]
   },
   {
     name: "CodeBase",
-    events: ["Zoom+Drinks"]
+    events: [{ name: "Zoom+Drinks" }]
   }
 ]
 

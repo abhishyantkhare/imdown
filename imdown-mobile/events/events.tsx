@@ -3,6 +3,14 @@ import { View, FlatList, Text, Button } from "react-native";
 import Divider from "../components/divider/divider";
 import { event_styles } from "./events_styles";
 import AddEventModal from "./add_event"
+import moment from 'moment';
+
+export type Event = {
+  name: string,
+  description?: string,
+  start_ms?: number,
+  end_ms?: number
+}
 
 
 const Events = (props) => {
@@ -22,15 +30,23 @@ const Events = (props) => {
   }, [props.navigation]);
 
   const addEvent = (eventName: string) => {
-    setEvents(events.concat([eventName]));
+    const newEvent: Event = {
+      name: eventName
+    }
+    setEvents(events.concat([newEvent]));
     setAddEventModalVisible(false)
   }
 
 
-  const renderSquadItem = ({ item, index, separators }) => {
+  const renderSquadItem = ({ item }: { item: Event }) => {
     return (
       <View style={event_styles.event_item}>
-        <Text>{item}</Text>
+        <Text>{`Name: ${item.name}`}</Text>
+        {item.description ? <Text>{`Description: ${item.description}`}</Text> : null}
+        {item.start_ms ? <View>
+          <Text>{`Start: ${moment(item.start_ms).toLocaleString()}`}</Text>
+          <Text>{`End: ${moment(item.end_ms).toLocaleString()}`}</Text>
+        </View> : <Text>{`Time: ${`TBD`}`}</Text>}
       </View>
     );
   };
