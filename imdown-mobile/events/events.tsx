@@ -29,10 +29,7 @@ const Events = (props) => {
     });
   }, [props.navigation]);
 
-  const addEvent = (eventName: string) => {
-    const newEvent: Event = {
-      name: eventName
-    }
+  const addEvent = (newEvent: Event) => {
     setEvents(events.concat([newEvent]));
     setAddEventModalVisible(false)
   }
