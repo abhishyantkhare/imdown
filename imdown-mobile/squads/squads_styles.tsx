@@ -18,5 +18,6 @@ export const squad_styles = StyleSheet.create({
   squad_text: {
     color: "#90BEDE",
     fontFamily: "Ubuntu_700Bold",
+    fontSize: 32
   }
 });

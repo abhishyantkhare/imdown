@@ -1,10 +1,10 @@
 import React, { useLayoutEffect, useState } from "react";
 import { View, Text, FlatList, TouchableHighlight } from "react-native";
-import Divider from "../components/divider/divider";
 import { squad_styles } from "./squads_styles";
 import { Button } from "react-native";
 import AddSquadModal from "./add_squad"
 import { Event } from "../events/events"
+import { CommonActions } from '@react-navigation/native';
 
 
 type Squad = {
@@ -14,7 +14,7 @@ type Squad = {
 
 const dummySquads: Squad[] = [
   {
-    name: "BangerBrozz",
+    name: "💩 BangerBrozz",
     events: [
       {
         name: "Beach BBQ",
@@ -25,16 +25,17 @@ const dummySquads: Squad[] = [
     ]
   },
   {
-    name: "SEP",
+    name: "🤡 SEP",
     events: [{ name: "Playland", description: "Can we just talk" }]
   },
   {
-    name: "CodeBase",
+    name: "🤖 CodeBase",
     events: [{ name: "Zoom+Drinks" }]
   }
 ]
 
 const Squads = (props) => {
+
 
   const [addSquadModalVisble, setAddSquadModalVisble] = useState(false)
   const [squads, setSquads] = useState(dummySquads)
@@ -79,7 +80,6 @@ const Squads = (props) => {
   return (
     <View style={squad_styles.squads_container}>
       <FlatList
-        ItemSeparatorComponent={Divider}
         data={squads}
         renderItem={renderSquadItem}
         style={squad_styles.squad_list}
