@@ -6,13 +6,17 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Squads from "./squads/squads";
 import Events from "./events/events";
-import { useFonts, Ubuntu_700Bold } from '@expo-google-fonts/ubuntu';
+import { useFonts, Ubuntu_700Bold, Ubuntu_400Regular } from '@expo-google-fonts/ubuntu';
+import { Inter_400Regular } from '@expo-google-fonts/inter';
+
 
 const Stack = createStackNavigator();
 
 export default function App() {
   useFonts({
     Ubuntu_700Bold,
+    Ubuntu_400Regular,
+    Inter_400Regular
   });
   return (
     <NavigationContainer>

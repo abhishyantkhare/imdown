@@ -16,6 +16,7 @@ export type Event = {
 const Events = (props) => {
   const [addEventModalVisible, setAddEventModalVisible] = useState(false)
   const [events, setEvents] = useState(props.route.params.events)
+  const groupName = props.route.params.groupName
 
   useLayoutEffect(() => {
     props.navigation.setOptions({
@@ -35,10 +36,10 @@ const Events = (props) => {
   }
 
 
-  const renderSquadItem = ({ item }: { item: Event }) => {
+  const renderEventItem = ({ item }: { item: Event }) => {
     return (
       <View style={event_styles.event_item}>
-        <Text>{`Name: ${item.name}`}</Text>
+        <Text style={event_styles.event_title}>{item.name}</Text>
         {item.description ? <Text>{`Description: ${item.description}`}</Text> : null}
         {item.start_ms ? <View>
           <Text>{`Start: ${moment(item.start_ms).toLocaleString()}`}</Text>
@@ -48,13 +49,18 @@ const Events = (props) => {
     );
   };
   return (
-    <View style={event_styles.events_container}>
-      <FlatList
-        ItemSeparatorComponent={Divider}
-        data={events}
-        renderItem={renderSquadItem}
-        style={event_styles.event_list}
-      />
+    <View style={event_styles.container}>
+      <Text style={event_styles.group_title}>
+        {groupName}
+      </Text>
+      <View style={event_styles.event_list_container}>
+        <FlatList
+          ItemSeparatorComponent={Divider}
+          data={events}
+          renderItem={renderEventItem}
+          style={event_styles.event_list}
+        />
+      </View>
       <AddEventModal
         visible={addEventModalVisible}
         onPress={addEvent}

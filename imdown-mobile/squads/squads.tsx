@@ -4,7 +4,6 @@ import { squad_styles } from "./squads_styles";
 import { Button } from "react-native";
 import AddSquadModal from "./add_squad"
 import { Event } from "../events/events"
-import { CommonActions } from '@react-navigation/native';
 
 
 type Squad = {
@@ -61,9 +60,10 @@ const Squads = (props) => {
     setAddSquadModalVisble(false)
   }
 
-  const goToEvents = (events: Event[]) => {
+  const goToEvents = (events: Event[], groupName: string) => {
     props.navigation.navigate("Events", {
-      events: events
+      events: events,
+      groupName: groupName
     })
   }
 
@@ -71,7 +71,7 @@ const Squads = (props) => {
   const renderSquadItem = ({ item }: { item: Squad }) => {
     return (
       <View style={squad_styles.squad_item}>
-        <TouchableHighlight onPress={() => { goToEvents(item.events) }}>
+        <TouchableHighlight onPress={() => { goToEvents(item.events, item.name) }}>
           <Text style={squad_styles.squad_text}>{item.name}</Text>
         </TouchableHighlight>
       </View>
