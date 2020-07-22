@@ -10,9 +10,13 @@ export const squad_styles = StyleSheet.create({
   squad_item: {
     flex: 1,
     paddingBottom: 10,
-    paddingTop: 10
+    paddingTop: 10,
   },
   squad_list: {
     height: "100%"
+  },
+  squad_text: {
+    color: "#90BEDE",
+    fontFamily: "Ubuntu_700Bold",
   }
 });

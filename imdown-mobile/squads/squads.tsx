@@ -60,7 +60,7 @@ const Squads = (props) => {
     setAddSquadModalVisble(false)
   }
 
-  const goToEvents = (events: string[]) => {
+  const goToEvents = (events: Event[]) => {
     props.navigation.navigate("Events", {
       events: events
     })
@@ -71,7 +71,7 @@ const Squads = (props) => {
     return (
       <View style={squad_styles.squad_item}>
         <TouchableHighlight onPress={() => { goToEvents(item.events) }}>
-          <Text>{item.name}</Text>
+          <Text style={squad_styles.squad_text}>{item.name}</Text>
         </TouchableHighlight>
       </View>
     );
