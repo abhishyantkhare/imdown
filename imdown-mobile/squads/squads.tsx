@@ -4,6 +4,7 @@ import { squad_styles } from "./squads_styles";
 import { Button } from "react-native";
 import AddSquadModal from "./add_squad"
 import { Event } from "../events/events"
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 
 export type Squad ={
@@ -45,9 +46,9 @@ const Squads = (props) => {
   const renderSquadItem = ({ item }: { item: Squad }) => {
     return (
       <View style={squad_styles.squad_item}>
-        <TouchableHighlight onPress={() => { goToEvents(item.events, item.name, item.emoji) }}>
+        <TouchableOpacity onPress={() => { goToEvents(item.events, item.name, item.emoji) }}>
           <Text style={squad_styles.squad_text}>{item.emoji} {item.name}</Text>
-        </TouchableHighlight>
+        </TouchableOpacity>
       </View>
     );
   };
