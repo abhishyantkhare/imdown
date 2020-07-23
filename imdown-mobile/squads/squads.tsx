@@ -42,11 +42,13 @@ export type Squad ={
 //   }
 // ]
 
+/* TODO:
+  - get squads to start at top
+  - emojis propagate to squads scren */
+
 const Squads = (props) => {
 
-
   const [addSquadModalVisble, setAddSquadModalVisble] = useState(false)
-  // const [squads, setSquads] = useState(dummySquads)
   const [squads, setSquads] = useState(props.route.params.squads)
 
   useLayoutEffect(() => {
@@ -71,11 +73,11 @@ const Squads = (props) => {
     setAddSquadModalVisble(false)
   }
 
-  const goToEvents = (events: Event[], groupName: string,) => {
+  const goToEvents = (events: Event[], groupName: string, groupEmoji: EmojiSelectorProps) => {
     props.navigation.navigate("Events", {
       events: events,
       groupName: groupName,
-      // emoji: emoji
+      groupEmoji: groupEmoji
     })
   }
 
@@ -83,9 +85,8 @@ const Squads = (props) => {
   const renderSquadItem = ({ item }: { item: Squad }) => {
     return (
       <View style={squad_styles.squad_item}>
-        <TouchableHighlight onPress={() => { goToEvents(item.events, item.name) }}>
-          <Text style={squad_styles.squad_text}>{item.name}</Text>
-          {/* <Text style={squad_styles.squad_text}>{item.emoji}</Text> */}
+        <TouchableHighlight onPress={() => { goToEvents(item.events, item.name, item.emoji) }}>
+          <Text style={squad_styles.squad_text}>{item.emoji} {item.name}</Text>
         </TouchableHighlight>
       </View>
     );

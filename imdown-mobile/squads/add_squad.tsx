@@ -1,5 +1,5 @@
 import React, {useState } from "react";
-import { View, Modal, TextInput, TouchableHighlight, Text, TouchableOpacity } from "react-native";
+import { View, Modal, TextInput, TouchableHighlight, Text, TouchableOpacity, SafeAreaView } from "react-native";
 import {AddSquadStyles} from "./add_squad_styles"
 import EmojiSelector, { Categories } from "react-native-emoji-selector";
 import { Event } from "./events"
@@ -29,12 +29,15 @@ const AddSquadModal = (props: OwnProps) => {
     const renderEmoji = () => {
       return (
         <View >
-          <TouchableOpacity onPress={() => { setShowEmojiPicker(true) }} style={AddSquadStyles.add_squad_emoji}>
+          {/* <Text style={AddSquadStyles.add_squad_text}>Pick squad emoji: </Text> */}
+          <TouchableOpacity onPress={() => { setShowEmojiPicker(true) }} style={AddSquadStyles.squad_emoji}>
             <Text style={AddSquadStyles.emoji}>
              {`${emojiPicked ? squadEmoji : "😎"}`}
             </Text>
           </TouchableOpacity>
-          {renderEmojiPicker()}
+          <View style={AddSquadStyles.squad_emoji}>
+            {renderEmojiPicker()}
+          </View>
          </View>
       )
     }
@@ -61,16 +64,31 @@ const AddSquadModal = (props: OwnProps) => {
           visible={props.visible}
           presentationStyle={"formSheet"}
         >
-          <View style={AddSquadStyles.nameEmojiContainer}>
-            {renderEmoji()}
-            <TextInput placeholder={"add squad name"} onChangeText={(name) => setSquadName(name)} 
-              style={AddSquadStyles.squad_name}
-              placeholderTextColor = "lightgray"/>
+          <View style={AddSquadStyles.container}>
+            <SafeAreaView style={AddSquadStyles.emoji_and_squad_name_container}>
+              {renderEmoji()}
+              <TextInput placeholder={"add squad name"} onChangeText={(name) => setSquadName(name)} 
+                style={AddSquadStyles.squad_name}
+                placeholderTextColor = "lightgray"/>
+            </SafeAreaView>
+            
             <TouchableOpacity onPress={addSquad} style={AddSquadStyles.add_squad_button}>
               <Text style={AddSquadStyles.add_squad_text}>Done</Text>
             </TouchableOpacity>
 
+            {/* <View style={AddSquadStyles.addSquadButton}>
+              <TouchableOpacity onPress={addSquad} style={AddSquadStyles.add_squad_button}>
+                <Text style={AddSquadStyles.add_squad_text}>Done</Text>
+              </TouchableOpacity>
+            </View> */}
+
           </View>
+
+          {/* <View style={AddSquadStyles.addSquadButton}>
+              <TouchableOpacity onPress={addSquad} style={AddSquadStyles.add_squad_button}>
+                <Text style={AddSquadStyles.add_squad_text}>Done</Text>
+              </TouchableOpacity>
+            </View> */}
 
         </Modal>
     );

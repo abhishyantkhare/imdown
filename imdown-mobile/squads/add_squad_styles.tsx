@@ -1,15 +1,18 @@
 import { StyleSheet } from "react-native";
 export const AddSquadStyles = StyleSheet.create({
-  nameEmojiContainer: {
+  container: {
     flex: 1,
-    flexDirection: "row",
-    flexWrap: "wrap",
+    flexDirection: "column",
     backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "center",
     paddingTop: 50,
-    paddingLeft: 20
-    
+    // paddingLeft: 20
+  },
+  emoji_and_squad_name_container: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "center",
   },
   emoji: {
     fontSize: 40,
@@ -30,9 +33,8 @@ export const AddSquadStyles = StyleSheet.create({
     color: "white",
     fontSize: 18
   },
-  add_squad_emoji: {
-    alignItems: "center",
-    justifyContent: "center",
+  squad_emoji: {
+    alignSelf: "center"
   },
   squad_name: {
     margin: 15,
