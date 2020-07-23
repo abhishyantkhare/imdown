@@ -11,10 +11,9 @@ type OwnProps = {
 
 const AddSquadModal = (props: OwnProps) => {
     const [squadName, setSquadName] = useState("")
-    const [squadEmoji, setSquadEmoji] = useState(false)
-    const [showEmojiPicker, setShowEmojiPicker] = useState();
-    const [emojiPicked, setEmojiPicked] = useState();  
-    // const [test, setTest] = useState(); 
+    const [showSquadEmoji, setShowSquadEmoji] = useState(false)
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const [emojiPicked, setEmojiPicked] = useState("😎"); 
 
     const addSquad = () => {
       const squad: Squad = {
@@ -30,7 +29,7 @@ const AddSquadModal = (props: OwnProps) => {
           {/* <Text style={AddSquadStyles.add_squad_text}>Pick squad emoji: </Text> */}
           <TouchableOpacity onPress={() => { setShowEmojiPicker(true) }} style={AddSquadStyles.squad_emoji}>
             <Text style={AddSquadStyles.emoji}>
-             {`${emojiPicked ? squadEmoji : "😎"}`}
+             {`${showSquadEmoji ? emojiPicked : "😎"}`}
             </Text>
           </TouchableOpacity>
           <View style={AddSquadStyles.squad_emoji}>
@@ -47,9 +46,9 @@ const AddSquadModal = (props: OwnProps) => {
           category={Categories.symbols}
           onEmojiSelected={emoji => 
             {
-              setSquadEmoji(emoji);
+              setEmojiPicked(emoji);
               setShowEmojiPicker(false);
-              setEmojiPicked(true);
+              setShowSquadEmoji(true);
             }}
         />
       )

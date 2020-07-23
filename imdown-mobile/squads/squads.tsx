@@ -4,12 +4,11 @@ import { squad_styles } from "./squads_styles";
 import { Button } from "react-native";
 import AddSquadModal from "./add_squad"
 import { Event } from "../events/events"
-import { EmojiSelectorProps } from "react-native-emoji-selector";
 
 
 export type Squad ={
   name: string,
-  emoji: EmojiSelectorProps,
+  emoji: string,
   events: Event[]
 }
 
@@ -38,9 +37,6 @@ export type Squad ={
 //   }
 // ]
 
-/* TODO:
-  - emojis propagate to squads scren */
-
 const Squads = (props) => {
 
   const [addSquadModalVisble, setAddSquadModalVisble] = useState(false)
@@ -63,20 +59,19 @@ const Squads = (props) => {
     setAddSquadModalVisble(false)
   }
 
-  const goToEvents = (events: Event[], groupName: string, groupEmoji: EmojiSelectorProps) => {
+  const goToEvents = (events: Event[], squadName: string, squadEmoji: string) => {
     props.navigation.navigate("Events", {
       events: events,
-      groupName: groupName,
-      groupEmoji: groupEmoji
+      squadName: squadName,
+      squadEmoji: squadEmoji
     })
   }
-
 
   const renderSquadItem = ({ item }: { item: Squad }) => {
     return (
       <View style={squad_styles.squad_item}>
         <TouchableHighlight onPress={() => { goToEvents(item.events, item.name, item.emoji) }}>
-          <Text style={squad_styles.squad_text}>{item.emoji}: {item.name}</Text>
+          <Text style={squad_styles.squad_text}>{item.emoji} {item.name}</Text>
         </TouchableHighlight>
       </View>
     );
