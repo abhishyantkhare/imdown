@@ -2,11 +2,13 @@ import { StyleSheet } from "react-native";
 export const AddSquadStyles = StyleSheet.create({
   nameEmojiContainer: {
     flex: 1,
-    flexDirection: "column",
+    flexDirection: "row",
+    flexWrap: "wrap",
     backgroundColor: "#fff",
     alignItems: "center",
-    // justifyContent: "center",
-    paddingTop: 40
+    justifyContent: "center",
+    paddingTop: 50,
+    paddingLeft: 20
     
   },
   emoji: {
@@ -14,18 +16,14 @@ export const AddSquadStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: 45,
-    height: 45,
-    borderWidth: 2,
-    borderRadius: 12,
-    borderColor: "#90BEDE"
   },
   add_squad_button: {
-    // paddingTop: 15,
     backgroundColor: "#90BEDE",
     borderWidth: 10,
     borderRadius: 20,
     borderColor: "#90BEDE",
-    padding: 5
+    padding: 5,
+    justifyContent: "center"
   },
   add_squad_text: {
     fontFamily: "Ubuntu_700Bold",
@@ -33,7 +31,6 @@ export const AddSquadStyles = StyleSheet.create({
     fontSize: 18
   },
   add_squad_emoji: {
-    // paddingTop: 15,
     alignItems: "center",
     justifyContent: "center",
   },

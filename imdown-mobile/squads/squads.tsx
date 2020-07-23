@@ -1,43 +1,53 @@
 import React, { useLayoutEffect, useState } from "react";
-import { View, Text, FlatList, TouchableHighlight } from "react-native";
+import { View, Text, FlatList, TouchableHighlight, Image } from "react-native";
 import { squad_styles } from "./squads_styles";
 import { Button } from "react-native";
 import AddSquadModal from "./add_squad"
 import { Event } from "../events/events"
+import { EmojiSelectorProps } from "react-native-emoji-selector";
 
 
-type Squad = {
+// type Squad = {
+//   name: string,
+//   events: Event[]
+// }
+export type Squad ={
   name: string,
+  emoji: EmojiSelectorProps,
   events: Event[]
 }
 
-const dummySquads: Squad[] = [
-  {
-    name: "💩 BangerBrozz",
-    events: [
-      {
-        name: "Beach BBQ",
-        description: "A fun beach BBQ!",
-        start_ms: 1587424800000,
-        end_ms: 1587428400000
-      }
-    ]
-  },
-  {
-    name: "🤡 SEP",
-    events: [{ name: "Playland", description: "Can we just talk" }]
-  },
-  {
-    name: "🤖 CodeBase",
-    events: [{ name: "Zoom+Drinks" }]
-  }
-]
+// const dummySquads: Squad[] = [
+//   {
+//     name: "BangerBrozz",
+//     emoji: "💩",
+//     events: [
+//       {
+//         name: "Beach BBQ",
+//         description: "A fun beach BBQ!",
+//         start_ms: 1587424800000,
+//         end_ms: 1587428400000
+//       }
+//     ]
+//   },
+//   {
+//     name: "🤡 SEP",
+//     emoji: "🤡",
+//     events: [{ name: "Playland", description: "Can we just talk" }]
+//   },
+//   {
+//     name: "🤖 CodeBase",
+//     emoji: "🤖",
+//     events: [{ name: "Zoom+Drinks" }]
+//   }
+// ]
 
 const Squads = (props) => {
 
 
   const [addSquadModalVisble, setAddSquadModalVisble] = useState(false)
-  const [squads, setSquads] = useState(dummySquads)
+  // const [squads, setSquads] = useState(dummySquads)
+  const [squads, setSquads] = useState(props.route.params.squads)
 
   useLayoutEffect(() => {
     props.navigation.setOptions({
@@ -51,19 +61,21 @@ const Squads = (props) => {
     });
   }, [props.navigation]);
 
-  const addSquad = (squadName: string) => {
-    const newSquad: Squad = {
-      name: squadName,
-      events: []
-    }
+  const addSquad = (newSquad: Squad) => {
+    // const newSquad: Squad = {
+    //   name: squadName,
+    //   emoji: emojiSelected,
+    //   events: []
+    // }
     setSquads(squads.concat([newSquad]));
     setAddSquadModalVisble(false)
   }
 
-  const goToEvents = (events: Event[], groupName: string) => {
+  const goToEvents = (events: Event[], groupName: string,) => {
     props.navigation.navigate("Events", {
       events: events,
-      groupName: groupName
+      groupName: groupName,
+      // emoji: emoji
     })
   }
 
@@ -73,6 +85,7 @@ const Squads = (props) => {
       <View style={squad_styles.squad_item}>
         <TouchableHighlight onPress={() => { goToEvents(item.events, item.name) }}>
           <Text style={squad_styles.squad_text}>{item.name}</Text>
+          {/* <Text style={squad_styles.squad_text}>{item.emoji}</Text> */}
         </TouchableHighlight>
       </View>
     );
