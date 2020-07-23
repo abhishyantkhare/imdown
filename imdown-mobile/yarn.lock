@@ -1163,6 +1163,11 @@
   optionalDependencies:
     react-native-windows "^0.62.0-0"
 
+"@react-native-community/google-signin@^4.0.3":
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/@react-native-community/google-signin/-/google-signin-4.0.3.tgz#66fbdd469e5895ec787224334d480c1c867240e8"
+  integrity sha512-0RyMHAPTOejxXuHkcrVLJ9Co1hxG/b1shmtn29QSjZ9W8oLj23gyLhJI4jjca389jToVjr2HsXsDXfNU4CA2Uw==
+
 "@react-native-community/masked-view@0.1.5":
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/@react-native-community/masked-view/-/masked-view-0.1.5.tgz#25421be6cd943a4b1660b62cfbcd45be8891462c"
@@ -2382,6 +2387,14 @@ expand-brackets@^2.1.4:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
+expo-app-auth@~9.1.1:
+  version "9.1.1"
+  resolved "https://registry.yarnpkg.com/expo-app-auth/-/expo-app-auth-9.1.1.tgz#f50d9a92299bec816be4cd128cee84e375a5b178"
+  integrity sha512-mzfMIDH/sf3yhr9KTPLcC7rm7zff9hGYFoPMmesUqpSh+WIA9UVOa/YcD5vr7M8wAMWWegDN7T/yVk9KuGEgQw==
+  dependencies:
+    fbjs "1.0.0"
+    invariant "^2.2.4"
+
 expo-app-loader-provider@~8.0.0:
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/expo-app-loader-provider/-/expo-app-loader-provider-8.0.0.tgz#c18ef20a24153f5a0dbb297106ef0bcb5de57180"
@@ -2421,6 +2434,20 @@ expo-font@~8.0.0:
   integrity sha512-1hrlvxv8MpE1761v2mDjZRwhhM4hkfDr/MQlkWD2+g17N+UjU3WQct4kc+VuZW30pP+YowwrmG3O6JVoIOhWGA==
   dependencies:
     fontfaceobserver "^2.1.0"
+
+expo-google-app-auth@^8.1.2:
+  version "8.1.2"
+  resolved "https://registry.yarnpkg.com/expo-google-app-auth/-/expo-google-app-auth-8.1.2.tgz#3229848b8eaee6b498d9f3d38d7c169e31ef9310"
+  integrity sha512-/TerlKyrbkOoCwexEZazTgF3MxS4CY0UrKOa7OiTH1koLQvlQktv2khN9ikApPW6W0ipOYBA/R0+0pIK+NrsYQ==
+  dependencies:
+    expo-app-auth "~9.1.1"
+
+expo-google-sign-in@~8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/expo-google-sign-in/-/expo-google-sign-in-8.0.0.tgz#3cf50b255a947045a6961fc798978ed0aaa13251"
+  integrity sha512-QLiqrfhT9cFC1VyDA3qW0XOeHP3Q1eRRl/3OoCKjXssTLqah0RwH4v1d4w3gvqzRKW/jHvyFqAl7nGdY0pKUuA==
+  dependencies:
+    invariant "^2.2.4"
 
 expo-keep-awake@~8.0.0:
   version "8.0.0"
@@ -2598,12 +2625,13 @@ fbjs-scripts@^1.1.0:
     semver "^5.1.0"
     through2 "^2.0.0"
 
-fbjs@^0.8.4, fbjs@^0.8.9:
-  version "0.8.17"
-  resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.17.tgz#c4d598ead6949112653d6588b01a5cdcd9f90fdd"
-  integrity sha1-xNWY6taUkRJlPWWIsBpc3Nn5D90=
+fbjs@1.0.0, fbjs@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-1.0.0.tgz#52c215e0883a3c86af2a7a776ed51525ae8e0a5a"
+  integrity sha512-MUgcMEJaFhCaF1QtWGnmq9ZDRAzECTCRAF7O6UZIlAlkTs1SasiX9aP0Iw7wfD2mJ7wDTNfg2w7u5fSCwJk1OA==
   dependencies:
-    core-js "^1.0.0"
+    core-js "^2.4.1"
+    fbjs-css-vars "^1.0.0"
     isomorphic-fetch "^2.1.1"
     loose-envify "^1.0.0"
     object-assign "^4.1.0"
@@ -2611,13 +2639,12 @@ fbjs@^0.8.4, fbjs@^0.8.9:
     setimmediate "^1.0.5"
     ua-parser-js "^0.7.18"
 
-fbjs@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-1.0.0.tgz#52c215e0883a3c86af2a7a776ed51525ae8e0a5a"
-  integrity sha512-MUgcMEJaFhCaF1QtWGnmq9ZDRAzECTCRAF7O6UZIlAlkTs1SasiX9aP0Iw7wfD2mJ7wDTNfg2w7u5fSCwJk1OA==
+fbjs@^0.8.4, fbjs@^0.8.9:
+  version "0.8.17"
+  resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.17.tgz#c4d598ead6949112653d6588b01a5cdcd9f90fdd"
+  integrity sha1-xNWY6taUkRJlPWWIsBpc3Nn5D90=
   dependencies:
-    core-js "^2.4.1"
-    fbjs-css-vars "^1.0.0"
+    core-js "^1.0.0"
     isomorphic-fetch "^2.1.1"
     loose-envify "^1.0.0"
     object-assign "^4.1.0"
