@@ -2,6 +2,7 @@ import React, {useState } from "react";
 import { View, Modal, TextInput, TouchableHighlight, Text, TouchableOpacity, SafeAreaView } from "react-native";
 import {AddSquadStyles} from "./add_squad_styles"
 import EmojiSelector, { Categories } from "react-native-emoji-selector";
+import { Squad } from "./squads"
 
 type OwnProps = {
   visible: boolean,
@@ -17,7 +18,8 @@ const AddSquadModal = (props: OwnProps) => {
     const addSquad = () => {
       const squad: Squad = {
         name: squadName,
-        emoji: emojiPicked
+        emoji: emojiPicked,
+        events: []
       }
       props.onPress(squad)
     }
