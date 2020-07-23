@@ -5,7 +5,7 @@ import { login_styles } from "./login_styles";
 const Login = ({navigation}) => {
   const goToSquads = () => {
     navigation.navigate("Squads", {
-      squads: ["SEP", "CodeBase", "BangerBrozz"]
+      squads: []
     });
   };
 

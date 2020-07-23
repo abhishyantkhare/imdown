@@ -17,7 +17,6 @@ const Events = (props) => {
   const [addEventModalVisible, setAddEventModalVisible] = useState(false)
   const [events, setEvents] = useState(props.route.params.events)
   const groupName = props.route.params.groupName
-  const groupEmoji = props.route.params.groupEmoji
 
   useLayoutEffect(() => {
     props.navigation.setOptions({
