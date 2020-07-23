@@ -12,6 +12,5 @@ export const login_styles = StyleSheet.create({
   },
   button: {
     marginTop: 20,
-    width: 100
   }
 });
