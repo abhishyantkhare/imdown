@@ -6,20 +6,55 @@ export const event_styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
   },
+  event_emoji_box: {
+    alignItems: 'center',
+    backgroundColor: "#FFF",
+    borderBottomLeftRadius: 15,
+    borderTopLeftRadius: 15,
+    flexGrow: 1,
+    justifyContent: 'center',
+    marginBottom: 10,
+    marginTop: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 20,
+  },
+  event_emoji: {
+    fontSize: 45,
+  },
   event_item: {
     backgroundColor: "#FFF",
-    paddingVertical: 20,
+    borderBottomRightRadius: 15,
+    borderTopRightRadius: 15,
+    flexGrow: 1,
+    marginBottom: 10,
+    marginTop: 10,
     paddingHorizontal: 10,
-    borderRadius: 15
+    paddingVertical: 20,
   },
   event_list_container: {
-    backgroundColor: "#EFEFEF",
+    alignSelf:'stretch',
+    backgroundColor: "#C7F9FF",
     borderRadius: 15,
-    padding: 20,
-    marginTop: 30
+    marginLeft: 10,
+    marginRight: 10,
+    marginTop: 30,
+    marginBottom: 30,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    flexGrow: 1
   },
   event_list: {
-    flexGrow: 0
+    flexGrow: 1
+  },
+  event_time: {
+    fontFamily: "Inter_400Regular",
+    fontSize: 10
+  },
+  event_time_proximity: {
+    alignItems: 'center',
+    fontFamily: "Inter_400Regular",
+    fontSize: 10,
+    textAlign: "right",
   },
   group_title: {
     fontFamily: "Ubuntu_400Regular",
@@ -28,6 +63,6 @@ export const event_styles = StyleSheet.create({
   },
   event_title: {
     fontFamily: "Inter_400Regular",
-    fontSize: 15
+    fontSize: 20,
   }
 });
