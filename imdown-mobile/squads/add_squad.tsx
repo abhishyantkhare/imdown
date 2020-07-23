@@ -2,7 +2,6 @@ import React, {useState } from "react";
 import { View, Modal, TextInput, TouchableHighlight, Text, TouchableOpacity, SafeAreaView } from "react-native";
 import {AddSquadStyles} from "./add_squad_styles"
 import EmojiSelector, { Categories } from "react-native-emoji-selector";
-import { Event } from "./events"
 
 type OwnProps = {
   visible: boolean,
@@ -26,7 +25,6 @@ const AddSquadModal = (props: OwnProps) => {
     const renderEmoji = () => {
       return (
         <View >
-          {/* <Text style={AddSquadStyles.add_squad_text}>Pick squad emoji: </Text> */}
           <TouchableOpacity onPress={() => { setShowEmojiPicker(true) }} style={AddSquadStyles.squad_emoji}>
             <Text style={AddSquadStyles.emoji}>
              {`${showSquadEmoji ? emojiPicked : "😎"}`}

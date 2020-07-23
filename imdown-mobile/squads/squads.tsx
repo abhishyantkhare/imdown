@@ -12,31 +12,6 @@ export type Squad ={
   events: Event[]
 }
 
-// const dummySquads: Squad[] = [
-//   {
-//     name: "BangerBrozz",
-//     emoji: "💩",
-//     events: [
-//       {
-//         name: "Beach BBQ",
-//         description: "A fun beach BBQ!",
-//         start_ms: 1587424800000,
-//         end_ms: 1587428400000
-//       }
-//     ]
-//   },
-//   {
-//     name: "🤡 SEP",
-//     emoji: "🤡",
-//     events: [{ name: "Playland", description: "Can we just talk" }]
-//   },
-//   {
-//     name: "🤖 CodeBase",
-//     emoji: "🤖",
-//     events: [{ name: "Zoom+Drinks" }]
-//   }
-// ]
-
 const Squads = (props) => {
 
   const [addSquadModalVisble, setAddSquadModalVisble] = useState(false)
