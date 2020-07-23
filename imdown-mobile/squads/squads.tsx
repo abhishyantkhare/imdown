@@ -17,19 +17,34 @@ const dummySquads: Squad[] = [
     events: [
       {
         name: "Beach BBQ",
+        emoji: "🍗",
         description: "A fun beach BBQ!",
         start_ms: 1587424800000,
         end_ms: 1587428400000
+      },
+      {
+        name: "Sea Ranch Retreat",
+        emoji: "🌊",
+        description: "A weekend of fun!",
+        start_ms: 1580329800000,
+        end_ms: 1580524200000
+      },
+      {
+        name: "Bar Crawl",
+        emoji: "🍺",
+        description: "Drink till you drop",
+        start_ms: 1608949800000,
+        end_ms: 1608967800000
       }
     ]
   },
   {
     name: "🤡 SEP",
-    events: [{ name: "Playland", description: "Can we just talk" }]
+    events: [{ name: "Playland", emoji: "🕺", description: "Can we just talk" }]
   },
   {
     name: "🤖 CodeBase",
-    events: [{ name: "Zoom+Drinks" }]
+    events: [{ name: "Zoom+Drinks",  emoji: "👨‍💻"}]
   }
 ]
 
