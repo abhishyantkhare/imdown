@@ -7,10 +7,6 @@ import { Event } from "../events/events"
 import { EmojiSelectorProps } from "react-native-emoji-selector";
 
 
-// type Squad = {
-//   name: string,
-//   events: Event[]
-// }
 export type Squad ={
   name: string,
   emoji: EmojiSelectorProps,
@@ -49,7 +45,6 @@ const Squads = (props) => {
 
   const [addSquadModalVisble, setAddSquadModalVisble] = useState(false)
   const [squads, setSquads] = useState(props.route.params.squads)
-  console.log(squads)
 
   useLayoutEffect(() => {
     props.navigation.setOptions({

@@ -47,7 +47,6 @@ const AddSquadModal = (props: OwnProps) => {
           category={Categories.symbols}
           onEmojiSelected={emoji => 
             {
-              console.log(emoji)
               setSquadEmoji(emoji);
               setShowEmojiPicker(false);
               setEmojiPicked(true);

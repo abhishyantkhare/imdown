@@ -6,7 +6,6 @@ export const AddSquadStyles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     paddingTop: 50,
-    // paddingLeft: 20
   },
   emoji_and_squad_name_container: {
     flexDirection: "row",
