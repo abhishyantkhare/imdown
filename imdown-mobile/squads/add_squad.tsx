@@ -4,10 +4,8 @@ import {AddSquadStyles} from "./add_squad_styles"
 import EmojiSelector, { Categories } from "react-native-emoji-selector";
 import { Event } from "./events"
 
-
 type OwnProps = {
   visible: boolean,
-  // onPress: (squadName: string) => void
   onPress: (squad: Squad) => void
 }
 
@@ -76,19 +74,7 @@ const AddSquadModal = (props: OwnProps) => {
               <Text style={AddSquadStyles.add_squad_text}>Done</Text>
             </TouchableOpacity>
 
-            {/* <View style={AddSquadStyles.addSquadButton}>
-              <TouchableOpacity onPress={addSquad} style={AddSquadStyles.add_squad_button}>
-                <Text style={AddSquadStyles.add_squad_text}>Done</Text>
-              </TouchableOpacity>
-            </View> */}
-
           </View>
-
-          {/* <View style={AddSquadStyles.addSquadButton}>
-              <TouchableOpacity onPress={addSquad} style={AddSquadStyles.add_squad_button}>
-                <Text style={AddSquadStyles.add_squad_text}>Done</Text>
-              </TouchableOpacity>
-            </View> */}
 
         </Modal>
     );
