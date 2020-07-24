@@ -1,20 +1,42 @@
 import React from "react";
-import { View, TextInput, Button } from "react-native";
+import { View, TextInput, Image } from "react-native";
 import { login_styles } from "./login_styles";
+import * as Google from 'expo-google-app-auth';
+import { TouchableHighlight } from "react-native-gesture-handler";
 
-const Login = ({navigation}) => {
+
+
+const Login = ({ navigation }) => {
+  const IOS_CLIENT_ID = '1097983281822-8qr8vltrud1hj3rfme2khn1lmbj2s522.apps.googleusercontent.com'
+  const LOGIN_SUCCESS = "success"
+
+
   const goToSquads = () => {
     navigation.navigate("Squads", {
       squads: ["SEP", "CodeBase", "BangerBrozz"]
     });
   };
 
+
+
+  const onPress = () => {
+    Google.logInAsync({
+      iosClientId: IOS_CLIENT_ID,
+    }).then((resp: Google.LogInResult) => {
+      if (resp.type === LOGIN_SUCCESS) {
+        goToSquads()
+      }
+    });
+  };
+
+
   return (
     <View style={login_styles.login_container}>
-      <TextInput placeholder="Please sign in" style={login_styles.text_input} />
-      <View style={login_styles.button}>
-        <Button title="Sign In" onPress={goToSquads} />
-      </View>
+      <TextInput placeholder="Please sign in with Google" style={login_styles.text_input} />
+      <TouchableHighlight onPress={onPress}>
+        <Image source={require('../assets/img/btn_google_light_normal_ios.png')} />
+      </TouchableHighlight>
+
     </View>
   );
 };
