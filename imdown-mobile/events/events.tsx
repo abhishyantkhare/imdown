@@ -1,12 +1,11 @@
 import React, { useState, useLayoutEffect } from "react";
 import { View, FlatList, Text, Button } from "react-native";
-import Divider from "../components/divider/divider";
 import { event_styles } from "./events_styles";
-import AddEventModal from "./add_event"
 import moment from 'moment';
 
 export type Event = {
   name: string,
+  url?: string,
   emoji?: string,
   description?: string,
   start_ms?: number,
@@ -15,15 +14,18 @@ export type Event = {
 
 
 const Events = (props) => {
-  const [addEventModalVisible, setAddEventModalVisible] = useState(false)
   const [events, setEvents] = useState(props.route.params.events)
   const groupName = props.route.params.groupName
+
+  const goToAddEvent = () => {
+    props.navigation.navigate("Add Event", { groupName, addEvent });
+  }
 
   useLayoutEffect(() => {
     props.navigation.setOptions({
       headerRight: () => (
         <Button
-          onPress={() => setAddEventModalVisible(true)}
+          onPress={goToAddEvent}
           title="Add"
           color="#000"
         />
@@ -33,7 +35,6 @@ const Events = (props) => {
 
   const addEvent = (newEvent: Event) => {
     setEvents(events.concat([newEvent]));
-    setAddEventModalVisible(false)
   }
 
   // Given event, returns string that describes how far (time-wise) event is from now.
@@ -98,10 +99,6 @@ const Events = (props) => {
           style={event_styles.event_list}
         />
       </View>
-      <AddEventModal
-        visible={addEventModalVisible}
-        onPress={addEvent}
-      />
     </View>
   );
 }
