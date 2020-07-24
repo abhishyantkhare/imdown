@@ -17,7 +17,8 @@ export type Event = {
 const Events = (props) => {
   const [addEventModalVisible, setAddEventModalVisible] = useState(false)
   const [events, setEvents] = useState(props.route.params.events)
-  const groupName = props.route.params.groupName
+  const squadName = props.route.params.squadName
+  const squadEmoji = props.route.params.squadEmoji
 
   useLayoutEffect(() => {
     props.navigation.setOptions({
@@ -89,7 +90,7 @@ const Events = (props) => {
   return (
     <View style={event_styles.container}>
       <Text style={event_styles.group_title}>
-        {groupName}
+        {squadEmoji} {squadName}
       </Text>
       <View style={event_styles.event_list_container}>
         <FlatList

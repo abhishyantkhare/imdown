@@ -1,58 +1,21 @@
 import React, { useLayoutEffect, useState } from "react";
-import { View, Text, FlatList, TouchableHighlight } from "react-native";
+import { View, Text, FlatList, TouchableHighlight, Image, TouchableOpacity } from "react-native";
 import { squad_styles } from "./squads_styles";
 import { Button } from "react-native";
 import AddSquadModal from "./add_squad"
 import { Event } from "../events/events"
 
 
-type Squad = {
+export type Squad ={
   name: string,
+  emoji: string,
   events: Event[]
 }
 
-const dummySquads: Squad[] = [
-  {
-    name: "💩 BangerBrozz",
-    events: [
-      {
-        name: "Beach BBQ",
-        emoji: "🍗",
-        description: "A fun beach BBQ!",
-        start_ms: 1587424800000,
-        end_ms: 1587428400000
-      },
-      {
-        name: "Sea Ranch Retreat",
-        emoji: "🌊",
-        description: "A weekend of fun!",
-        start_ms: 1580329800000,
-        end_ms: 1580524200000
-      },
-      {
-        name: "Bar Crawl",
-        emoji: "🍺",
-        description: "Drink till you drop",
-        start_ms: 1608949800000,
-        end_ms: 1608967800000
-      }
-    ]
-  },
-  {
-    name: "🤡 SEP",
-    events: [{ name: "Playland", emoji: "🕺", description: "Can we just talk" }]
-  },
-  {
-    name: "🤖 CodeBase",
-    events: [{ name: "Zoom+Drinks",  emoji: "👨‍💻"}]
-  }
-]
-
 const Squads = (props) => {
 
-
   const [addSquadModalVisble, setAddSquadModalVisble] = useState(false)
-  const [squads, setSquads] = useState(dummySquads)
+  const [squads, setSquads] = useState(props.route.params.squads)
 
   useLayoutEffect(() => {
     props.navigation.setOptions({
@@ -66,29 +29,25 @@ const Squads = (props) => {
     });
   }, [props.navigation]);
 
-  const addSquad = (squadName: string) => {
-    const newSquad: Squad = {
-      name: squadName,
-      events: []
-    }
+  const addSquad = (newSquad: Squad) => {
     setSquads(squads.concat([newSquad]));
     setAddSquadModalVisble(false)
   }
 
-  const goToEvents = (events: Event[], groupName: string) => {
+  const goToEvents = (events: Event[], squadName: string, squadEmoji: string) => {
     props.navigation.navigate("Events", {
       events: events,
-      groupName: groupName
+      squadName: squadName,
+      squadEmoji: squadEmoji
     })
   }
-
 
   const renderSquadItem = ({ item }: { item: Squad }) => {
     return (
       <View style={squad_styles.squad_item}>
-        <TouchableHighlight onPress={() => { goToEvents(item.events, item.name) }}>
-          <Text style={squad_styles.squad_text}>{item.name}</Text>
-        </TouchableHighlight>
+        <TouchableOpacity onPress={() => { goToEvents(item.events, item.name, item.emoji) }}>
+          <Text style={squad_styles.squad_text}>{item.emoji} {item.name}</Text>
+        </TouchableOpacity>
       </View>
     );
   };
