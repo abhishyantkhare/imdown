@@ -1,6 +1,7 @@
 from flask import request
 from flask import jsonify
-from init import application, db, migrate
+from init import application
+from extensions import db, migrate
 from models.user import User
 from models.event_response import EventResponse
 from models.event import Event
@@ -23,15 +24,14 @@ def hello():
 @application.route("/sign_in", methods=['POST'])
 def signIn():
     content = request.get_json()
-    ok, err = validateArgsInRequest(content, 'username', 'auth_hash')
+    ok, err = validateArgsInRequest(content, 'user')
     if not ok:
         return err, 400
-    username = content['username']
-    auth_hash = content['auth_hash']
-    u = User(username=username, auth_hash=auth_hash)
-    existing_user = User.query.filter_by(auth_hash=auth_hash).first()
+    user = content['user']
+    existing_user = User.query.filter_by(email=user['email']).first()
     if existing_user is not None:
         return existing_user.jsonifyUser()
+    u = User(email=user['email'])
     db.session.add(u)
     db.session.commit()
     return u.jsonifyUser()

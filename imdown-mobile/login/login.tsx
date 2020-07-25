@@ -4,13 +4,16 @@ import { login_styles } from "./login_styles";
 import * as Google from 'expo-google-app-auth';
 import { TouchableHighlight } from "react-native-gesture-handler";
 
+type User = {
+  email: string
+}
 
 
 const Login = ({ navigation }) => {
   const IOS_CLIENT_ID = "1097983281822-8qr8vltrud1hj3rfme2khn1lmbj2s522.apps.googleusercontent.com";
   const ANDROID_CLIENT_ID = "1097983281822-4b63n721lbqllpn7u4cvoqmh0rudquma.apps.googleusercontent.com";
-  const LOGIN_SUCCESS = "success";
-
+  const LOGIN_SUCCESS = "success"
+  const BACKEND_URL = "http://localhost:5000"
 
   const goToSquads = () => {
     navigation.navigate("Squads", {
@@ -19,6 +22,22 @@ const Login = ({ navigation }) => {
   };
 
 
+  const signInOnBackend = (user: User) => {
+    const login_url = BACKEND_URL + '/sign_in'
+    const data = {
+      user: user
+    }
+    fetch(login_url, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    }).then((resp: Response) => {
+      resp.text()
+    }).then(result => { console.log(result) })
+  }
 
   const onPress = () => {
     Google.logInAsync({
@@ -26,7 +45,10 @@ const Login = ({ navigation }) => {
       androidClientId: ANDROID_CLIENT_ID
     }).then((resp: Google.LogInResult) => {
       if (resp.type === LOGIN_SUCCESS) {
-        goToSquads()
+        const user: User = {
+          email: resp.user.email
+        }
+        signInOnBackend(user)
       }
     });
   };
