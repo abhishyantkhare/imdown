@@ -7,8 +7,9 @@ import { TouchableHighlight } from "react-native-gesture-handler";
 
 
 const Login = ({ navigation }) => {
-  const IOS_CLIENT_ID = '1097983281822-8qr8vltrud1hj3rfme2khn1lmbj2s522.apps.googleusercontent.com'
-  const LOGIN_SUCCESS = "success"
+  const IOS_CLIENT_ID = "1097983281822-8qr8vltrud1hj3rfme2khn1lmbj2s522.apps.googleusercontent.com";
+  const ANDROID_CLIENT_ID = "1097983281822-4b63n721lbqllpn7u4cvoqmh0rudquma.apps.googleusercontent.com";
+  const LOGIN_SUCCESS = "success";
 
 
   const goToSquads = () => {
@@ -22,6 +23,7 @@ const Login = ({ navigation }) => {
   const onPress = () => {
     Google.logInAsync({
       iosClientId: IOS_CLIENT_ID,
+      androidClientId: ANDROID_CLIENT_ID
     }).then((resp: Google.LogInResult) => {
       if (resp.type === LOGIN_SUCCESS) {
         goToSquads()

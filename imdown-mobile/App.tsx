@@ -6,7 +6,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Squads from "./squads/squads";
 import Events from "./events/events";
-import { useFonts, Ubuntu_700Bold, Ubuntu_400Regular } from '@expo-google-fonts/ubuntu';
+import AddEvent from "./events/add_event";
+import { Ubuntu_400Regular, Ubuntu_700Bold, useFonts } from '@expo-google-fonts/ubuntu';
 import { Inter_400Regular } from '@expo-google-fonts/inter';
 
 
@@ -28,6 +29,7 @@ export default function App() {
         />
         <Stack.Screen name="Add Squad" component={AddSquadModal} />
         <Stack.Screen name="Events" component={Events} />
+        <Stack.Screen name="Add Event" component={AddEvent} />
       </Stack.Navigator>
     </NavigationContainer>
   );

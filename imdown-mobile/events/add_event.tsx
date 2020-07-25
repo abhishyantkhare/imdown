@@ -1,18 +1,42 @@
 import React, { useState } from "react";
-import { View, Modal, TextInput, TouchableHighlight, Text } from "react-native";
+import { Button, Text, TextInput, TouchableHighlight, View, YellowBox } from "react-native";
 import { AddEventStyles } from "./add_event_styles"
 import { Event } from "./events"
 import DatePickerModal from "../components/datepickermodal/datepickermodal";
 import moment from 'moment';
+import { createStackNavigator } from "@react-navigation/stack";
 
-type OwnProps = {
-  visible: boolean,
-  onPress: (event: Event) => void
+// This warning appears when passing a callback function (to "return" an Event).
+// TODO: Revisit react-navigation as a way to solve this problem. This warning suggests that these screens are not
+//       intended to pass back any data. Including this in one big EventScreen class may also be a good solution.
+YellowBox.ignoreWarnings(["Non-serializable values were found in the navigation state"]);
+
+const Stack = createStackNavigator();
+
+
+// TODO: Appropriately type these props (see https://reactnavigation.org/docs/typescript).
+const AddInfo = ({ navigation }) => {
+  const [eventName, setEventName] = useState("");
+  const [eventURL, setEventURL] = useState("");
+
+  const goToAddMoreInfo = () => {
+    navigation.navigate("Enter Additional Info", { eventName, eventURL });
+  }
+
+  return (
+    <View style={AddEventStyles.container}>
+      <TextInput autoFocus onChangeText={(name) => setEventName(name)} placeholder={"Event title"} />
+      {/* Including a URL will allow us to pre-populate the other fields! */}
+      <TextInput onChangeText={(URL) => setEventURL(URL)} placeholder={"Event URL 🔮"} />
+      <Button disabled={!(eventName || eventURL)} onPress={goToAddMoreInfo} title={"Add Event"} />
+    </View>
+  );
 }
 
-const AddEventModal = (props: OwnProps) => {
-  const [eventName, setEventName] = useState("")
-  const [eventDescription, setEventDescription] = useState("")
+const AddMoreInfo = ({ navigation, route }) => {
+  const eventName = route.params.eventName;
+  const eventURL = route.params.eventURL;
+  const [eventDescription, setEventDescription] = useState("");
   const [startDate, setStartDate] = useState(new Date());
   const [showStartDatePicker, setShowStartDatePicker] = useState();
   const [startDatePicked, setStartDatePicked] = useState();
@@ -20,39 +44,15 @@ const AddEventModal = (props: OwnProps) => {
   const [showEndDatePicker, setShowEndDatePicker] = useState();
   const [endDatePicked, setEndDatePicked] = useState();
 
-
-  const addEvent = () => {
-    const event: Event = {
-      name: eventName,
-      description: eventDescription,
-      start_ms: startDate ? moment(startDate).valueOf() : null,
-      end_ms: endDate ? moment(endDate).valueOf() : null
-    }
-    props.onPress(event)
-  }
-
-  const renderStartDate = () => {
-    return (
-      <View>
-        <TouchableHighlight onPress={() => { setShowStartDatePicker(true) }}>
-          <Text>
-            {`Start Date: ${startDatePicked ? moment(startDate).toLocaleString() : "TBD"}`}
-          </Text>
-        </TouchableHighlight>
-        {renderStartDatePicker()}
-      </View>
-    )
-  }
-
   const renderStartDatePicker = () => {
     return (
       showStartDatePicker &&
       <DatePickerModal
-        onSubmit={(startDate: Date) => {
-          setStartDate(startDate);
-          setShowStartDatePicker(false);
-          setStartDatePicked(true);
-        }}
+          onSubmit={(startDate: Date) => {
+            setStartDate(startDate);
+            setShowStartDatePicker(false);
+            setStartDatePicked(true);
+          }}
       />
     )
   }
@@ -74,34 +74,61 @@ const AddEventModal = (props: OwnProps) => {
     return (
       showEndDatePicker &&
       <DatePickerModal
-        onSubmit={(endDate) => {
-          setEndDate(endDate);
-          setShowEndDatePicker(false);
-          setEndDatePicked(true);
-        }}
+          onSubmit={(endDate) => {
+            setEndDate(endDate);
+            setShowEndDatePicker(false);
+            setEndDatePicked(true);
+          }}
       />
     )
   }
 
+  const renderStartDate = () => {
+    return (
+      <View>
+        <TouchableHighlight onPress={() => { setShowStartDatePicker(true) }}>
+          <Text>
+            {`Start Date: ${startDatePicked ? moment(startDate).toLocaleString() : "TBD"}`}
+          </Text>
+        </TouchableHighlight>
+        {renderStartDatePicker()}
+      </View>
+    )
+  }
 
+  const addEvent = () => {
+    const newEvent: Event = {
+      name: eventName,
+      url: eventURL,
+      emoji: "🍆",
+      description: eventDescription,
+      start_ms: startDate ? moment(startDate).valueOf() : null,
+      end_ms: endDate ? moment(endDate).valueOf() : null
+    };
+    route.params.addEvent(newEvent);
+    navigation.navigate("Events");
+  }
 
   return (
-    <Modal
-      transparent={false}
-      visible={props.visible}
-      presentationStyle={"formSheet"}
-    >
-      <View style={AddEventStyles.container}>
-        <TextInput placeholder={"Add Event name"} onChangeText={(name) => setEventName(name)} />
-        <TextInput placeholder={"Add Event description (optional)"} onChangeText={(desc) => setEventDescription(desc)} />
-        {renderStartDate()}
-        {renderEndDate()}
-        <TouchableHighlight onPress={addEvent} style={AddEventStyles.add_event_button}>
-          <Text>Add Event</Text>
-        </TouchableHighlight>
-      </View>
-    </Modal>
+    <View style={AddEventStyles.container}>
+      <Text>{route.params.eventName}</Text>
+      <TextInput placeholder={"Event description"}
+                 onChangeText={(desc) => setEventDescription(desc)} />
+      {renderStartDate()}
+      {renderEndDate()}
+      <Button title={"Let's go"} onPress={addEvent} />
+    </View>
   );
 }
 
-export default AddEventModal;
+const AddEvent = ({ route }) => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Enter Info" component={AddInfo} />
+      <Stack.Screen name="Enter Additional Info" component={AddMoreInfo}
+                    initialParams={{ addEvent: route.params.addEvent }} />
+    </Stack.Navigator>
+  );
+}
+
+export default AddEvent;
