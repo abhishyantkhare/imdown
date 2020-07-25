@@ -1,8 +1,9 @@
 import React from "react";
-import { View, TextInput, Image } from "react-native";
+import { View, Image, Text } from "react-native";
 import { login_styles } from "./login_styles";
 import * as Google from 'expo-google-app-auth';
-import { TouchableHighlight } from "react-native-gesture-handler";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { LinearGradient } from 'expo-linear-gradient';
 
 type User = {
   email: string
@@ -56,11 +57,19 @@ const Login = ({ navigation }) => {
 
   return (
     <View style={login_styles.login_container}>
-      <TextInput placeholder="Please sign in with Google" style={login_styles.text_input} />
-      <TouchableHighlight onPress={onPress}>
-        <Image source={require('../assets/img/btn_google_light_normal_ios.png')} />
-      </TouchableHighlight>
-
+      <LinearGradient
+        colors={["#90BEDE", "#C7F9FF"]}
+        style={login_styles.gradient_background}
+      />
+      <View style={login_styles.title_description_container}>
+        <Text style={login_styles.imdown_title}>imdown</Text>
+        <Text style={login_styles.imdown_description}>A better way to manage group events.</Text>
+      </View>
+      <View style={login_styles.google_sign_in_button}>
+        <TouchableOpacity onPress={onPress}>
+          <Image source={require('../assets/img/sign_in_with_google.png')}  />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

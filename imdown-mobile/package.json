@@ -21,6 +21,7 @@
     "expo-font": "~8.0.0",
     "expo-google-app-auth": "^8.1.2",
     "expo-google-sign-in": "~8.0.0",
+    "expo-linear-gradient": "~8.0.0",
     "logkitty": "^0.7.1",
     "moment": "^2.27.0",
     "react": "~16.9.0",
