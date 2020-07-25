@@ -14,7 +14,7 @@ const Login = ({ navigation }) => {
 
   const goToSquads = () => {
     navigation.navigate("Squads", {
-      squads: ["SEP", "CodeBase", "BangerBrozz"]
+      squads: []
     });
   };
 
