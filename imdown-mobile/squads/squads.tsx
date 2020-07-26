@@ -6,7 +6,7 @@ import AddSquadModal from "./add_squad"
 import { Event } from "../events/events"
 
 
-export type Squad ={
+export type Squad = {
   name: string,
   emoji: string,
   events: Event[]
@@ -102,6 +102,7 @@ const Squads = (props) => {
       </View>
     );
   };
+
   return (
     <View style={squad_styles.squads_container}>
       <FlatList
