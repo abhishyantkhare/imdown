@@ -3,14 +3,32 @@ export const login_styles = StyleSheet.create({
   login_container: {
     flex: 1,
     flexDirection: "column",
-    backgroundColor: "#fff",
+    alignItems: "center",
+  },
+  gradient_background: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    height: '100%',
+  },
+  title_description_container: {
+    flex: 1,
     alignItems: "center",
     justifyContent: "center"
   },
-  text_input: {
-    width: 100
+  imdown_title: {
+    color: "#fff",
+    fontFamily: "Ubuntu_700Bold",
+    fontSize: 72,
   },
-  button: {
-    marginTop: 20,
+  imdown_description: {
+    margin: 10,
+    color: "#fff",
+    fontFamily: "Ubuntu_400Regular_Italic",
+    fontSize: 18,
+  },
+  google_sign_in_button: {
+    flex: 1,
   }
 });
