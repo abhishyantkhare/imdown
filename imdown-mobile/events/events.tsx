@@ -6,13 +6,12 @@ import moment from 'moment';
 
 export type Event = {
   name: string,
-  url?: string,
   emoji?: string,
   description?: string,
   image_url?: string,
   start_ms?: number,
   end_ms?: number,
-  rvsp_users: String[]
+  rsvp_users: String[]
   url?: string
 }
 
@@ -23,7 +22,7 @@ const Events = (props) => {
   const squadEmoji = props.route.params.squadEmoji
 
   const goToAddEvent = () => {
-    props.navigation.navigate("Add Event", { groupName, addEvent });
+    props.navigation.navigate("Add Event", { squadName, addEvent });
   }
 
   useLayoutEffect(() => {
@@ -42,8 +41,8 @@ const Events = (props) => {
     setEvents(events.concat([newEvent]));
   }
 
-  const goToEventDetailed = (event: Event) => {
-    props.navigation.navigate("EventDetailed", {
+  const goToEventDetailsPage = (event: Event) => {
+    props.navigation.navigate("EventDetails", {
       event: event
     })
   }
@@ -70,7 +69,7 @@ const Events = (props) => {
 
   const renderEventItem = ({ item }: { item: Event }) => {    
     return (
-      <TouchableHighlight onPress={() => { goToEventDetailed(item) }}>
+      <TouchableHighlight onPress={() => { goToEventDetailsPage(item) }}>
         <View style={{flexDirection: 'row'}}>
           <View style={event_styles.event_emoji_box}>
             <Text style={event_styles.event_emoji}>{item.emoji || "" }</Text>
