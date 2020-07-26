@@ -37,7 +37,7 @@ const Login = ({ navigation }) => {
       },
     }).then((resp: Response) => {
       resp.text()
-    }).then(result => { console.log(result) })
+    }).then(result => { goToSquads() })
   }
 
   const onPress = () => {
