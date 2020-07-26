@@ -4,6 +4,8 @@ import { login_styles } from "./login_styles";
 import * as Google from 'expo-google-app-auth';
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { LinearGradient } from 'expo-linear-gradient';
+import AsyncStorage from '@react-native-community/async-storage';
+
 
 type User = {
   email: string
@@ -36,8 +38,14 @@ const Login = ({ navigation }) => {
         'Content-Type': 'application/json'
       },
     }).then((resp: Response) => {
-      resp.text()
-    }).then(result => { goToSquads() })
+      setCookieAndTransition(resp.headers.get("set-cookie"))
+    })
+  }
+
+  const setCookieAndTransition = (sessionCookie: string) => {
+    AsyncStorage.setItem("sessionCookie", sessionCookie).then(() => {
+      goToSquads();
+    })
   }
 
   const onPress = () => {
@@ -67,7 +75,7 @@ const Login = ({ navigation }) => {
       </View>
       <View style={login_styles.google_sign_in_button}>
         <TouchableOpacity onPress={onPress}>
-          <Image source={require('../assets/img/sign_in_with_google.png')}  />
+          <Image source={require('../assets/img/sign_in_with_google.png')} />
         </TouchableOpacity>
       </View>
     </View>
