@@ -7,6 +7,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Squads from "./squads/squads";
 import Events from "./events/events";
 import AddEvent from "./events/add_event";
+import EventDetailed from "./events/event_detailed";
 import { Ubuntu_400Regular, Ubuntu_400Regular_Italic, Ubuntu_700Bold, useFonts } from '@expo-google-fonts/ubuntu';
 import { Inter_400Regular } from '@expo-google-fonts/inter';
 import { AppLoading } from 'expo';
@@ -23,8 +24,7 @@ export default function App() {
   });
   if (!fontsLoaded) {
     return <AppLoading />;
-  }
-  else{
+  } else {
     return (
       <NavigationContainer>
         <Stack.Navigator>
@@ -36,6 +36,7 @@ export default function App() {
           <Stack.Screen name="Add Squad" component={AddSquadModal} />
           <Stack.Screen name="Events" component={Events} />
           <Stack.Screen name="Add Event" component={AddEvent} />
+          <Stack.Screen name="EventDetailed" component={EventDetailed} />
         </Stack.Navigator>
       </NavigationContainer>
     );

@@ -1,5 +1,6 @@
 import React, { useState, useLayoutEffect } from "react";
-import { View, FlatList, Text, Button } from "react-native";
+import { View, FlatList, Text, Button, TouchableHighlight } from "react-native";
+import Divider from "../components/divider/divider";
 import { event_styles } from "./events_styles";
 import moment from 'moment';
 
@@ -8,8 +9,11 @@ export type Event = {
   url?: string,
   emoji?: string,
   description?: string,
+  image_url?: string,
   start_ms?: number,
-  end_ms?: number
+  end_ms?: number,
+  rvsp_users: String[]
+  url?: string
 }
 
 
@@ -38,6 +42,12 @@ const Events = (props) => {
     setEvents(events.concat([newEvent]));
   }
 
+  const goToEventDetailed = (event: Event) => {
+    props.navigation.navigate("EventDetailed", {
+      event: event
+    })
+  }
+
   // Given event, returns string that describes how far (time-wise) event is from now.
   // For ex: "ended 3 days ago" / "starts 3 minutes from now" / "happening now!"
   const calcEventProximity = (event: Event) => {
@@ -60,32 +70,33 @@ const Events = (props) => {
 
   const renderEventItem = ({ item }: { item: Event }) => {    
     return (
-      <View style={{flexDirection: 'row'}}>
-        <View style={event_styles.event_emoji_box}>
-          <Text style={event_styles.event_emoji}>{item.emoji || "" }</Text>
-        </View>
+      <TouchableHighlight onPress={() => { goToEventDetailed(item) }}>
+        <View style={{flexDirection: 'row'}}>
+          <View style={event_styles.event_emoji_box}>
+            <Text style={event_styles.event_emoji}>{item.emoji || "" }</Text>
+          </View>
 
-        <View style={event_styles.event_item}>
-          <Text style={event_styles.event_time_proximity}>{`${calcEventProximity(item)}`}</Text>
-          <Text style={event_styles.event_title}>{item.name}</Text>
-          {item.description ? <Text>{`Description: ${item.description}\n`}</Text> : null}
-          {item.start_ms ? <View>
-            <Text style={event_styles.event_time}>
-              <Text style={{color: 'green'}}>
-                Start
+          <View style={event_styles.event_item}>
+            <Text style={event_styles.event_time_proximity}>{`${calcEventProximity(item)}`}</Text>
+            <Text style={event_styles.event_title}>{item.name}</Text>
+            {item.description ? <Text>{`Description: ${item.description}\n`}</Text> : null}
+            {item.start_ms ? <View>
+              <Text style={event_styles.event_time}>
+                <Text style={{color: 'green'}}>
+                  Start
+                </Text>
+                : {`${moment(item.start_ms).format('llll').toLocaleString()}`}
               </Text>
-              : {`${moment(item.start_ms).format('llll').toLocaleString()}`}
-            </Text>
-            <Text style={event_styles.event_time}>
-              <Text style={{color: 'red'}}>
-                End
+              <Text style={event_styles.event_time}>
+                <Text style={{color: 'red'}}>
+                  End
+                </Text>
+                : {`${moment(item.end_ms).format('llll').toLocaleString()}`}
               </Text>
-              : {`${moment(item.end_ms).format('llll').toLocaleString()}`}
-            </Text>
-          </View> : <Text>{`Time: ${`TBD`}`}</Text>}
-        </View>  
-      </View>
-      
+            </View> : <Text>{`Time: ${`TBD`}`}</Text>}
+          </View>  
+        </View>
+      </TouchableHighlight>
     );
   };
   return (
