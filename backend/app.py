@@ -39,6 +39,7 @@ def signIn():
 
 
 @application.route("/add_to_squad", methods=['POST'])
+@login_required # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
 def add_to_squad():
     content = request.get_json()
     ok, err = validateArgsInRequest(content, 'email', 'invite_link')
@@ -51,6 +52,7 @@ def add_to_squad():
 
 
 @application.route("/create_squad", methods=["POST"])
+@login_required # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
 def createSquad():
     content = request.get_json()
     ok, err = validateArgsInRequest(
@@ -70,6 +72,7 @@ def createSquad():
 
 
 @application.route("/respond_to_event", methods=["POST"])
+@login_required # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
 def respond_to_event():
     content = request.get_json()
     ok, err = validateArgsInRequest(
@@ -80,7 +83,6 @@ def respond_to_event():
     event_id = content["event_id"]
     response = content["response"]
     return respondToEvent(auth_hash, event_id, response)
-
 
 def respondToEvent(auth_hash, event_id, response):
     existing_entry_exists = False
@@ -148,6 +150,7 @@ def addUserToSquad(invite_link, auth_hash):
 
 
 @application.route("/create_event", methods=["POST"])
+@login_required # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
 def createEvent():
     content = request.get_json()
     ok, err = validateArgsInRequest(content, "auth_hash", "title",
@@ -189,6 +192,7 @@ def createEvent():
 
 
 @application.route("/get_events", methods=["GET"])
+@login_required # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
 def getEvents():
     args = request.args
     ok, err = validateArgsInRequest(args, "squad_id")
@@ -200,6 +204,7 @@ def getEvents():
 
 
 @application.route("/get_event_responses", methods=["GET"])
+@login_required # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
 def getEventResponses():
     args = request.args
     ok, err = validateArgsInRequest(args, "event_id")
@@ -211,6 +216,7 @@ def getEventResponses():
 
 
 @application.route("/get_squads", methods=["GET"])
+@login_required # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
 def get_squads():
     args = request.args
     ok, err = validateArgsInRequest(
