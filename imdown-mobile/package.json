@@ -10,6 +10,8 @@
   "dependencies": {
     "@expo-google-fonts/inter": "^0.1.0",
     "@expo-google-fonts/ubuntu": "^0.1.0",
+    "@react-native-community/async-storage": "^1.11.0",
+    "@react-native-community/cookies": "^4.0.0",
     "@react-native-community/datetimepicker": "^2.6.0",
     "@react-native-community/google-signin": "^4.0.3",
     "@react-native-community/masked-view": "0.1.5",
