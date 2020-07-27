@@ -1,0 +1,21 @@
+- hosts: imdown
+  tasks:
+    - name: Stop imdown
+      service:
+        name: imdown
+        enabled: yes
+        state: stopped
+      become: yes
+
+    - name: Deploy Application Files
+      synchronize:
+        src: ../../backend/
+        dest: /home/ubuntu/imdown/backend/
+        delete: yes
+
+    - name: Start imdown
+      service:
+        name: imdown
+        enabled: yes
+        state: started
+      become: yes
