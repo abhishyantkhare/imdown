@@ -103,7 +103,8 @@ const AddMoreInfo = ({ navigation, route }) => {
       emoji: "🍆",
       description: eventDescription,
       start_ms: startDate ? moment(startDate).valueOf() : null,
-      end_ms: endDate ? moment(endDate).valueOf() : null
+      end_ms: endDate ? moment(endDate).valueOf() : null,
+      rsvp_users: []
     };
     route.params.addEvent(newEvent);
     navigation.navigate("Events");
