@@ -1,0 +1,14 @@
+# /etc/systemd/system/imdown.service
+
+[Unit]
+Description=imdown web server
+After=network.target
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/home/ubuntu/imdown/backend
+ExecStart=/usr/bin/uwsgi --ini imdown.ini
+
+[Install]
+WantedBy=multi-user.target

@@ -12,3 +12,9 @@ terraform init || exit
 terraform apply || exit
 # Remove any old entries from ~/.ssh/known_hosts
 ssh-keygen -R "app.imhelladown.com"
+
+
+cd ../ansible || exit
+
+read -r -p "Press enter to provision instance with ansible..."
+ansible-playbook -i inventory provision.yml
