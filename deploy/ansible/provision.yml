@@ -1,0 +1,62 @@
+- hosts: imdown
+  tasks:
+    - name: Wait for DNS
+      wait_for_connection:
+
+    - name: Install Software
+      apt:
+        pkg:
+        - mysql-server
+        - libmysqlclient-dev
+        - nginx
+        - uwsgi-plugin-python3
+        - python3-flask
+        - python3-pip
+        update_cache: yes
+      become: yes
+
+    - name: Download Web Server
+      git:
+        repo: https://github.com/abhishyantkhare/imdown.git
+        dest: /home/ubuntu/imdown
+    - name: Install Requirements
+      pip:
+        requirements: /home/ubuntu/imdown/backend/requirements.txt
+
+    - name: Copy systemd Configuration
+      copy:
+        src: files/imdown.service
+        dest: /etc/systemd/system/
+      become: yes
+    - name: Copy nginx Configuration
+      copy:
+        src: files/nginx.conf
+        dest: /etc/nginx/sites-available/imdown
+      become: yes
+    - name: Remove nginx Default Page
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      become: yes
+    - name: Copy nginx Configuration
+      file:
+        src: /etc/nginx/sites-available/imdown
+        dest: /etc/nginx/sites-enabled/imdown
+        state: link
+      become: yes
+
+    - name: Configure MySQL
+      script: files/configure_mysql.sh
+      become: yes
+
+    - name: Start imdown
+      service:
+        name: imdown
+        enabled: yes
+        state: started
+      become: yes
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted
+      become: yes

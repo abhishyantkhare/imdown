@@ -1,0 +1,6 @@
+mysql <<EOF
+CREATE DATABASE IF NOT EXISTS imdowndb DEFAULT CHARACTER SET utf8mb4;
+CREATE USER IF NOT EXISTS 'ubuntu'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON * . * TO 'ubuntu'@'localhost';
+FLUSH PRIVILEGES;
+EOF

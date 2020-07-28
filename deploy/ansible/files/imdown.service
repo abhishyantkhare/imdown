@@ -1,0 +1,16 @@
+# /etc/systemd/system/imdown.service
+
+[Unit]
+Description=imdown web server
+After=network.target
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/home/ubuntu/imdown/backend
+ExecStartPre=/home/ubuntu/.local/bin/flask db upgrade
+ExecStart=/usr/bin/uwsgi --ini imdown.ini
+Environment=DATABASE_URL=mysql://ubuntu:password@localhost/imdowndb
+
+[Install]
+WantedBy=multi-user.target
