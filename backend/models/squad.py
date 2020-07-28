@@ -6,12 +6,14 @@ import time
 class Squad(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=False, unique=False)
+    squad_emoji = db.Column(db.String(64), index=False, unique=False)
     invite_link = db.Column(db.String(64), index=False, unique=True)
 
     def squadDict(self):
         return {
             'id': self.id,
             'name': self.name,
+            'squad_emoji': self.squad_emoji,
             'invite_link': self.invite_link
         }
 
@@ -23,4 +25,4 @@ class Squad(db.Model):
         self.invite_link = invite_link
 
     def jsonifySquad(self):
-        return jsonify(id=self.id, squad_name=self.name, invite_link=self.invite_link, squad_id=self.id)
+        return jsonify(id=self.id, squad_name=self.name, squad_emoji=self.squad_emoji, invite_link=self.invite_link, squad_id=self.id)

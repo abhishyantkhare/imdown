@@ -3,9 +3,11 @@ import { View, Modal, TextInput, TouchableHighlight, Text, TouchableOpacity, Saf
 import {AddSquadStyles} from "./add_squad_styles"
 import EmojiSelector, { Categories } from "react-native-emoji-selector";
 import { Squad } from "./squads"
+import { BACKEND_URL, callBackend } from "../backend/backend"
 
 type OwnProps = {
   visible: boolean,
+  email: string,
   onPress: (squad: Squad) => void
 }
 
@@ -15,12 +17,33 @@ const AddSquadModal = (props: OwnProps) => {
     const [squadName, setSquadName] = useState("")
     const [showSquadEmoji, setShowSquadEmoji] = useState(false)
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-    const [emojiPicked, setEmojiPicked] = useState(DEFAULT_EMOJI ); 
+    const [emojiPicked, setEmojiPicked] = useState(DEFAULT_EMOJI);
 
+    const addSquadOnBackend = () => {
+      const endpoint = 'create_squad'
+      const data = {
+        email: props.email,
+        squad_name: squadName,
+        squad_emoji: emojiPicked
+      }
+      const init: RequestInit = {
+        method: 'POST',
+        mode: 'no-cors',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      }
+      callBackend(endpoint, init).then((resp: Response) => {
+        resp.text()
+      }).then(result => { addSquad() })
+    }
+    
     const addSquad = () => {
       const squad: Squad = {
         name: squadName,
         emoji: emojiPicked,
+        email: props.email,
         events: []
       }
       props.onPress(squad)
@@ -70,7 +93,7 @@ const AddSquadModal = (props: OwnProps) => {
                 placeholderTextColor = "lightgray"/>
             </SafeAreaView>
             
-            <TouchableOpacity onPress={addSquad} style={AddSquadStyles.add_squad_button}>
+            <TouchableOpacity onPress={addSquadOnBackend} style={AddSquadStyles.add_squad_button}>
               <Text style={AddSquadStyles.add_squad_text}>Done</Text>
             </TouchableOpacity>
 

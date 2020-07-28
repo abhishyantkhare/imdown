@@ -17,9 +17,10 @@ const Login = ({ navigation }) => {
     const ANDROID_CLIENT_ID = "1097983281822-4b63n721lbqllpn7u4cvoqmh0rudquma.apps.googleusercontent.com";
     const LOGIN_SUCCESS = "success"
 
-    const goToSquads = () => {
+    const goToSquads = (email: string) => {
         navigation.navigate("Squads", {
-            squads: []
+            squads: [],
+            email: email
         });
     };
 
@@ -37,13 +38,13 @@ const Login = ({ navigation }) => {
                 'Content-Type': 'application/json'
             },
         }).then((resp: Response) => {
-            setCookieAndTransition(resp.headers.get("set-cookie"))
+            setCookieAndTransition(resp.headers.get("set-cookie"), user.email)
         })
     }
 
-    const setCookieAndTransition = (sessionCookie: string) => {
+    const setCookieAndTransition = (sessionCookie: string, email: string) => {
         AsyncStorage.setItem("sessionCookie", sessionCookie).then(() => {
-            goToSquads();
+            goToSquads(email);
         })
     }
 

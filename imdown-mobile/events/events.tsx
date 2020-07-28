@@ -20,6 +20,7 @@ const Events = (props) => {
   const [events, setEvents] = useState(props.route.params.events)
   const squadName = props.route.params.squadName
   const squadEmoji = props.route.params.squadEmoji
+  const email = props.route.params.email
 
   const goToAddEvent = () => {
     props.navigation.navigate("Add Event", { squadName, addEvent });
