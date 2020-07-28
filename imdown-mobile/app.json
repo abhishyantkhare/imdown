@@ -3,7 +3,6 @@
     "name": "ImDown",
     "slug": "imdown",
     "privacy": "public",
-    "sdkVersion": "36.0.0",
     "platforms": [
       "ios",
       "android",
@@ -31,6 +30,10 @@
           "reservedClientId": "com.googleusercontent.apps.1097983281822-8qr8vltrud1hj3rfme2khn1lmbj2s522"
         }
       }
-    }
+    },
+    "android": {
+      "package": "com.imdown.imdown"
+    },
+    "entryPoint": "node_modules/expo/AppEntry.js"
   }
 }
