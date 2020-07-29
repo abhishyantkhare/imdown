@@ -1,7 +1,11 @@
 import React from "react";
 import { View, Image, Text } from "react-native";
 import { login_styles } from "./login_styles";
-import * as Google from 'expo-google-app-auth';
+import {
+    GoogleSignin,
+    GoogleSigninButton,
+    statusCodes,
+} from '@react-native-community/google-signin';
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -48,18 +52,18 @@ const Login = ({ navigation }) => {
     }
 
     const onPress = () => {
-        Google.logInAsync({
-            iosClientId: IOS_CLIENT_ID,
-            androidClientId: ANDROID_CLIENT_ID
-        }).then((resp: Google.LogInResult) => {
-            if (resp.type === LOGIN_SUCCESS) {
-                const user: User = {
-                    email: resp.user.email
-                }
-                signInOnBackend(user)
+        GoogleSignin.signIn().then((resp) => {
+            //TODO: Catch error codes here
+            const user: User = {
+                email: resp.user.email
             }
+            signInOnBackend(user)
         });
     };
+
+    GoogleSignin.configure({
+        iosClientId: IOS_CLIENT_ID,
+    });
 
 
     return (
