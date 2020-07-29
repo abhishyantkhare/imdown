@@ -10,10 +10,7 @@ export const callBackend = async (endpoint: string, init: RequestInit = { header
     // In theory we should only have to clear the cookies after
     // I'm doing it before and after to just be certain the cookies are cleared
     // Honestly screw iOS cookie handling
-    return CookieManager.clearAll().then(() => {
-        return fetch(BACKEND_URL + endpoint, init).then(() => {
-            return CookieManager.clearAll()
-        })
-    })
+    await CookieManager.clearAll()
+    return fetch(BACKEND_URL + endpoint, init)
 }
 
