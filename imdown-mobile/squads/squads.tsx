@@ -9,6 +9,7 @@ import { Event } from "../events/events"
 export type Squad = {
   name: string,
   emoji: string,
+  email: string,
   events: Event[]
 }
 
@@ -16,6 +17,7 @@ const dummySquads: Squad[] = [
   {
     name: "💩 BangerBrozz",
     emoji: "🤠",
+    email: "vivekjain03@gmail.com",
     events: [
       {
         name: "Beach BBQ",
@@ -51,11 +53,13 @@ const dummySquads: Squad[] = [
   },
   {
     name: "SEP",
+    email: "vivekjain03@gmail.com",
     emoji: "🤡",
     events: [{ name: "Playland", emoji: "🕺", description: "Can we just talk", rsvp_users: ["codyzeng@gmail.com"]}]
   },
   {
     name: "CodeBase",
+    email: "vivekjain03@gmail.com",
     emoji: "🤖",
     events: [{ name: "Zoom+Drinks",  emoji: "👨‍💻", rsvp_users: ["codyzeng@gmail.com"]}]
   }
@@ -65,6 +69,7 @@ const Squads = (props) => {
 
   const [addSquadModalVisble, setAddSquadModalVisble] = useState(false)
   const [squads, setSquads] = useState(props.route.params.squads)
+  const [email, setEmail] = useState(props.route.params.email)
   // // Uncomment to test events using dummy data
   // const [squads, setSquads] = useState(dummySquads)
 
@@ -85,18 +90,19 @@ const Squads = (props) => {
     setAddSquadModalVisble(false)
   }
 
-  const goToEvents = (events: Event[], squadName: string, squadEmoji: string) => {
+  const goToEvents = (events: Event[], squadName: string, squadEmoji: string, email: string) => {
     props.navigation.navigate("Events", {
       events: events,
       squadName: squadName,
-      squadEmoji: squadEmoji
+      squadEmoji: squadEmoji,
+      email: email
     })
   }
 
   const renderSquadItem = ({ item }: { item: Squad }) => {
     return (
       <View style={squad_styles.squad_item}>
-        <TouchableOpacity onPress={() => { goToEvents(item.events, item.name, item.emoji) }}>
+        <TouchableOpacity onPress={() => { goToEvents(item.events, item.name, item.emoji, item.email) }}>
           <Text style={squad_styles.squad_text}>{item.emoji} {item.name}</Text>
         </TouchableOpacity>
       </View>
@@ -112,6 +118,7 @@ const Squads = (props) => {
       />
       <AddSquadModal
         visible={addSquadModalVisble}
+        email={email}
         onPress={addSquad}
       />
     </View>

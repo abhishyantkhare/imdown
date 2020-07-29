@@ -56,18 +56,18 @@ def add_to_squad():
 def createSquad():
     content = request.get_json()
     ok, err = validateArgsInRequest(
-        content, "username", "auth_hash", "squad_name")
+        content, "email", "squad_name", "squad_emoji")
     if not ok:
         return err, 400
-    auth_hash = content["auth_hash"]
-    user = User.query.filter_by(auth_hash=auth_hash).first()
+    email = content["email"]
+    user = User.query.filter_by(email=email).first()
     if user is None:
         return 'User does not exist!', 400
-    squad = Squad(name=content["squad_name"])
+    squad = Squad(name=content["squad_name"], squad_emoji=content["squad_emoji"])
     squad.generate_invite_link()
     db.session.add(squad)
     db.session.commit()
-    addUserToSquad(squad.invite_link, auth_hash)
+    addUserToSquad(squad.invite_link, email)
     return squad.jsonifySquad()
 
 
@@ -126,15 +126,15 @@ def respondToEvent(auth_hash, event_id, response):
     return event_response.jsonifyEventResponse()
 
 
-def addUserToSquad(invite_link, auth_hash):
+def addUserToSquad(invite_link, email):
     squad_obj = Squad.query.filter_by(invite_link=invite_link).first()
     if squad_obj is None:
         print("Failure adding to squad. Invite link is not valid")
         return "Invite link not valid. It is {}".format(invite_link), 400
-    user_obj = User.query.filter_by(auth_hash=auth_hash).first()
+    user_obj = User.query.filter_by(email=email).first()
     if user_obj is None:
         print("Failure adding to squad. User with user auth hash {} does not exist".format(
-            auth_hash))
+            email))
         return "User hash is not valid. It is {}".format(auth_hash), 400
     user_squad_existing_membership = SquadMembership.query.filter_by(
         user_id=user_obj.id, squad_id=squad_obj.id).first()
