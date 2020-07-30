@@ -136,6 +136,13 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0.0"
+        // This was provided as a temporary workaround to an old expo issue here:
+        // https://github.com/expo/expo/issues/4518
+        // The current issue is here:
+        // https://github.com/expo/expo/issues/9065
+        manifestPlaceholders = [
+            'appAuthRedirectScheme': 'host.exp.exponent'
+        ]
     }
     splits {
         abi {
