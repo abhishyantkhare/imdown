@@ -42,13 +42,12 @@ def signIn():
 @login_required # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
 def add_to_squad():
     content = request.get_json()
-    ok, err = validateArgsInRequest(content, 'email', 'invite_link')
+    ok, err = validateArgsInRequest(content, 'email', 'squad_code')
     if not ok:
         return err, 400
     email = content['email']
-    invite_link = content['invite_link']
-    u = User.query.filter_by(email=userArg['email']).first()
-    return addUserToSquad(invite_link, auth_hash)
+    squad_code = content['squad_code']
+    return addUserToSquad(squad_code, email)
 
 
 @application.route("/create_squad", methods=["POST"])

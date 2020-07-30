@@ -10,7 +10,7 @@ export type Squad = {
     id: number,
     name: string,
     squad_emoji: string,
-    code: string
+    code?: string
 }
 
 const Squads = (props) => {
@@ -32,7 +32,7 @@ const Squads = (props) => {
         });
     }, [props.navigation]);
 
-    useEffect(() => {
+    const getSquads = () => {
         const endpoint = 'get_squads?email=' + email
         const init: RequestInit = {
             method: "GET",
@@ -43,19 +43,24 @@ const Squads = (props) => {
         callBackend(endpoint, init).then(response => {
             return response.json();
         }).then(data => {
-            setSquads(squads.concat(data.squads));
+            setSquads(data.squads);
         });
+    }
+
+    useEffect(() => {
+        getSquads()
     }, []);
 
 
 
     const addSquad = (newSquad: Squad) => {
-        setSquads(squads.concat([newSquad]));
+        //setSquads(squads.concat([newSquad]));
         setAddSquadModalVisble(false)
+        getSquads()
     }
 
 
-    const goToEvents = (id: number, name: string, squad_emoji: string, squad_code: number) => {
+    const goToEvents = (id: number, name: string, squad_emoji: string, squad_code: string) => {
         props.navigation.navigate("Events", {
             squadId: id,
             squadName: name,
