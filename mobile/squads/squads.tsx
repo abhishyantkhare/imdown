@@ -53,6 +53,7 @@ const Squads = (props) => {
 
   const goToEvents = (id: number, name: string, squad_emoji: string) => {
     props.navigation.navigate("Events", {
+      userEmail: email,
       squadId: id,
       squadName: name,
       squadEmoji: squad_emoji

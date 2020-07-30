@@ -1,5 +1,6 @@
-import React, { useState, useLayoutEffect } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { View, FlatList, Text, Button, TouchableHighlight } from "react-native";
+import { callBackend } from  "../backend/backend"
 import Divider from "../components/divider/divider";
 import { event_styles } from "./events_styles";
 import moment from 'moment';
@@ -21,10 +22,47 @@ const Events = (props) => {
   const [squadId, setSquadId] = useState(props.route.params.squadId)
   const [squadName, setSquadName] = useState(props.route.params.squadName)
   const [squadEmoji, setSquadEmoji] = useState(props.route.params.squadEmoji)
+  const [userEmail, setUserEmail] = useState(props.route.params.userEmail)
 
   const goToAddEvent = () => {
-    props.navigation.navigate("Add Event", { squadName, addEvent });
+    props.navigation.navigate("Add Event", { 
+      squadId: squadId, 
+      userEmail: userEmail,
+      addEvent: addEvent 
+    });
   }
+
+  // Converts response from backend for events into list of internally used Event objects
+  const toEvents = (backendEvent) => {
+    return backendEvent["events"].map( (it) => {
+      return {
+        name: it.title,
+        description: it.description,
+        emoji: "🍗",
+        image_url: it.image_url,
+        start_ms: it.start_time,
+        end_ms: it.end_time,
+        // TODO: Query backend to get list of users.
+        rsvp_users: [],
+        url: it.event_url
+      }
+    })
+  }
+
+  useEffect(() => {
+    const endpoint = 'get_events?squad_id=' + squadId
+    const init: RequestInit = {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    }
+    callBackend(endpoint, init).then(response => { 
+      return response.json();
+    }).then(data => { 
+      setEvents(events.concat(toEvents(data)));
+    });
+  }, []);
 
   useLayoutEffect(() => {
     props.navigation.setOptions({

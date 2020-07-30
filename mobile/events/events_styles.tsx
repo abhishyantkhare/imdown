@@ -25,7 +25,7 @@ export const event_styles = StyleSheet.create({
     backgroundColor: "#FFF",
     borderBottomRightRadius: 15,
     borderTopRightRadius: 15,
-    flexGrow: 1,
+    flexGrow: 4,
     marginBottom: 10,
     marginTop: 10,
     paddingHorizontal: 10,

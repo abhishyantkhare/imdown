@@ -6,9 +6,12 @@ import json
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(64), index=False, unique=False)
-    description = db.Column(db.String(64), index=False, unique=False)
-    start_time = db.Column(db.Integer, index=False, unique=False)
-    end_time = db.Column(db.Integer, index=False, unique=False)
+    description = db.Column(db.String(256), index=False, unique=False)
+    event_emoji = db.Column(db.String(64), index=False, unique=False)
+    event_url = db.Column(db.String(256), index=False, unique=False)
+    image_url = db.Column(db.String(256), index=False, unique=False)
+    start_time = db.Column(db.BigInteger, index=False, unique=False)
+    end_time = db.Column(db.BigInteger, index=False, unique=False)
     address = db.Column(db.String(256), index=False, unique=False)
     lat = db.Column(db.Float, index=True, unique=False)
     lng = db.Column(db.Float, index=True, unique=False)
@@ -22,11 +25,15 @@ class Event(db.Model):
             'id': self.id,
             'title': self.title,
             'description': self.description,
+            'event_emoji': self.event_emoji,
+            'event_url': self.event_url,
+            'image_url': self.image_url,
             'start_time': self.start_time,
             'end_time': self.end_time,
             'address': self.address,
             'lat': self.lat,
             'lng': self.lng,
+            'squad_id': self.squad_id
         }
 
     def jsonifyEvent(self):
