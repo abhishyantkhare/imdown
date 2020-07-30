@@ -220,13 +220,13 @@ def getEventResponses():
 def get_squads():
     args = request.args
     ok, err = validateArgsInRequest(
-        args, "auth_hash")
+        args, "email")
     if not ok:
         return err, 400
-    auth_hash = args["auth_hash"]
-    user = User.query.filter_by(auth_hash=auth_hash).first()
+    email = args["email"]
+    user = User.query.filter_by(email=email).first()
     if user is None:
-        return 'User with auth hash of {} does not exist!'.format(auth_hash), 400
+        return 'User with email of {} does not exist!'.format(email), 400
     user_id = user.id
     user_squad_memberships = SquadMembership.query.filter_by(
         user_id=user_id).all()

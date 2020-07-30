@@ -17,10 +17,10 @@ export type Event = {
 
 
 const Events = (props) => {
-  const [events, setEvents] = useState(props.route.params.events)
-  const squadName = props.route.params.squadName
-  const squadEmoji = props.route.params.squadEmoji
-  const email = props.route.params.email
+  const [events, setEvents] = useState([])
+  const [squadId, setSquadId] = useState(props.route.params.squadId)
+  const [squadName, setSquadName] = useState(props.route.params.squadName)
+  const [squadEmoji, setSquadEmoji] = useState(props.route.params.squadEmoji)
 
   const goToAddEvent = () => {
     props.navigation.navigate("Add Event", { squadName, addEvent });

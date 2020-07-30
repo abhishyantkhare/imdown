@@ -3,7 +3,7 @@ import { View, Modal, TextInput, TouchableHighlight, Text, TouchableOpacity, Saf
 import { AddSquadStyles } from "./add_squad_styles"
 import EmojiSelector, { Categories } from "react-native-emoji-selector";
 import { Squad } from "./squads"
-import { BACKEND_URL, callBackend } from "../backend/backend"
+import { callBackend } from "../backend/backend"
 
 type OwnProps = {
     visible: boolean,
@@ -14,6 +14,7 @@ type OwnProps = {
 const DEFAULT_EMOJI = "😎"
 
 const AddSquadModal = (props: OwnProps) => {
+    const [squadId, setSquadId] = useState()
     const [squadName, setSquadName] = useState("")
     const [showSquadEmoji, setShowSquadEmoji] = useState(false)
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -38,13 +39,12 @@ const AddSquadModal = (props: OwnProps) => {
     }
 
     const addSquad = () => {
-        const squad: Squad = {
-            name: squadName,
-            emoji: emojiPicked,
-            email: props.email,
-            events: []
-        }
-        props.onPress(squad)
+      const squad: Squad = {
+        id: squadId,
+        name: squadName,
+        squad_emoji: emojiPicked,
+      }
+      props.onPress(squad)
     }
 
     const renderEmoji = () => {
