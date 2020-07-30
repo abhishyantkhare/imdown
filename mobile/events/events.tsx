@@ -16,10 +16,11 @@ export type Event = {
   url?: string
 }
 
+const SQUAD_CODE_TITLE_TEXT = "Squad Code: "
 
 const Events = (props) => {
   const [events, setEvents] = useState([])
-  const [squadId, setSquadId] = useState(props.route.params.squadId)
+  const [squadCode, setSquadCode] = useState(props.route.params.squadCode)
   const [squadName, setSquadName] = useState(props.route.params.squadName)
   const [squadEmoji, setSquadEmoji] = useState(props.route.params.squadEmoji)
   const [userEmail, setUserEmail] = useState(props.route.params.userEmail)
@@ -106,12 +107,30 @@ const Events = (props) => {
   }
 
 
-  const renderEventItem = ({ item }: { item: Event }) => {    
+
+  const renderSquadCode = () => {
+    console.log("SQUAD CODE")
+    console.log(squadCode)
+    return (
+      <View style={event_styles.squad_code_container}>
+        <View style={event_styles.squad_code}>
+          <Text style={event_styles.squad_code_title_text}>
+            {SQUAD_CODE_TITLE_TEXT}
+          </Text>
+          <Text style={event_styles.squad_code_value_text}>
+            {squadCode}
+          </Text>
+        </View>
+      </View>
+    )
+  }
+
+  const renderEventItem = ({ item }: { item: Event }) => {
     return (
       <TouchableHighlight onPress={() => { goToEventDetailsPage(item) }}>
-        <View style={{flexDirection: 'row'}}>
+        <View style={{ flexDirection: 'row' }}>
           <View style={event_styles.event_emoji_box}>
-            <Text style={event_styles.event_emoji}>{item.emoji || "" }</Text>
+            <Text style={event_styles.event_emoji}>{item.emoji || ""}</Text>
           </View>
 
           <View style={event_styles.event_item}>
@@ -120,19 +139,19 @@ const Events = (props) => {
             {item.description ? <Text>{`Description: ${item.description}\n`}</Text> : null}
             {item.start_ms ? <View>
               <Text style={event_styles.event_time}>
-                <Text style={{color: 'green'}}>
+                <Text style={{ color: 'green' }}>
                   Start
                 </Text>
                 : {`${moment(item.start_ms).format('llll').toLocaleString()}`}
               </Text>
               <Text style={event_styles.event_time}>
-                <Text style={{color: 'red'}}>
+                <Text style={{ color: 'red' }}>
                   End
                 </Text>
                 : {`${moment(item.end_ms).format('llll').toLocaleString()}`}
               </Text>
             </View> : <Text>{`Time: ${`TBD`}`}</Text>}
-          </View>  
+          </View>
         </View>
       </TouchableHighlight>
     );
@@ -142,6 +161,7 @@ const Events = (props) => {
       <Text style={event_styles.group_title}>
         {squadEmoji} {squadName}
       </Text>
+      {renderSquadCode()}
       <View style={event_styles.event_list_container}>
         <FlatList
           data={events.sort((a, b) => (a.start_ms == null && b.start_ms != null || a.start_ms > b.start_ms) ? 1 : -1)}

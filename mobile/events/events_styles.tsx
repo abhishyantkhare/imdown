@@ -32,7 +32,7 @@ export const event_styles = StyleSheet.create({
     paddingVertical: 20,
   },
   event_list_container: {
-    alignSelf:'stretch',
+    alignSelf: 'stretch',
     backgroundColor: "#C7F9FF",
     borderRadius: 15,
     marginLeft: 10,
@@ -64,5 +64,27 @@ export const event_styles = StyleSheet.create({
   event_title: {
     fontFamily: "Inter_400Regular",
     fontSize: 20,
+  },
+  squad_code_container: {
+    borderRadius: 15,
+    borderColor: "#EEEEEE",
+    borderWidth: 2,
+    borderStyle: "solid",
+    marginTop: 10
+  },
+  squad_code: {
+    paddingHorizontal: 25,
+    paddingVertical: 15,
+    display: "flex",
+    flexDirection: "row"
+  },
+  squad_code_title_text: {
+    color: "#CCCCCC",
+    fontFamily: "Ubuntu_400Regular",
+    fontSize: 20
+  },
+  squad_code_value_text: {
+    fontFamily: "Ubuntu_400Regular",
+    fontSize: 20
   }
 });
