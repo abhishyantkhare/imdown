@@ -4,3 +4,4 @@ flask-migrate
 python-dotenv
 mysqlclient
 flask-login
+shortuuid

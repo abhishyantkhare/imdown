@@ -64,10 +64,10 @@ def createSquad():
     if user is None:
         return 'User does not exist!', 400
     squad = Squad(name=content["squad_name"], squad_emoji=content["squad_emoji"])
-    squad.generate_invite_link()
+    squad.generate_code()
     db.session.add(squad)
     db.session.commit()
-    addUserToSquad(squad.invite_link, email)
+    addUserToSquad(squad.code, email)
     return squad.jsonifySquad()
 
 
@@ -129,8 +129,8 @@ def respondToEvent(user_id, event_id, response):
     return event_response.jsonifyEventResponse()
 
 
-def addUserToSquad(invite_link, email):
-    squad_obj = Squad.query.filter_by(invite_link=invite_link).first()
+def addUserToSquad(squad_code, email):
+    squad_obj = Squad.query.filter_by(code=squad_code).first()
     if squad_obj is None:
         print("Failure adding to squad. Invite link is not valid")
         return "Invite link not valid. It is {}".format(invite_link), 400
