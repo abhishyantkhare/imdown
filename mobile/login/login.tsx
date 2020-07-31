@@ -9,12 +9,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-community/async-storage';
 import { BACKEND_URL } from "../backend/backend"
-
-type User = {
-    email: string,
-    photo: string,
-    name: string
-}
+import {User} from "../types/user"
 
 
 const Login = ({ navigation }) => {

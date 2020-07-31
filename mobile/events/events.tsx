@@ -1,9 +1,10 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import { View, FlatList, Text, Button, TouchableHighlight } from "react-native";
-import { callBackend } from "../backend/backend"
+import { View, FlatList, Text, Button, TouchableHighlight, TouchableOpacity } from "react-native";
+import { callBackend } from  "../backend/backend"
 import Divider from "../components/divider/divider";
 import { event_styles } from "./events_styles";
 import moment from 'moment';
+import  SquadMembers  from "../squads/squad_members"
 
 export type Event = {
   name: string,
@@ -88,6 +89,12 @@ const Events = (props) => {
     })
   }
 
+  const goToSquadMembersPage = (squadId: number) => {
+    props.navigation.navigate("SquadMembers", {
+      squadId: squadId
+    })   
+  }
+
   // Given event, returns string that describes how far (time-wise) event is from now.
   // For ex: "ended 3 days ago" / "starts 3 minutes from now" / "happening now!"
   const calcEventProximity = (event: Event) => {
@@ -131,7 +138,6 @@ const Events = (props) => {
           <View style={event_styles.event_emoji_box}>
             <Text style={event_styles.event_emoji}>{item.emoji || ""}</Text>
           </View>
-
           <View style={event_styles.event_item}>
             <Text style={event_styles.event_time_proximity}>{`${calcEventProximity(item)}`}</Text>
             <Text style={event_styles.event_title}>{item.name}</Text>
@@ -155,11 +161,14 @@ const Events = (props) => {
       </TouchableHighlight>
     );
   };
+  
   return (
     <View style={event_styles.container}>
-      <Text style={event_styles.group_title}>
-        {squadEmoji} {squadName}
-      </Text>
+      <TouchableOpacity onPress={() => { goToSquadMembersPage(squadId) }}>
+        <Text style={event_styles.group_title}>
+          {squadEmoji} {squadName} 
+        </Text>
+      </TouchableOpacity>
       {renderSquadCode()}
       <View style={event_styles.event_list_container}>
         <FlatList

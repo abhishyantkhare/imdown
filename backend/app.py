@@ -247,3 +247,24 @@ def get_squads():
             return "User {} is a member of squad {}, but squad could not be retrieved".format(user_id, squad_id), 400
         squads_lst.append(squad)
     return jsonify(squads=[squad.squadDict() for squad in squads_lst])
+
+
+@application.route("/get_users", methods=["GET"])
+@login_required # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+def get_users():
+    args = request.args
+    ok, err = validateArgsInRequest(
+        args, "squadId")
+    if not ok:
+        return err, 400
+    squad_id = args["squadId"]
+    user_squad_memberships = SquadMembership.query.filter_by(
+        squad_id=squad_id).all()
+    users_lst = []
+    for user_squad_membership in user_squad_memberships:
+        user_id = user_squad_membership.user_id
+        user = User.query.filter_by(id=user_id).first()
+        if user is None:
+            return "User {} is a member of squad {}, but user could not be retrieved".format(user_id, squad_id), 400
+        users_lst.append(user)
+    return jsonify(user_info=[user.userDict() for user in users_lst])
