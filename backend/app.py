@@ -25,13 +25,15 @@ def hello():
 @application.route("/sign_in", methods=['POST'])
 def signIn():
     content = request.get_json()
-    ok, err = validateArgsInRequest(content, 'user')
+    ok, err = validateArgsInRequest(content, 'user', 'photo', 'name')
     if not ok:
         return err, 400
-    userArg = content['user']
-    u = User.query.filter_by(email=userArg['email']).first()
+    user = content["user"]
+    photo = content["photo"]
+    name = content["name"]
+    u = User.query.filter_by(email=user).first()
     if u is None:
-        u = User(email=userArg['email'])
+        u = User(email=user, photo=photo, name=name)
         db.session.add(u)
         db.session.commit()
     login_user(u)

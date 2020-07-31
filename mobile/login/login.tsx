@@ -6,13 +6,14 @@ import {
     GoogleSigninButton,
     statusCodes,
 } from '@react-native-community/google-signin';
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-community/async-storage';
 import { BACKEND_URL } from "../backend/backend"
 
 type User = {
-    email: string
+    email: string,
+    photo: string,
+    name: string
 }
 
 
@@ -32,7 +33,9 @@ const Login = ({ navigation }) => {
     const signInOnBackend = (user: User) => {
         const login_url = BACKEND_URL + 'sign_in'
         const data = {
-            user: user
+            user: user.email,
+            photo: user.photo,
+            name: user.name
         }
         fetch(login_url, {
             method: 'POST',
@@ -56,7 +59,9 @@ const Login = ({ navigation }) => {
         GoogleSignin.signIn().then((resp) => {
             //TODO: Catch error codes here
             const user: User = {
-                email: resp.user.email
+                email: resp.user.email,
+                photo: resp.user.photo,
+                name: resp.user.name
             }
             signInOnBackend(user)
         });
@@ -77,10 +82,13 @@ const Login = ({ navigation }) => {
                 <Text style={login_styles.imdown_title}>imdown</Text>
                 <Text style={login_styles.imdown_description}>A better way to manage group events.</Text>
             </View>
-            <View style={login_styles.google_sign_in_button}>
-                <TouchableOpacity onPress={onPress}>
-                    <Image source={require('../assets/img/sign_in_with_google.png')} />
-                </TouchableOpacity>
+            <View style={login_styles.google_sign_in_button_container}>
+                <GoogleSigninButton
+                    style={login_styles.google_sign_in_button}
+                    size={GoogleSigninButton.Size.Wide}
+                    color={GoogleSigninButton.Color.Light}
+                    onPress={onPress} 
+                />
             </View>
         </View>
     );
