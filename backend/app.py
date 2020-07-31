@@ -76,19 +76,22 @@ def createSquad():
 def respond_to_event():
     content = request.get_json()
     ok, err = validateArgsInRequest(
-        content, "auth_hash", "event_id", "response")
+        content, "email", "event_id", "response")
     if not ok:
         return err, 400
-    auth_hash = content["auth_hash"]
+    email = content["email"]
     event_id = content["event_id"]
     response = content["response"]
-    return respondToEvent(auth_hash, event_id, response)
-
-def respondToEvent(auth_hash, event_id, response):
-    existing_entry_exists = False
-    user = User.query.filter_by(auth_hash=auth_hash).first()
+    user = User.query.filter_by(email=email).first()
     if user is None:
-        return "Can't find user with auth hash {}, so can't respond to event {}".format(auth_hash, event_id), 400
+            return "Can't find user with email {}, so can't respond to event {}".format(email, event_id), 400
+    return respondToEvent(user.id, event_id, response)
+
+def respondToEvent(user_id, event_id, response):
+    existing_entry_exists = False
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        return "Can't find user with user_id {}, so can't respond to event {}".format(user_id, event_id), 400
     user_id = user.id
     event = Event.query.filter_by(id=event_id).first()
     if event == None:
@@ -153,11 +156,11 @@ def addUserToSquad(invite_link, email):
 @login_required # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
 def createEvent():
     content = request.get_json()
-    ok, err = validateArgsInRequest(content, "auth_hash", "title",
-                                    "description", "start_time", "end_time", "address", "squad_id")
+    ok, err = validateArgsInRequest(content, "email", "title", "emoji",
+                                    "description", "start_time", "end_time", "squad_id", "event_url", "image_url")
     if not ok:
         return err, 400
-    u = User.query.filter_by(auth_hash=content["auth_hash"]).first()
+    u = User.query.filter_by(email=content["email"]).first()
     if u is None:
         return "User does not exist!", 400
     g = Squad.query.filter_by(id=content["squad_id"]).first()
@@ -169,17 +172,22 @@ def createEvent():
         return "User is not a member of squad!", 400
     title = content["title"]
     desc = content["description"]
+    event_emoji = content["emoji"]
     start_time = content["start_time"]
     end_time = content["end_time"]
-    address = content["address"]
+    # TODO: When address + lat/lng is implemented in mobile, uncomment
+    # address = content["address"]
     lat = 0.0
     lng = 0.0
     if "lat" in content and "lng" in content:
         lat = content["lat"]
         lng = content["lng"]
     squad_id = content["squad_id"]
-    e = Event(title=title, description=desc, start_time=start_time,
-              end_time=end_time, address=address, lat=lat, lng=lng, squad_id=squad_id)
+    event_url = content["event_url"]
+    image_url = content["image_url"]
+
+    e = Event(title=title, event_emoji=event_emoji, description=desc, start_time=start_time,
+              end_time=end_time, squad_id=squad_id, event_url=event_url, image_url=image_url)
     db.session.add(e)
     db.session.commit()
     respondToEvent(u.id, e.id, True)
