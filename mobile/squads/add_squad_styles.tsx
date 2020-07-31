@@ -5,7 +5,22 @@ export const AddSquadStyles = StyleSheet.create({
     flexDirection: "column",
     backgroundColor: "#fff",
     alignItems: "center",
-    paddingTop: 50,
+    marginTop: 50
+  },
+  add_container: {
+    alignItems: "center",
+    flexDirection: "column",
+    paddingTop: 20
+  },
+  add_title: {
+    fontFamily: "Ubuntu_700Bold",
+    fontSize: 20,
+    paddingBottom: 5
+  },
+  or_text: {
+    paddingVertical: 20,
+    fontFamily: "Ubuntu_700Bold",
+    fontSize: 30,
   },
   emoji_and_squad_name_container: {
     flexDirection: "row",
@@ -44,5 +59,6 @@ export const AddSquadStyles = StyleSheet.create({
     color: "#90BEDE",
     fontFamily: "Ubuntu_700Bold",
     fontSize: 32
-  }
+  },
+
 });

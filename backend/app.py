@@ -42,13 +42,12 @@ def signIn():
 @login_required # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
 def add_to_squad():
     content = request.get_json()
-    ok, err = validateArgsInRequest(content, 'email', 'invite_link')
+    ok, err = validateArgsInRequest(content, 'email', 'squad_code')
     if not ok:
         return err, 400
     email = content['email']
-    invite_link = content['invite_link']
-    u = User.query.filter_by(email=userArg['email']).first()
-    return addUserToSquad(invite_link, auth_hash)
+    squad_code = content['squad_code']
+    return addUserToSquad(squad_code, email)
 
 
 @application.route("/create_squad", methods=["POST"])
@@ -64,10 +63,10 @@ def createSquad():
     if user is None:
         return 'User does not exist!', 400
     squad = Squad(name=content["squad_name"], squad_emoji=content["squad_emoji"])
-    squad.generate_invite_link()
+    squad.generate_code()
     db.session.add(squad)
     db.session.commit()
-    addUserToSquad(squad.invite_link, email)
+    addUserToSquad(squad.code, email)
     return squad.jsonifySquad()
 
 
@@ -129,8 +128,8 @@ def respondToEvent(user_id, event_id, response):
     return event_response.jsonifyEventResponse()
 
 
-def addUserToSquad(invite_link, email):
-    squad_obj = Squad.query.filter_by(invite_link=invite_link).first()
+def addUserToSquad(squad_code, email):
+    squad_obj = Squad.query.filter_by(code=squad_code).first()
     if squad_obj is None:
         print("Failure adding to squad. Invite link is not valid")
         return "Invite link not valid. It is {}".format(invite_link), 400
