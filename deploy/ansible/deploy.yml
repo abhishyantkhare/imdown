@@ -3,7 +3,6 @@
     - name: Stop imdown
       service:
         name: imdown
-        enabled: yes
         state: stopped
       become: yes
 
@@ -13,9 +12,12 @@
         dest: /home/ubuntu/imdown/backend/
         delete: yes
 
+    - name: Update Requirements
+      pip:
+        requirements: /home/ubuntu/imdown/backend/requirements.txt
+
     - name: Start imdown
       service:
         name: imdown
-        enabled: yes
         state: started
       become: yes
