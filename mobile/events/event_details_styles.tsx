@@ -90,7 +90,7 @@ export const EventDetailsStyles = StyleSheet.create({
     justifyContent: 'center',
     flexGrow: 1,
   },
-  decline_rsvp_container: {
+  rsvp_button_container: {
     alignItems: 'center',
     justifyContent: 'center',
     flexGrow: 1,

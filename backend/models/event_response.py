@@ -1,5 +1,4 @@
 from init import db
-from models.user import User
 from flask import jsonify
 
 

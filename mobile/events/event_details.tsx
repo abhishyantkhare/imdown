@@ -106,14 +106,14 @@ const [isUserAccepted, setIsUserAccepted] = useState(isUserEventAccepted(event))
 	const renderRSVPButton = () => {
 		if (isUserAccepted) {
 			return(
-				<TouchableOpacity onPress={() => { callBackendRespondToEvent(false) }} style={EventDetailsStyles.decline_rsvp_container}>
+				<TouchableOpacity onPress={() => { callBackendRespondToEvent(false) }} style={EventDetailsStyles.rsvp_button_container}>
 					<Image source = {require('../assets/cancel_rsvp.png')} style = {{ width: ROW_BUTTON_HEIGHT, height: ROW_BUTTON_WIDTH }}/>
 					<Text style={EventDetailsStyles.button_row_text}> decline </Text>
 				</TouchableOpacity>
 			);
 		} else {
 			return(
-				<TouchableOpacity onPress={() => { callBackendRespondToEvent(true) }} style={EventDetailsStyles.decline_rsvp_container}>
+				<TouchableOpacity onPress={() => { callBackendRespondToEvent(true) }} style={EventDetailsStyles.rsvp_button_container}>
 					<Image source = {require('../assets/accept_rsvp.png')} style = {{ width: ROW_BUTTON_HEIGHT, height: ROW_BUTTON_WIDTH }}/>
 					<Text style={EventDetailsStyles.button_row_text}> accept </Text>
 				</TouchableOpacity>
