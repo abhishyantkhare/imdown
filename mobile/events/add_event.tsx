@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Button, SafeAreaView, Slider, Text, TextInput, TouchableHighlight, TouchableOpacity, View, YellowBox } from "react-native";
+import { Button, SafeAreaView, Slider, Text, TextInput, TouchableHighlight, TouchableOpacity, View } from "react-native";
 import { AddEventStyles } from "./add_event_styles"
 import EmojiSelector, { Categories } from "react-native-emoji-selector";
 import DatePickerModal from "../components/datepickermodal/datepickermodal";
 import moment from 'moment';
 import { createStackNavigator } from "@react-navigation/stack";
 import { callBackend } from  "../backend/backend"
-
-// This warning appears when passing a callback function (to "return" an Event).
-// TODO: Revisit react-navigation as a way to solve this problem. This warning suggests that these screens are not
-//       intended to pass back any data. Including this in one big EventScreen class may also be a good solution.
-YellowBox.ignoreWarnings(["Non-serializable values were found in the navigation state"]);
 
 const Stack = createStackNavigator();
 
@@ -19,7 +14,7 @@ const Stack = createStackNavigator();
 const AddInfo = ({ navigation, route }) => {
   const DEFAULT_EMOJI = "🗓"
   const squadId = route.params.squadId
-  
+
   const [eventImageURL, setEventImageURL] = useState("");
   const [eventName, setEventName] = useState("");
   const [eventURL, setEventURL] = useState("");
@@ -35,12 +30,12 @@ const AddInfo = ({ navigation, route }) => {
         'Content-Type': 'application/json'
         },
     }
-    callBackend(endpoint, init).then(response => { 
+    callBackend(endpoint, init).then(response => {
         return response.json();
-    }).then(data => { 
+    }).then(data => {
       setNumSquadMembers(data.user_info.length);
     });
-  }, []);  
+  }, []);
 
   const goToAddMoreInfo = () => {
     navigation.navigate("Enter Additional Info", { emojiPicked, eventName, eventURL, eventImageURL, numSquadMembers });
@@ -111,7 +106,7 @@ const AddMoreInfo = ({ navigation, route }) => {
   const [showEndDatePicker, setShowEndDatePicker] = useState();
   const [endDatePicked, setEndDatePicked] = useState();
   const [downThreshold, setDownThreshold] = useState(calcDefaultDownThreshold(numSquadMembers));
- 
+
   const renderStartDatePicker = () => {
     return (
       showStartDatePicker &&
@@ -214,7 +209,7 @@ const AddEvent = ({ route }) => {
     <Stack.Navigator>
       <Stack.Screen name="Enter Info" component={AddInfo} initialParams={{ squadId: route.params.squadId }}/>
       <Stack.Screen name="Enter Additional Info" component={AddMoreInfo}
-                    initialParams={{ squadId: route.params.squadId, userEmail: route.params.userEmail, addEvent: route.params.addEvent }} />
+                    initialParams={{ squadId: route.params.squadId, userEmail: route.params.userEmail }} />
     </Stack.Navigator>
   );
 }
