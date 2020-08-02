@@ -32,7 +32,9 @@ const Login = ({ navigation }) => {
     const signInOnBackend = (user: User) => {
         const login_url = BACKEND_URL + 'sign_in'
         const data = {
-            user: user
+            email: user.email,
+            name: user.name,
+            photo: user.photo
         }
         fetch(login_url, {
             method: 'POST',
