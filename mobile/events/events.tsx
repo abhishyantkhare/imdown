@@ -1,9 +1,10 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import { View, FlatList, Text, Button, TouchableHighlight } from "react-native";
+import { View, FlatList, Text, Button, TouchableHighlight, TouchableOpacity } from "react-native";
 import { callBackend } from "../backend/backend"
 import Divider from "../components/divider/divider";
 import { event_styles } from "./events_styles";
 import moment from 'moment';
+import  SquadMembers  from "../squads/squad_members"
 
 export type Event = {
   name: string,
@@ -32,6 +33,12 @@ const Events = (props) => {
       userEmail: userEmail,
       addEvent: addEvent
     });
+  }
+
+  const goToSquadMembersPage = (squadId: number) => {
+    props.navigation.navigate("SquadMembers", {
+      squadId: squadId
+    })   
   }
 
   // Converts response from backend for events into list of internally used Event objects
@@ -157,9 +164,11 @@ const Events = (props) => {
   };
   return (
     <View style={event_styles.container}>
-      <Text style={event_styles.group_title}>
-        {squadEmoji} {squadName}
-      </Text>
+      <TouchableOpacity onPress={() => { goToSquadMembersPage(squadId) }}>
+        <Text style={event_styles.group_title}>
+          {squadEmoji} {squadName} 
+        </Text>
+      </TouchableOpacity>
       {renderSquadCode()}
       <View style={event_styles.event_list_container}>
         <FlatList

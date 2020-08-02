@@ -28,7 +28,11 @@ export const login_styles = StyleSheet.create({
     fontFamily: "Ubuntu_400Regular_Italic",
     fontSize: 18,
   },
-  google_sign_in_button: {
+  google_sign_in_button_container: {
     flex: 1,
+  },
+  google_sign_in_button: {
+    width: 192, 
+    height: 48
   }
 });
