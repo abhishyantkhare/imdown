@@ -6,9 +6,7 @@ from flask import jsonify
 class EventResponse(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     event_id = db.Column(db.Integer,  index=True, unique=False)
-    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
-
-    # user_id = db.Column(db.Integer,  index=True, unique=False)
+    user_id = db.Column(db.Integer,  index=True, unique=False)
     response = db.Column(db.Boolean,  index=False, unique=False)
 
     def __repr__(self):
