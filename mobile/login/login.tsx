@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Text, View } from "react-native";
 import { login_styles } from "./login_styles";
 import { GoogleSignin, GoogleSigninButton } from '@react-native-community/google-signin';
@@ -9,6 +9,8 @@ import { User } from "../types/user"
 
 
 const Login = ({ navigation }) => {
+  const [isSigninInProgress, setIsSigninInProgress] = useState(false);
+
   const IOS_CLIENT_ID = "1097983281822-8qr8vltrud1hj3rfme2khn1lmbj2s522.apps.googleusercontent.com";
 
   const goToSquads = (email: string) => {
@@ -44,16 +46,22 @@ const Login = ({ navigation }) => {
     })
   }
 
-  const onPress = () => {
-    GoogleSignin.signIn().then((resp) => {
-      //TODO: Catch error codes here
+
+  const signIn = async () => {
+    try {
+      setIsSigninInProgress(true);
+      await GoogleSignin.hasPlayServices();
+      const resp = await GoogleSignin.signIn();
       const user: User = {
         email: resp.user.email,
         name: resp.user.name,
         photo: resp.user.photo
-      }
-      signInOnBackend(user)
-    });
+      };
+      setIsSigninInProgress(false);
+      signInOnBackend(user);
+    } catch (error) {
+      // TODO: catch error codes here.
+    }
   };
 
   GoogleSignin.configure({
@@ -75,8 +83,8 @@ const Login = ({ navigation }) => {
         <GoogleSigninButton
           style={login_styles.google_sign_in_button}
           size={GoogleSigninButton.Size.Wide}
-          onPress={onPress}
-        />
+          onPress={signIn}
+          disabled={isSigninInProgress} />
       </View>
     </View>
   );
