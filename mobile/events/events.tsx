@@ -6,18 +6,44 @@ import { event_styles } from "./events_styles";
 import moment from 'moment';
 import  SquadMembers  from "../squads/squad_members"
 
+const SQUAD_CODE_TITLE_TEXT = "Squad Code: "
+
 export type Event = {
+  id: number,
   name: string,
   emoji?: string,
   description?: string,
   image_url?: string,
   start_ms?: number,
   end_ms?: number,
-  rsvp_users: String[]
+  rsvp_users: RSVPUser[],
+  declined_users: RSVPUser[],
   url?: string
 }
 
-const SQUAD_CODE_TITLE_TEXT = "Squad Code: "
+
+export type RSVPUser = {
+  user_id: String,
+  email: String
+}
+
+// Converts response from backend for events into list of internally used Event objects
+export const toEvents = (backendEvent) => {
+  return backendEvent.map( (it) => {
+    return {
+      id: it.id,
+      name: it.title,
+      description: it.description,
+      emoji: "🍗",
+      image_url: it.image_url,
+      start_ms: it.start_time,
+      end_ms: it.end_time,
+      rsvp_users: it.event_responses.accepted,
+      declined_users: it.event_responses.declined,
+      url: it.event_url
+    }
+  })
+}
 
 const Events = (props) => {
   const [events, setEvents] = useState([])
@@ -38,23 +64,6 @@ const Events = (props) => {
   const goToSquadMembersPage = (squadId: number) => {
     props.navigation.navigate("SquadMembers", {
       squadId: squadId
-    })   
-  }
-
-  // Converts response from backend for events into list of internally used Event objects
-  const toEvents = (backendEvent) => {
-    return backendEvent["events"].map((it) => {
-      return {
-        name: it.title,
-        description: it.description,
-        emoji: "🍗",
-        image_url: it.image_url,
-        start_ms: it.start_time,
-        end_ms: it.end_time,
-        // TODO: Query backend to get list of users.
-        rsvp_users: [],
-        url: it.event_url
-      }
     })
   }
 
@@ -69,7 +78,7 @@ const Events = (props) => {
     callBackend(endpoint, init).then(response => {
       return response.json();
     }).then(data => {
-      setEvents(events.concat(toEvents(data)));
+      setEvents(toEvents(data));
     });
   }, []);
 
@@ -91,7 +100,8 @@ const Events = (props) => {
 
   const goToEventDetailsPage = (event: Event) => {
     props.navigation.navigate("EventDetails", {
-      event: event
+      event: event,
+      userEmail: userEmail
     })
   }
 
@@ -133,7 +143,7 @@ const Events = (props) => {
 
   const renderEventItem = ({ item }: { item: Event }) => {
     return (
-      <TouchableHighlight onPress={() => { goToEventDetailsPage(item) }}>
+      <TouchableOpacity activeOpacity={.7} onPress={() => { goToEventDetailsPage(item) }}>
         <View style={{ flexDirection: 'row' }}>
           <View style={event_styles.event_emoji_box}>
             <Text style={event_styles.event_emoji}>{item.emoji || ""}</Text>
@@ -159,14 +169,14 @@ const Events = (props) => {
             </View> : <Text>{`Time: ${`TBD`}`}</Text>}
           </View>
         </View>
-      </TouchableHighlight>
+      </TouchableOpacity>
     );
   };
   return (
     <View style={event_styles.container}>
       <TouchableOpacity onPress={() => { goToSquadMembersPage(squadId) }}>
         <Text style={event_styles.group_title}>
-          {squadEmoji} {squadName} 
+          {squadEmoji} {squadName}
         </Text>
       </TouchableOpacity>
       {renderSquadCode()}

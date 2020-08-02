@@ -8,11 +8,13 @@ from models.event import Event
 from models.squad import Squad
 from models.squadmembership import SquadMembership
 from flask_login import login_user, login_required
+from collections import defaultdict
 
 
 def validateArgsInRequest(content, *args):
     for arg in args:
         if arg not in content:
+            print('{} not in request!'.format(arg))
             return False, '{} not in request!'.format(arg)
     return True, None
 
@@ -196,7 +198,8 @@ def createEvent():
     squadMemberships = SquadMembership.query.filter_by(
         squad_id=squad_id).all()
     for squadMembership in squadMemberships:
-        respondToEvent(squadMembership.user_id, e.id, False)
+        if (squadMembership.user_id != u.id):
+            respondToEvent(squadMembership.user_id, e.id, False)
     return e.jsonifyEvent()
 
 
@@ -209,7 +212,36 @@ def getEvents():
         return err, 400
     g_id = args["squad_id"]
     events = Event.query.filter_by(squad_id=g_id).all()
-    return jsonify(events=[e.eventDict() for e in events])
+    event_ids = [e.id for e in events]
+    event_responses = getEventResponsesBatch(event_ids)
+    ret_list = [e.eventDict() for e in events]
+    for event in ret_list:
+        event["event_responses"] = {}
+        event["event_responses"]["accepted"] = event_responses[event["id"]][True]
+        event["event_responses"]["declined"] = event_responses[event["id"]][False]
+    return jsonify(ret_list)
+
+@application.route("/get_event", methods=["GET"])
+@login_required # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+def getEvent():
+    args = request.args
+    ok, err = validateArgsInRequest(args, "event_id")
+    if not ok:
+        print("validation error")
+        return err, 400
+    e_id = args["event_id"]
+    event = Event.query.filter_by(id=e_id).first()
+    if event is None:
+        response_msg = "Event {} not found in DB. Erroring".format(
+            event_id)
+        print(response_msg)
+        return response_msg, 400
+    event_responses = getEventResponsesBatch([event.id])
+    ret = event.eventDict() 
+    ret["event_responses"] = {}
+    ret["event_responses"]["accepted"] = event_responses[ret["id"]][True]
+    ret["event_responses"]["declined"] = event_responses[ret["id"]][False]
+    return jsonify(ret)
 
 
 @application.route("/get_event_responses", methods=["GET"])
@@ -219,10 +251,21 @@ def getEventResponses():
     ok, err = validateArgsInRequest(args, "event_id")
     if not ok:
         return err, 400
+    return getEventResponses(args["event_id"])
+
+def getEventResponses(event_id):
     eventResponses = EventResponse.query.filter_by(
-        event_id=args["event_id"]).all()
+        event_id=event_id).all()
     return jsonify(event_responses=[er.eventResponseDict() for er in eventResponses])
 
+def getEventResponsesBatch(event_id_list):
+    eventResponses = db.session.query(User, EventResponse).filter(User.id == EventResponse.user_id).filter(EventResponse.event_id.in_(event_id_list)).all()
+    resp_dict = defaultdict(lambda: defaultdict(list))
+    for resp in eventResponses:
+        user = resp[0]
+        event_resp = resp[1]
+        resp_dict[event_resp.event_id][event_resp.response].append({"user_id": event_resp.user_id, "email": user.email})
+    return resp_dict
 
 @application.route("/get_squads", methods=["GET"])
 @login_required # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
