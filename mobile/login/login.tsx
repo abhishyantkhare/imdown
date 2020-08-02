@@ -10,10 +10,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-community/async-storage';
 import { BACKEND_URL } from "../backend/backend"
-
-type User = {
-    email: string
-}
+import {User} from "../types/user"
 
 
 const Login = ({ navigation }) => {
@@ -58,7 +55,9 @@ const Login = ({ navigation }) => {
         GoogleSignin.signIn().then((resp) => {
             //TODO: Catch error codes here
             const user: User = {
-                email: resp.user.email
+                email: resp.user.email,
+                name: resp.user.name,
+                photo: resp.user.photo
             }
             signInOnBackend(user)
         });
@@ -79,10 +78,12 @@ const Login = ({ navigation }) => {
                 <Text style={login_styles.imdown_title}>imdown</Text>
                 <Text style={login_styles.imdown_description}>A better way to manage group events.</Text>
             </View>
-            <View style={login_styles.google_sign_in_button}>
-                <TouchableOpacity onPress={onPress}>
-                    <Image source={require('../assets/img/sign_in_with_google.png')} />
-                </TouchableOpacity>
+            <View style={login_styles.google_sign_in_button_container}>
+                <GoogleSigninButton
+                    style={login_styles.google_sign_in_button}
+                    size={GoogleSigninButton.Size.Wide}
+                    onPress={onPress} 
+                />
             </View>
         </View>
     );
