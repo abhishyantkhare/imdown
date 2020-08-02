@@ -69,7 +69,8 @@ const Login = ({ navigation }) => {
     GoogleSignin.configure({
         iosClientId: IOS_CLIENT_ID,
         webClientId: WEB_ID,
-        offlineAccess: true
+        offlineAccess: true,
+        scopes: ['https://www.googleapis.com/auth/calendar.events']
     });
 
 
