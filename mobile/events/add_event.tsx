@@ -127,22 +127,7 @@ const AddMoreInfo = ({ navigation, route }) => {
             'Content-Type': 'application/json'
         },
     }
-    callBackend(endpoint, init).then(() => { addEvent() })
-  }
-
-  const addEvent = () => {
-    const newEvent: Event = {
-      name: eventName,
-      url: eventURL,
-      // TODO: Use emoji picker to choose
-      emoji: "🍆",
-      description: eventDescription,
-      start_ms: startDate ? moment(startDate).valueOf() : null,
-      end_ms: endDate ? moment(endDate).valueOf() : null,
-      rsvp_users: []
-    };
-    route.params.addEvent(newEvent);
-    navigation.navigate("Events");
+    callBackend(endpoint, init).then(() => { navigation.navigate("Events") })
   }
 
   return (
