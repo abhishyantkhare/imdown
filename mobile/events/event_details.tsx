@@ -72,6 +72,7 @@ const [isUserAccepted, setIsUserAccepted] = useState(isUserEventAccepted(event))
 							<FlatList
 									data={event.rsvp_users}
 									renderItem={renderRSVPUser}
+									keyExtractor={item => item.user_id.toString()}
 							/>
 					</View>
 			</View>

@@ -5,6 +5,7 @@ import Divider from "../components/divider/divider";
 import { event_styles } from "./events_styles";
 import moment from 'moment';
 import  SquadMembers  from "../squads/squad_members"
+import { useFocusEffect } from '@react-navigation/native';
 
 const SQUAD_CODE_TITLE_TEXT = "Squad Code: "
 
@@ -67,20 +68,22 @@ const Events = (props) => {
     })
   }
 
-  useEffect(() => {
-    const endpoint = 'get_events?squad_id=' + squadId
-    const init: RequestInit = {
-      method: "GET",
-      headers: {
-        'Content-Type': 'application/json'
-      },
-    }
-    callBackend(endpoint, init).then(response => {
-      return response.json();
-    }).then(data => {
-      setEvents(toEvents(data));
-    });
-  }, []);
+  useFocusEffect(
+      React.useCallback(() => {
+      const endpoint = 'get_events?squad_id=' + squadId
+      const init: RequestInit = {
+        method: "GET",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      }
+      callBackend(endpoint, init).then(response => {
+        return response.json();
+      }).then(data => {
+        setEvents(toEvents(data));
+      });
+    }, [])
+  );
 
   useLayoutEffect(() => {
     props.navigation.setOptions({
@@ -124,6 +127,13 @@ const Events = (props) => {
     }
   }
 
+  const calcDownPercentage = (event: Event) => {
+    const numDown = event.rsvp_users.length
+    const totalNumPeople = event.rsvp_users.length + event.declined_users.length
+    const percentage = Math.round(numDown*100/totalNumPeople)
+    return percentage
+  }
+
 
 
   const renderSquadCode = () => {
@@ -141,10 +151,26 @@ const Events = (props) => {
     )
   }
 
+  const renderDownBar = (event: Event) => {
+    const downPercentage = calcDownPercentage(event)
+    const barColor = downPercentage > 60 ? '#68EDC6' : '#C7F9FF'
+    const borderRightRadii = downPercentage > 95 ? 15 : 0
+    const barWidth = `${downPercentage}%`
+    const inlineStyleJSON = {
+      backgroundColor: barColor,
+      borderBottomRightRadius: borderRightRadii, 
+      borderTopRightRadius: borderRightRadii,
+      width: barWidth, 
+    }
+    return (<View style = {[ event_styles.down_bar, inlineStyleJSON]}>
+          </View>);
+  }
+
   const renderEventItem = ({ item }: { item: Event }) => {
     return (
-      <TouchableOpacity activeOpacity={.7} onPress={() => { goToEventDetailsPage(item) }}>
-        <View style={{ flexDirection: 'row' }}>
+      <TouchableOpacity activeOpacity={.7}  onPress={() => { goToEventDetailsPage(item) }}>
+        <View style={event_styles.event_item_outer_box}>
+          { renderDownBar(item) }
           <View style={event_styles.event_emoji_box}>
             <Text style={event_styles.event_emoji}>{item.emoji || ""}</Text>
           </View>
@@ -185,7 +211,8 @@ const Events = (props) => {
           data={events.sort((a, b) => (a.start_ms == null && b.start_ms != null || a.start_ms > b.start_ms) ? 1 : -1)}
           renderItem={renderEventItem}
           style={event_styles.event_list}
-        />
+          keyExtractor={(item, index) => index.toString()}
+          />
       </View>
     </View>
   );
