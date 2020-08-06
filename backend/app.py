@@ -110,7 +110,7 @@ def respondToEvent(user_id, event_id, response):
         print(response_msg)
         return response_msg, 400
     
-    user_event_response = getEventResponsesAndCheckDownTresh(event_id, event, user_id, response)
+    user_event_response = EventResponse.query.filter_by(event_id=event.id, user_id=user_id).first()
 
     if user_event_response is not None:
         if user_event_response.response is not response:
@@ -130,31 +130,23 @@ def respondToEvent(user_id, event_id, response):
             user_id=user_id, event_id=event_id, response=response)
         db.session.add(user_event_response)
     db.session.commit()
+    getEventResponsesAndCheckDownThresh(event, user_id, response)
     return user_event_response.jsonifyEventResponse()
 
-def getEventResponsesAndCheckDownTresh(event_id, event, user_id, response):
+def getEventResponsesAndCheckDownThresh(event, user_id, response):
     event_responses = EventResponse.query.filter_by(
-        event_id=event_id).all()
-    user_event_response = None
+        event_id=event.id).all()
     num_accepted = 0
     num_declined = 0
     down_threshold = event.down_threshold
     for resp in event_responses:
-        if resp.user_id == user_id:
-            user_event_response = resp
-            if response:
-                num_accepted += 1
-            else:
-                num_declined += 1
+        if resp.response:
+            num_accepted += 1
         else:
-            if resp.response:
-                num_accepted += 1
-            else:
-                num_declined += 1
-    if (num_accepted*100)/(num_accepted+num_declined):
+            num_declined += 1
+    if (num_accepted*100)/(num_accepted+num_declined) >= event.down_threshold:
         print("Enough people are down to create an event on calender!")
         ## INSERT CALL TO CALENDAR HERE
-    return user_event_response
 
 def addUserToSquad(squad_code, email):
     squad_obj = Squad.query.filter_by(code=squad_code).first()
@@ -226,10 +218,6 @@ def createEvent():
         if (squadMembership.user_id != u.id):
             respondToEvent(squadMembership.user_id, e.id, False)
     num_squad_members = len(squadMemberships)
-    # creator is automatically down, so check if 1 person down is enough to create event in calendar
-    if (100/num_squad_members) >= down_threshold:
-        # CALL GOOGLE CALENDAR HERE
-        print("One person is enough to get this started! Creating event in calendar now")
     return e.jsonifyEvent()
 
 

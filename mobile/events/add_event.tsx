@@ -6,6 +6,7 @@ import DatePickerModal from "../components/datepickermodal/datepickermodal";
 import moment from 'moment';
 import { createStackNavigator } from "@react-navigation/stack";
 import { callBackend } from  "../backend/backend"
+import { DEFAULT_DOWN_THRESHOLD } from "../constants"
 
 // This warning appears when passing a callback function (to "return" an Event).
 // TODO: Revisit react-navigation as a way to solve this problem. This warning suggests that these screens are not
@@ -87,7 +88,7 @@ const AddMoreInfo = ({ navigation, route }) => {
   const [endDate, setEndDate] = useState(new Date());
   const [showEndDatePicker, setShowEndDatePicker] = useState();
   const [endDatePicked, setEndDatePicked] = useState();
-  const [downThreshold, setDownThreshold] = useState(50);
+  const [downThreshold, setDownThreshold] = useState(DEFAULT_DOWN_THRESHOLD);
 
   const renderStartDatePicker = () => {
     return (
