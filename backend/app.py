@@ -1,6 +1,6 @@
 from flask import request
 from flask import jsonify
-from init import application
+from init import application, SECRETS
 from extensions import db, migrate
 from models.user import User
 from models.event_response import EventResponse
@@ -9,6 +9,13 @@ from models.squad import Squad
 from models.squadmembership import SquadMembership
 from flask_login import login_user, login_required
 from collections import defaultdict
+import google.oauth2.credentials
+import google_auth_oauthlib.flow
+import googleapiclient.discovery
+import requests
+
+
+GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token'
 
 
 def validateArgsInRequest(content, *args):
@@ -27,7 +34,8 @@ def hello():
 @application.route("/sign_in", methods=['POST'])
 def signIn():
     content = request.get_json()
-    ok, err = validateArgsInRequest(content, 'email', 'name', 'photo')
+    ok, err = validateArgsInRequest(
+        content, 'email', 'name', 'photo', 'googleServerCode')
     if not ok:
         return err, 400
     email = content["email"]
@@ -39,11 +47,32 @@ def signIn():
         db.session.add(u)
         db.session.commit()
     login_user(u)
+    update_user_tokens(u, content['googleServerCode'])
     return u.jsonifyUser()
 
 
+def update_user_tokens(user, auth_code):
+    access_token, refresh_token = fetch_google_access_tokens(auth_code)
+    user.google_access_token = access_token
+    user.google_refresh_token = refresh_token
+    db.session.commit()
+
+
+def fetch_google_access_tokens(auth_code):
+    data = {'code': auth_code,
+            'client_id': SECRETS["GOOGLE_CLIENT_ID"],
+            'client_secret': SECRETS["GOOGLE_CLIENT_SECRET"],
+            'grant_type': 'authorization_code',
+            'access_type': 'offline'
+            }
+    r = requests.post('https://oauth2.googleapis.com/token', data=data)
+    resp = r.json()
+    return resp['access_token'], resp['refresh_token']
+
+
 @application.route("/add_to_squad", methods=['POST'])
-@login_required # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+# If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+@login_required
 def add_to_squad():
     content = request.get_json()
     ok, err = validateArgsInRequest(content, 'email', 'squad_code')
@@ -55,7 +84,8 @@ def add_to_squad():
 
 
 @application.route("/create_squad", methods=["POST"])
-@login_required # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+# If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+@login_required
 def createSquad():
     content = request.get_json()
     ok, err = validateArgsInRequest(
@@ -66,7 +96,8 @@ def createSquad():
     user = User.query.filter_by(email=email).first()
     if user is None:
         return 'User does not exist!', 400
-    squad = Squad(name=content["squad_name"], squad_emoji=content["squad_emoji"])
+    squad = Squad(name=content["squad_name"],
+                  squad_emoji=content["squad_emoji"])
     squad.generate_code()
     db.session.add(squad)
     db.session.commit()
@@ -75,7 +106,8 @@ def createSquad():
 
 
 @application.route("/respond_to_event", methods=["POST"])
-@login_required # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+# If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+@login_required
 def respond_to_event():
     content = request.get_json()
     ok, err = validateArgsInRequest(
@@ -87,8 +119,9 @@ def respond_to_event():
     response = content["response"]
     user = User.query.filter_by(email=email).first()
     if user is None:
-            return "Can't find user with email {}, so can't respond to event {}".format(email, event_id), 400
+        return "Can't find user with email {}, so can't respond to event {}".format(email, event_id), 400
     return respondToEvent(user.id, event_id, response)
+
 
 def respondToEvent(user_id, event_id, response):
     existing_entry_exists = False
@@ -172,7 +205,8 @@ def addUserToSquad(squad_code, email):
 
 
 @application.route("/create_event", methods=["POST"])
-@login_required # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+# If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+@login_required
 def createEvent():
     content = request.get_json()
     ok, err = validateArgsInRequest(content, "email", "title", "emoji",
@@ -222,7 +256,8 @@ def createEvent():
 
 
 @application.route("/get_events", methods=["GET"])
-@login_required # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+# If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+@login_required
 def getEvents():
     args = request.args
     ok, err = validateArgsInRequest(args, "squad_id")
@@ -239,8 +274,10 @@ def getEvents():
         event["event_responses"]["declined"] = event_responses[event["id"]][False]
     return jsonify(ret_list)
 
+
 @application.route("/get_event", methods=["GET"])
-@login_required # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+# If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+@login_required
 def getEvent():
     args = request.args
     ok, err = validateArgsInRequest(args, "event_id")
@@ -255,7 +292,7 @@ def getEvent():
         print(response_msg)
         return response_msg, 400
     event_responses = getEventResponsesBatch([event.id])
-    ret = event.eventDict() 
+    ret = event.eventDict()
     ret["event_responses"] = {}
     ret["event_responses"]["accepted"] = event_responses[ret["id"]][True]
     ret["event_responses"]["declined"] = event_responses[ret["id"]][False]
@@ -263,7 +300,8 @@ def getEvent():
 
 
 @application.route("/get_event_responses", methods=["GET"])
-@login_required # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+# If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+@login_required
 def getEventResponses():
     args = request.args
     ok, err = validateArgsInRequest(args, "event_id")
@@ -271,22 +309,28 @@ def getEventResponses():
         return err, 400
     return getEventResponses(args["event_id"])
 
+
 def getEventResponses(event_id):
     eventResponses = EventResponse.query.filter_by(
         event_id=event_id).all()
     return jsonify(event_responses=[er.eventResponseDict() for er in eventResponses])
 
+
 def getEventResponsesBatch(event_id_list):
-    eventResponses = db.session.query(User, EventResponse).filter(User.id == EventResponse.user_id).filter(EventResponse.event_id.in_(event_id_list)).all()
+    eventResponses = db.session.query(User, EventResponse).filter(
+        User.id == EventResponse.user_id).filter(EventResponse.event_id.in_(event_id_list)).all()
     resp_dict = defaultdict(lambda: defaultdict(list))
     for resp in eventResponses:
         user = resp[0]
         event_resp = resp[1]
-        resp_dict[event_resp.event_id][event_resp.response].append({"user_id": event_resp.user_id, "email": user.email})
+        resp_dict[event_resp.event_id][event_resp.response].append(
+            {"user_id": event_resp.user_id, "email": user.email})
     return resp_dict
 
+
 @application.route("/get_squads", methods=["GET"])
-@login_required # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+# If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+@login_required
 def get_squads():
     args = request.args
     ok, err = validateArgsInRequest(
@@ -311,7 +355,8 @@ def get_squads():
 
 
 @application.route("/get_users", methods=["GET"])
-@login_required # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+# If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+@login_required
 def get_users():
     args = request.args
     ok, err = validateArgsInRequest(
