@@ -16,6 +16,7 @@ class Event(db.Model):
     lat = db.Column(db.Float, index=True, unique=False)
     lng = db.Column(db.Float, index=True, unique=False)
     squad_id = db.Column(db.Integer, index=True, unique=False)
+    down_threshold = db.Column(db.Integer, index=False, unique=False)
 
     def __repr__(self):
         return 'Event id {} with title {} and squad {}'.format(self.id, self.title, self.squad_id)
@@ -33,7 +34,8 @@ class Event(db.Model):
             'address': self.address,
             'lat': self.lat,
             'lng': self.lng,
-            'squad_id': self.squad_id
+            'squad_id': self.squad_id,
+            'down_threshold': self.down_threshold
         }
 
     def jsonifyEvent(self):

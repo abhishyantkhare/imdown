@@ -109,28 +109,44 @@ def respondToEvent(user_id, event_id, response):
             user_id, event_squad_id, event_id)
         print(response_msg)
         return response_msg, 400
-    event_response = EventResponse.query.filter_by(
-        event_id=event_id, user_id=user_id).first()
-    if event_response is not None:
-        if event_response.response is not response:
+    
+    user_event_response = EventResponse.query.filter_by(event_id=event.id, user_id=user_id).first()
+
+    if user_event_response is not None:
+        if user_event_response.response is not response:
             response_msg = "User {} already responded to event {} with response of {}." \
                 " Overwriting it with response of {}".format(
-                    user_id, event_id, event_response.response, response)
+                    user_id, event_id, user_event_response.response, response)
             print(response_msg)
-            event_response.response = response
+            user_event_response.response = response
             existing_entry_exists = True
-        elif event_response.response is response:
+        elif user_event_response.response is response:
             response_msg = "User {} already responded to event {} with response of {}. User gave same response.".format(
-                user_id, event_id, event_response.response)
+                user_id, event_id, user_event_response.response)
             print(response_msg)
             return response_msg, 200
     if not existing_entry_exists:
-        event_response = EventResponse(
+        user_event_response = EventResponse(
             user_id=user_id, event_id=event_id, response=response)
-        db.session.add(event_response)
+        db.session.add(user_event_response)
     db.session.commit()
-    return event_response.jsonifyEventResponse()
+    getEventResponsesAndCheckDownThresh(event, user_id, response)
+    return user_event_response.jsonifyEventResponse()
 
+def getEventResponsesAndCheckDownThresh(event, user_id, response):
+    event_responses = EventResponse.query.filter_by(
+        event_id=event.id).all()
+    num_accepted = 0
+    num_declined = 0
+    down_threshold = event.down_threshold
+    for resp in event_responses:
+        if resp.response:
+            num_accepted += 1
+        else:
+            num_declined += 1
+    if (num_accepted*100)/(num_accepted+num_declined) >= event.down_threshold:
+        print("Enough people are down to create an event on calender!")
+        ## INSERT CALL TO CALENDAR HERE
 
 def addUserToSquad(squad_code, email):
     squad_obj = Squad.query.filter_by(code=squad_code).first()
@@ -160,7 +176,7 @@ def addUserToSquad(squad_code, email):
 def createEvent():
     content = request.get_json()
     ok, err = validateArgsInRequest(content, "email", "title", "emoji",
-                                    "description", "start_time", "end_time", "squad_id", "event_url", "image_url")
+                                    "description", "start_time", "end_time", "squad_id", "event_url", "image_url", "down_threshold")
     if not ok:
         return err, 400
     u = User.query.filter_by(email=content["email"]).first()
@@ -188,9 +204,10 @@ def createEvent():
     squad_id = content["squad_id"]
     event_url = content["event_url"]
     image_url = content["image_url"]
+    down_threshold = content["down_threshold"]
 
     e = Event(title=title, event_emoji=event_emoji, description=desc, start_time=start_time,
-              end_time=end_time, squad_id=squad_id, event_url=event_url, image_url=image_url)
+              end_time=end_time, squad_id=squad_id, event_url=event_url, image_url=image_url, down_threshold=down_threshold)
     db.session.add(e)
     db.session.commit()
     respondToEvent(u.id, e.id, True)
@@ -200,6 +217,7 @@ def createEvent():
     for squadMembership in squadMemberships:
         if (squadMembership.user_id != u.id):
             respondToEvent(squadMembership.user_id, e.id, False)
+    num_squad_members = len(squadMemberships)
     return e.jsonifyEvent()
 
 

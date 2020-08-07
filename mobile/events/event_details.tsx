@@ -5,13 +5,7 @@ import moment from 'moment';
 import Divider  from '../components/divider/divider'
 import { callBackend } from  "../backend/backend"
 import { Event, toEvents, RSVPUser } from  "./events"
-
-const DOWN_EMOJI_HEIGHT = 82
-const DOWN_EMOJI_WIDTH = 85
-const EVENT_PIC_HEIGHT = 130
-const EVENT_PIC_WIDTH = 130
-const ROW_BUTTON_HEIGHT = 40
-const ROW_BUTTON_WIDTH = 40
+import { DOWN_EMOJI_HEIGHT, DOWN_EMOJI_WIDTH, EVENT_PIC_HEIGHT, EVENT_PIC_WIDTH, ROW_BUTTON_HEIGHT, ROW_BUTTON_WIDTH } from "../constants"
 
 const EventDetails = (props) => {
 const [event, setEvent] = useState(props.route.params.event)

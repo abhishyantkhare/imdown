@@ -19,7 +19,8 @@ export type Event = {
   end_ms?: number,
   rsvp_users: RSVPUser[],
   declined_users: RSVPUser[],
-  url?: string
+  url?: string,
+  down_threshold: number
 }
 
 
@@ -35,13 +36,14 @@ export const toEvents = (backendEvent) => {
       id: it.id,
       name: it.title,
       description: it.description,
-      emoji: "🍗",
+      emoji: it.event_emoji,
       image_url: it.image_url,
       start_ms: it.start_time,
       end_ms: it.end_time,
       rsvp_users: it.event_responses.accepted,
       declined_users: it.event_responses.declined,
-      url: it.event_url
+      url: it.event_url,
+      down_threshold: it.down_threshold
     }
   })
 }
@@ -153,7 +155,7 @@ const Events = (props) => {
 
   const renderDownBar = (event: Event) => {
     const downPercentage = calcDownPercentage(event)
-    const barColor = downPercentage > 60 ? '#68EDC6' : '#C7F9FF'
+    const barColor = event.rsvp_users.length >= event.down_threshold ? '#68EDC6' : '#C7F9FF'
     const borderRightRadii = downPercentage > 95 ? 15 : 0
     const barWidth = `${downPercentage}%`
     const inlineStyleJSON = {
