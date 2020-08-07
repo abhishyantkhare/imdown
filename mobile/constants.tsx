@@ -1,6 +1,3 @@
-export const DEFAULT_DOWN_THRESHOLD = 60
-
-
 // Constants for event details page
 export const DOWN_EMOJI_HEIGHT = 82
 export const DOWN_EMOJI_WIDTH = 85

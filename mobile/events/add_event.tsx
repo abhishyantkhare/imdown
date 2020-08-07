@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, SafeAreaView, Slider, Text, TextInput, TouchableHighlight, TouchableOpacity, View, YellowBox } from "react-native";
 import { AddEventStyles } from "./add_event_styles"
 import EmojiSelector, { Categories } from "react-native-emoji-selector";
@@ -6,7 +6,6 @@ import DatePickerModal from "../components/datepickermodal/datepickermodal";
 import moment from 'moment';
 import { createStackNavigator } from "@react-navigation/stack";
 import { callBackend } from  "../backend/backend"
-import { DEFAULT_DOWN_THRESHOLD } from "../constants"
 
 // This warning appears when passing a callback function (to "return" an Event).
 // TODO: Revisit react-navigation as a way to solve this problem. This warning suggests that these screens are not
@@ -17,17 +16,34 @@ const Stack = createStackNavigator();
 
 
 // TODO: Appropriately type these props (see https://reactnavigation.org/docs/typescript).
-const AddInfo = ({ navigation }) => {
+const AddInfo = ({ navigation, route }) => {
   const DEFAULT_EMOJI = "🗓"
-
+  const squadId = route.params.squadId
+  
   const [eventImageURL, setEventImageURL] = useState("");
   const [eventName, setEventName] = useState("");
   const [eventURL, setEventURL] = useState("");
   const [emojiPicked, setEmojiPicked] = useState(DEFAULT_EMOJI);
+  const [numSquadMembers, setNumSquadMembers] = useState(0);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
+  useEffect(() => {
+    const endpoint = 'get_users?squadId=' + squadId
+    const init: RequestInit = {
+        method: "GET",
+        headers: {
+        'Content-Type': 'application/json'
+        },
+    }
+    callBackend(endpoint, init).then(response => { 
+        return response.json();
+    }).then(data => { 
+      setNumSquadMembers(data.user_info.length);
+    });
+  }, []);  
+
   const goToAddMoreInfo = () => {
-    navigation.navigate("Enter Additional Info", { emojiPicked, eventName, eventURL, eventImageURL });
+    navigation.navigate("Enter Additional Info", { emojiPicked, eventName, eventURL, eventImageURL, numSquadMembers });
   }
 
   const renderTitleEmojiBox = () => {
@@ -75,10 +91,16 @@ const AddInfo = ({ navigation }) => {
 }
 
 const AddMoreInfo = ({ navigation, route }) => {
+  const calcDefaultDownThreshold = (numSquadMembers: number) => {
+    // Default down threshold is half the number of people in the squad, rounded up.
+    return Math.ceil(numSquadMembers/2)
+  }
+
   const emojiPicked = route.params.emojiPicked;
   const eventImageURL = route.params.eventImageURL;
   const eventName = route.params.eventName;
   const eventURL = route.params.eventURL;
+  const numSquadMembers = route.params.numSquadMembers
   const squadId = route.params.squadId;
   const userEmail = route.params.userEmail
   const [eventDescription, setEventDescription] = useState("");
@@ -88,8 +110,8 @@ const AddMoreInfo = ({ navigation, route }) => {
   const [endDate, setEndDate] = useState(new Date());
   const [showEndDatePicker, setShowEndDatePicker] = useState();
   const [endDatePicked, setEndDatePicked] = useState();
-  const [downThreshold, setDownThreshold] = useState(DEFAULT_DOWN_THRESHOLD);
-
+  const [downThreshold, setDownThreshold] = useState(calcDefaultDownThreshold(numSquadMembers));
+ 
   const renderStartDatePicker = () => {
     return (
       showStartDatePicker &&
@@ -178,8 +200,8 @@ const AddMoreInfo = ({ navigation, route }) => {
       {renderStartDate()}
       {renderEndDate()}
       <View>
-        <Text style={{color: 'gray'}}>% of people down to auto create event: {downThreshold}</Text>
-        <Slider minimumValue={0} maximumValue={100} step={5} value={downThreshold} onValueChange={(sliderValue: number) => setDownThreshold(sliderValue)}>
+        <Text style={{color: 'gray'}}>Number of people down to auto create event: {downThreshold}</Text>
+        <Slider minimumValue={0} maximumValue={numSquadMembers} step={1} value={downThreshold} onValueChange={(sliderValue: number) => setDownThreshold(sliderValue)}>
         </Slider>
       </View>
       <Button title={"Let's go"} onPress={addEventOnBackend} />
@@ -190,7 +212,7 @@ const AddMoreInfo = ({ navigation, route }) => {
 const AddEvent = ({ route }) => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Enter Info" component={AddInfo} />
+      <Stack.Screen name="Enter Info" component={AddInfo} initialParams={{ squadId: route.params.squadId }}/>
       <Stack.Screen name="Enter Additional Info" component={AddMoreInfo}
                     initialParams={{ squadId: route.params.squadId, userEmail: route.params.userEmail, addEvent: route.params.addEvent }} />
     </Stack.Navigator>

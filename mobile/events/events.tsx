@@ -6,7 +6,6 @@ import { event_styles } from "./events_styles";
 import moment from 'moment';
 import  SquadMembers  from "../squads/squad_members"
 import { useFocusEffect } from '@react-navigation/native';
-import { DEFAULT_DOWN_THRESHOLD } from '../constants'
 
 const SQUAD_CODE_TITLE_TEXT = "Squad Code: "
 
@@ -156,7 +155,7 @@ const Events = (props) => {
 
   const renderDownBar = (event: Event) => {
     const downPercentage = calcDownPercentage(event)
-    const barColor = downPercentage >= (event.down_threshold || DEFAULT_DOWN_THRESHOLD) ? '#68EDC6' : '#C7F9FF'
+    const barColor = event.rsvp_users.length >= event.down_threshold ? '#68EDC6' : '#C7F9FF'
     const borderRightRadii = downPercentage > 95 ? 15 : 0
     const barWidth = `${downPercentage}%`
     const inlineStyleJSON = {
