@@ -7,3 +7,4 @@ flask-login
 shortuuid
 requests
 boto3
+pytest
