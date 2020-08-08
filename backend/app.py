@@ -164,6 +164,8 @@ def respondToEvent(user_id, event_id, response):
         db.session.add(user_event_response)
     db.session.commit()
     getEventResponsesAndCheckDownThresh(event, user_id, response)
+    if not user_event_response.response:
+        removeEventFromCalendarIfExists(event, user_id)
     return user_event_response.jsonifyEventResponse()
 
 
@@ -185,6 +187,15 @@ def getEventResponsesAndCheckDownThresh(event, user_id, response):
         addEventToCalendars(accepted_responses)
 
 
+def removeEventFromCalendarIfExists(event, user_id):
+    user = GetUserById(user_id)
+    access_token = user.getToken(SECRETS, GOOGLE_TOKEN_URL)
+    headers = {'Authorization': 'Bearer {}'.format(
+        access_token)}
+    event_url = '{}/{}'.format(GOOGLE_CALENDAR_API, event.getEventUUID())
+    requests.delete(event_url, headers=headers)
+
+
 def addEventToCalendars(accepted_responses):
     event = GetEventById(accepted_responses[0].event_id)
     gcal_event = event.getGoogleCalendarEventBody()
@@ -192,16 +203,23 @@ def addEventToCalendars(accepted_responses):
     attendees = [{'email': user.email} for user in users]
     gcal_event['attendees'] = attendees
     for user in users:
-        if not eventExistsOnCalendar(event, user):
-            sendGoogleCalendarRequest(gcal_event, user)
+        req_type = 'POST'
+        if eventExistsOnCalendar(event, user):
+            req_type = 'PUT'
+        sendGoogleCalendarRequest(gcal_event, user, req_type)
 
 
-def sendGoogleCalendarRequest(gcal_event, user):
+def sendGoogleCalendarRequest(gcal_event, user, req_type):
     access_token = user.getToken(SECRETS, GOOGLE_TOKEN_URL)
     headers = {'Authorization': 'Bearer {}'.format(
         access_token), 'content-type': 'application/json'}
-    r = requests.post(GOOGLE_CALENDAR_API, data=json.dumps(
-        gcal_event), headers=headers)
+    if req_type == 'POST':
+        r = requests.post(GOOGLE_CALENDAR_API, data=json.dumps(
+            gcal_event), headers=headers)
+    else:
+        event_url = "{}/{}".format(GOOGLE_CALENDAR_API, gcal_event['id'])
+        r = requests.put(event_url, data=json.dumps(
+            gcal_event), headers=headers)
 
 
 def eventExistsOnCalendar(event, user):
@@ -210,7 +228,8 @@ def eventExistsOnCalendar(event, user):
         access_token)}
     event_url = '{}/{}'.format(GOOGLE_CALENDAR_API, event.getEventUUID())
     r = requests.get(event_url, headers=headers)
-    return 'error' not in r.json()
+    resp_json = r.json()
+    return 'error' not in resp_json
 
 
 def addUserToSquad(squad_code, email):
