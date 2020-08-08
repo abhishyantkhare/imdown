@@ -8,7 +8,10 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(64), index=True,
                       unique=True, nullable=False)
     name = db.Column(db.String(64), index=False, unique=False, nullable=False)
-    photo = db.Column(db.String(256), index=False, unique=False, nullable=False)
+    photo = db.Column(db.String(256), index=False,
+                      unique=False, nullable=False)
+    google_access_token = db.Column(db.String(255))
+    google_refresh_token = db.Column(db.String(255))
 
     def userDict(self):
         return {

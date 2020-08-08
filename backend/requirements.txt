@@ -5,3 +5,5 @@ python-dotenv
 mysqlclient
 flask-login
 shortuuid
+requests
+boto3
