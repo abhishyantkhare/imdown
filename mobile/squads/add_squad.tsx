@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Modal, TextInput, TouchableHighlight, Text, TouchableOpacity, SafeAreaView } from "react-native";
+import { View, Modal, TextInput, Text, TouchableOpacity, SafeAreaView } from "react-native";
 import { AddSquadStyles } from "./add_squad_styles"
 import EmojiSelector, { Categories } from "react-native-emoji-selector";
 import { Squad } from "./squads"

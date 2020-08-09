@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Button, SafeAreaView, Slider, Text, TextInput, TouchableHighlight, TouchableOpacity, View } from "react-native";
+import { Button, SafeAreaView, Slider, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { AddEventStyles } from "./add_event_styles"
 import EmojiSelector, { Categories } from "react-native-emoji-selector";
-import DatePickerModal from "../components/datepickermodal/datepickermodal";
+import DateTimeInput from "../components/date_time_input/date_time_input";
 import moment from 'moment';
 import { createStackNavigator } from "@react-navigation/stack";
 import { callBackend } from  "../backend/backend"
@@ -99,65 +99,10 @@ const AddMoreInfo = ({ navigation, route }) => {
   const squadId = route.params.squadId;
   const userEmail = route.params.userEmail
   const [eventDescription, setEventDescription] = useState("");
-  const [startDate, setStartDate] = useState(new Date());
-  const [showStartDatePicker, setShowStartDatePicker] = useState();
-  const [startDatePicked, setStartDatePicked] = useState();
-  const [endDate, setEndDate] = useState(new Date());
-  const [showEndDatePicker, setShowEndDatePicker] = useState();
-  const [endDatePicked, setEndDatePicked] = useState();
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const [downThreshold, setDownThreshold] = useState(calcDefaultDownThreshold(numSquadMembers));
 
-  const renderStartDatePicker = () => {
-    return (
-      showStartDatePicker &&
-      <DatePickerModal
-          onSubmit={(startDate: Date) => {
-            setStartDate(startDate);
-            setShowStartDatePicker(false);
-            setStartDatePicked(true);
-          }}
-      />
-    )
-  }
-
-  const renderEndDate = () => {
-    return (
-      <View>
-        <TouchableHighlight onPress={() => { setShowEndDatePicker(true) }}>
-          <Text>
-            {`End Date: ${endDatePicked ? moment(endDate).toLocaleString() : "TBD"}`}
-          </Text>
-        </TouchableHighlight>
-        {renderEndDatePicker()}
-      </View>
-    )
-  }
-
-  const renderEndDatePicker = () => {
-    return (
-      showEndDatePicker &&
-      <DatePickerModal
-          onSubmit={(endDate) => {
-            setEndDate(endDate);
-            setShowEndDatePicker(false);
-            setEndDatePicked(true);
-          }}
-      />
-    )
-  }
-
-  const renderStartDate = () => {
-    return (
-      <View>
-        <TouchableHighlight onPress={() => { setShowStartDatePicker(true) }}>
-          <Text>
-            {`Start Date: ${startDatePicked ? moment(startDate).toLocaleString() : "TBD"}`}
-          </Text>
-        </TouchableHighlight>
-        {renderStartDatePicker()}
-      </View>
-    )
-  }
   const addEventOnBackend = () => {
     const endpoint = 'create_event'
     const data = {
@@ -192,8 +137,8 @@ const AddMoreInfo = ({ navigation, route }) => {
       <Text>{route.params.eventName}</Text>
       <TextInput placeholder={"Event description"}
                  onChangeText={(desc) => setEventDescription(desc)} />
-      {renderStartDate()}
-      {renderEndDate()}
+      <DateTimeInput onChange={setStartDate} defaultValue={startDate} />
+      <DateTimeInput onChange={setEndDate} defaultValue={endDate} />
       <View>
         <Text style={{color: 'gray'}}>Number of people down to auto create event: {downThreshold}</Text>
         <Slider minimumValue={0} maximumValue={numSquadMembers} step={1} value={downThreshold} onValueChange={(sliderValue: number) => setDownThreshold(sliderValue)}>
