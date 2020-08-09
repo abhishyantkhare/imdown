@@ -90,7 +90,7 @@ const [isUserAccepted, setIsUserAccepted] = useState(isUserEventAccepted(event))
                 <Text style={EventDetailsStyles.button_row_text}> delete </Text>
             </TouchableOpacity>
 						{ renderRSVPButton() }
-            <TouchableOpacity style ={EventDetailsStyles.edit_event_container}>
+            <TouchableOpacity onPress={() => { goToEditEvent(event) }} style ={EventDetailsStyles.edit_event_container}>
                 <Image source = {require('../assets/edit_event.png')} style = {{ width: ROW_BUTTON_HEIGHT, height: ROW_BUTTON_WIDTH }}/>
                 <Text style={EventDetailsStyles.button_row_text}> edit </Text>
             </TouchableOpacity>
@@ -154,6 +154,14 @@ const [isUserAccepted, setIsUserAccepted] = useState(isUserEventAccepted(event))
 
 	const calculateDownRSVPPercentage = (num_accepted: number, num_declined: number) => {
 		return Math.round(num_accepted*100/(num_accepted+num_declined))
+	}
+
+	const goToEditEvent = (event: Event) => {
+		props.navigation.navigate("Edit Event", {
+			event: event,
+			userEmail: userEmail,
+			setEvent: setEvent
+    });
 	}
 
   return (

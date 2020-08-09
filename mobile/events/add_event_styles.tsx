@@ -9,6 +9,12 @@ export const AddEventStyles = StyleSheet.create({
   add_event_button: {
     paddingTop: 15
   },
+  emoji_and_event_name_container: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "center"
+  },
   emoji: {
     fontSize: 40,
     alignItems: "center",
