@@ -4,7 +4,7 @@ from init import application, SECRETS
 from extensions import db
 from models.user import User, GetUserById
 from models.event_response import EventResponse
-from models.event import Event, GetEventById
+from models.event import Event, get_event_by_id
 from models.squad import Squad
 from models.squadmembership import SquadMembership
 from flask_login import login_user, login_required
@@ -166,7 +166,7 @@ def respondToEvent(user_id, event_id, response):
     getEventResponsesAndCheckDownThresh(event, user_id, response)
     if not user_event_response.response:
         removeEventFromCalendarIfExists(event, user_id)
-    return user_event_response.jsonifyEventResponse()
+    return user_event_response.jsonify_eventResponse()
 
 
 def getEventResponsesAndCheckDownThresh(event, user_id, response):
@@ -192,13 +192,13 @@ def removeEventFromCalendarIfExists(event, user_id):
     access_token = user.getToken(SECRETS, GOOGLE_TOKEN_URL)
     headers = {'Authorization': 'Bearer {}'.format(
         access_token)}
-    event_url = '{}/{}'.format(GOOGLE_CALENDAR_API, event.getEventUUID())
+    event_url = '{}/{}'.format(GOOGLE_CALENDAR_API, event.get_event_UUID())
     requests.delete(event_url, headers=headers)
 
 
 def addEventToCalendars(accepted_responses):
-    event = GetEventById(accepted_responses[0].event_id)
-    gcal_event = event.getGoogleCalendarEventBody()
+    event = get_event_by_id(accepted_responses[0].event_id)
+    gcal_event = event.get_google_calendar_event_body()
     users = [GetUserById(resp.user_id) for resp in accepted_responses]
     attendees = [{'email': user.email} for user in users]
     gcal_event['attendees'] = attendees
@@ -226,7 +226,7 @@ def eventExistsOnCalendar(event, user):
     access_token = user.getToken(SECRETS, GOOGLE_TOKEN_URL)
     headers = {'Authorization': 'Bearer {}'.format(
         access_token)}
-    event_url = '{}/{}'.format(GOOGLE_CALENDAR_API, event.getEventUUID())
+    event_url = '{}/{}'.format(GOOGLE_CALENDAR_API, event.get_event_UUID())
     r = requests.get(event_url, headers=headers)
     resp_json = r.json()
     return 'error' not in resp_json
@@ -302,7 +302,7 @@ def createEvent():
         if (squadMembership.user_id != u.id):
             respondToEvent(squadMembership.user_id, e.id, False)
     num_squad_members = len(squadMemberships)
-    return e.jsonifyEvent()
+    return e.jsonify_event()
 
 
 @application.route("/get_events", methods=["GET"])

@@ -44,10 +44,10 @@ class Event(db.Model):
             'down_threshold': self.down_threshold
         }
 
-    def jsonifyEvent(self):
+    def jsonify_event(self):
         return jsonify(id=self.id, title=self.title, description=self.description, start_time=self.start_time, end_time=self.end_time, address=self.address, lat=self.lat, lng=self.lng)
 
-    def getGoogleCalendarEventBody(self):
+    def get_google_calendar_event_body(self):
         return {
             'start': {
                 # Keep everything in UTC timezone on the backend for simplicity
@@ -63,10 +63,10 @@ class Event(db.Model):
             'description': self.description,
             'summary': self.title,
             'status': 'confirmed',
-            'id': self.getEventUUID()
+            'id': self.get_event_UUID()
         }
 
-    def getEventUUID(self):
+    def get_event_UUID(self):
         shortuuid.set_alphabet(EVENT_UUID_ALPHABET)
         if not self.calendar_event_uuid:
             self.calendar_event_uuid = shortuuid.uuid()
@@ -74,5 +74,5 @@ class Event(db.Model):
         return self.calendar_event_uuid
 
 
-def GetEventById(id):
+def get_event_by_id(id):
     return Event.query.filter_by(id=id).first()
