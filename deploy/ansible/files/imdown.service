@@ -10,7 +10,7 @@ Group=www-data
 WorkingDirectory=/home/ubuntu/imdown/backend
 ExecStartPre=/home/ubuntu/.local/bin/flask db upgrade
 ExecStart=/usr/bin/uwsgi --ini imdown.ini
-Environment=DATABASE_URL=mysql://ubuntu:password@localhost/imdowndb
+Environment=DATABASE_URL=mysql://ubuntu:password@localhost/imdowndb?charset=utf8mb4
 
 [Install]
 WantedBy=multi-user.target

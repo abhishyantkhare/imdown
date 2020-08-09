@@ -59,8 +59,7 @@ const Events = (props) => {
   const goToAddEvent = () => {
     props.navigation.navigate("Add Event", {
       squadId: squadId,
-      userEmail: userEmail,
-      addEvent: addEvent
+      userEmail: userEmail
     });
   }
 
@@ -98,10 +97,6 @@ const Events = (props) => {
       ),
     });
   }, [props.navigation]);
-
-  const addEvent = (newEvent: Event) => {
-    setEvents(events.concat([newEvent]));
-  }
 
   const goToEventDetailsPage = (event: Event) => {
     props.navigation.navigate("EventDetails", {

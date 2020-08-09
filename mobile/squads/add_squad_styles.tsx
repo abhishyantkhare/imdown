@@ -52,7 +52,6 @@ export const AddSquadStyles = StyleSheet.create({
   },
   squad_name: {
     margin: 15,
-    height: 40,
     borderColor: "white",
     borderBottomColor: "#90BEDE",
     borderWidth: 1,

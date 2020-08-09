@@ -1,7 +1,7 @@
 from flask import request
 from flask import jsonify
 from init import application, SECRETS
-from extensions import db, migrate
+from extensions import db
 from models.user import User
 from models.event_response import EventResponse
 from models.event import Event
@@ -9,9 +9,6 @@ from models.squad import Squad
 from models.squadmembership import SquadMembership
 from flask_login import login_user, login_required
 from collections import defaultdict
-import google.oauth2.credentials
-import google_auth_oauthlib.flow
-import googleapiclient.discovery
 import requests
 
 
@@ -183,17 +180,16 @@ def getEventResponsesAndCheckDownThresh(event, user_id, response):
 
 def addUserToSquad(squad_code, email):
     squad_obj = Squad.query.filter_by(code=squad_code).first()
-    if squad_obj is None:
-        print("Failure adding to squad. Invite link is not valid")
-        return "Invite link not valid. It is {}".format(invite_link), 400
+    if not squad_obj:
+        print("Failure adding to squad. Squad code is not valid")
+        return f"Invite link not valid. It is {squad_code}", 400
     user_obj = User.query.filter_by(email=email).first()
-    if user_obj is None:
-        print("Failure adding to squad. User with user auth hash {} does not exist".format(
-            email))
-        return "User hash is not valid. It is {}".format(auth_hash), 400
+    if not user_obj:
+        print(f"Failure adding to squad. User with user email {email} does not exist")
+        return f"Email hash is not valid. It is {email}", 400
     user_squad_existing_membership = SquadMembership.query.filter_by(
         user_id=user_obj.id, squad_id=squad_obj.id).first()
-    if (user_squad_existing_membership != None):
+    if not user_squad_existing_membership:
         print("User is already in squad, not adding")
         return "User is already in squad, not adding"
     else:
@@ -201,7 +197,6 @@ def addUserToSquad(squad_code, email):
         db.session.add(to_insert)
         db.session.commit()
         return to_insert.jsonifySquadMembership()
-    return to_insert.jsonifySquadMembership()
 
 
 @application.route("/create_event", methods=["POST"])
@@ -287,8 +282,7 @@ def getEvent():
     e_id = args["event_id"]
     event = Event.query.filter_by(id=e_id).first()
     if event is None:
-        response_msg = "Event {} not found in DB. Erroring".format(
-            event_id)
+        response_msg = "Event {} not found in DB. Erroring".format(e_id)
         print(response_msg)
         return response_msg, 400
     event_responses = getEventResponsesBatch([event.id])
