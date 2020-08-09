@@ -80,6 +80,14 @@ export const EditEventStyles = StyleSheet.create({
     margin: 15,
     paddingVertical: 15
   },
+  emoji: {
+    fontSize: 40,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  emoji_picker_container : {
+    paddingTop: 60
+  },
   down_threshold_text: {
     alignItems: "center",
     color: "gray",
