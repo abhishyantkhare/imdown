@@ -204,6 +204,15 @@ def sendGoogleCalendarRequest(gcal_event, user):
         gcal_event), headers=headers)
 
 
+def eventExistsOnCalendar(event, user):
+    access_token = user.getToken(SECRETS, GOOGLE_TOKEN_URL)
+    headers = {'Authorization': 'Bearer {}'.format(
+        access_token)}
+    event_url = '{}/{}'.format(GOOGLE_CALENDAR_API, event.getEventUUID())
+    r = requests.get(event_url, headers=headers)
+    return 'error' not in r.json()
+
+
 def addUserToSquad(squad_code, email):
     squad_obj = Squad.query.filter_by(code=squad_code).first()
     if not squad_obj:

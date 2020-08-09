@@ -2,6 +2,10 @@ from init import db
 from flask import jsonify
 import json
 from datetime import datetime
+import shortuuid
+
+
+EVENT_UUID_ALPHABET = 'abcdefghijklmnopqrstuv0123456789'
 
 
 class Event(db.Model):
@@ -18,6 +22,7 @@ class Event(db.Model):
     lng = db.Column(db.Float, index=True, unique=False)
     squad_id = db.Column(db.Integer, index=True, unique=False)
     down_threshold = db.Column(db.Integer, index=False, unique=False)
+    calendar_event_uuid = db.Column(db.String(256), index=False, unique=True)
 
     def __repr__(self):
         return 'Event id {} with title {} and squad {}'.format(self.id, self.title, self.squad_id)
@@ -58,7 +63,16 @@ class Event(db.Model):
             'description': self.description,
             'summary': self.title,
             'status': 'confirmed',
+            'id': self.getEventUUID()
         }
+
+    def getEventUUID(self):
+        shortuuid.set_alphabet(EVENT_UUID_ALPHABET)
+        if not self.calendar_event_uuid:
+            self.calendar_event_uuid = shortuuid.uuid()
+            db.session.commit()
+        return self.calendar_event_uuid
+
 
 def GetEventById(id):
     return Event.query.filter_by(id=id).first()
