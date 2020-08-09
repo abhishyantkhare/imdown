@@ -17,5 +17,5 @@ class EventResponse(db.Model):
             'response': self.response
         }
 
-    def jsonifyEventResponse(self):
+    def jsonify_eventResponse(self):
         return jsonify(id=self.id, event_id=self.event_id, user_id=self.user_id, response=self.response)

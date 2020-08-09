@@ -2,17 +2,19 @@ from flask import request
 from flask import jsonify
 from init import application, SECRETS
 from extensions import db
-from models.user import User
+from models.user import User, GetUserById
 from models.event_response import EventResponse
-from models.event import Event
+from models.event import Event, get_event_by_id
 from models.squad import Squad
 from models.squadmembership import SquadMembership
 from flask_login import login_user, login_required
 from collections import defaultdict
 import requests
+import json
 
 
 GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token'
+GOOGLE_CALENDAR_API = 'https://www.googleapis.com/calendar/v3/calendars/primary/events'
 
 
 def validateArgsInRequest(content, *args):
@@ -139,8 +141,9 @@ def respondToEvent(user_id, event_id, response):
             user_id, event_squad_id, event_id)
         print(response_msg)
         return response_msg, 400
-    
-    user_event_response = EventResponse.query.filter_by(event_id=event.id, user_id=user_id).first()
+
+    user_event_response = EventResponse.query.filter_by(
+        event_id=event.id, user_id=user_id).first()
 
     if user_event_response is not None:
         if user_event_response.response is not response:
@@ -161,7 +164,10 @@ def respondToEvent(user_id, event_id, response):
         db.session.add(user_event_response)
     db.session.commit()
     getEventResponsesAndCheckDownThresh(event, user_id, response)
-    return user_event_response.jsonifyEventResponse()
+    if not user_event_response.response:
+        removeEventFromCalendarIfExists(event, user_id)
+    return user_event_response.jsonify_eventResponse()
+
 
 def getEventResponsesAndCheckDownThresh(event, user_id, response):
     event_responses = EventResponse.query.filter_by(
@@ -169,14 +175,62 @@ def getEventResponsesAndCheckDownThresh(event, user_id, response):
     num_accepted = 0
     num_declined = 0
     down_threshold = event.down_threshold
+    accepted_responses = []
     for resp in event_responses:
         if resp.response:
             num_accepted += 1
+            accepted_responses.append(resp)
         else:
             num_declined += 1
-    if (num_accepted*100)/(num_accepted+num_declined) >= event.down_threshold:
+    if num_accepted >= event.down_threshold:
         print("Enough people are down to create an event on calender!")
-        ## INSERT CALL TO CALENDAR HERE
+        addEventToCalendars(accepted_responses)
+
+
+def removeEventFromCalendarIfExists(event, user_id):
+    user = GetUserById(user_id)
+    access_token = user.getToken(SECRETS, GOOGLE_TOKEN_URL)
+    headers = {'Authorization': 'Bearer {}'.format(
+        access_token)}
+    event_url = '{}/{}'.format(GOOGLE_CALENDAR_API, event.get_event_UUID())
+    requests.delete(event_url, headers=headers)
+
+
+def addEventToCalendars(accepted_responses):
+    event = get_event_by_id(accepted_responses[0].event_id)
+    gcal_event = event.get_google_calendar_event_body()
+    users = [GetUserById(resp.user_id) for resp in accepted_responses]
+    attendees = [{'email': user.email} for user in users]
+    gcal_event['attendees'] = attendees
+    for user in users:
+        req_type = 'POST'
+        if eventExistsOnCalendar(event, user):
+            req_type = 'PUT'
+        sendGoogleCalendarRequest(gcal_event, user, req_type)
+
+
+def sendGoogleCalendarRequest(gcal_event, user, req_type):
+    access_token = user.getToken(SECRETS, GOOGLE_TOKEN_URL)
+    headers = {'Authorization': 'Bearer {}'.format(
+        access_token), 'content-type': 'application/json'}
+    if req_type == 'POST':
+        r = requests.post(GOOGLE_CALENDAR_API, data=json.dumps(
+            gcal_event), headers=headers)
+    else:
+        event_url = "{}/{}".format(GOOGLE_CALENDAR_API, gcal_event['id'])
+        r = requests.put(event_url, data=json.dumps(
+            gcal_event), headers=headers)
+
+
+def eventExistsOnCalendar(event, user):
+    access_token = user.getToken(SECRETS, GOOGLE_TOKEN_URL)
+    headers = {'Authorization': 'Bearer {}'.format(
+        access_token)}
+    event_url = '{}/{}'.format(GOOGLE_CALENDAR_API, event.get_event_UUID())
+    r = requests.get(event_url, headers=headers)
+    resp_json = r.json()
+    return 'error' not in resp_json
+
 
 def addUserToSquad(squad_code, email):
     squad_obj = Squad.query.filter_by(code=squad_code).first()
@@ -185,7 +239,8 @@ def addUserToSquad(squad_code, email):
         return f"Invite link not valid. It is {squad_code}", 400
     user_obj = User.query.filter_by(email=email).first()
     if not user_obj:
-        print(f"Failure adding to squad. User with user email {email} does not exist")
+        print(
+            f"Failure adding to squad. User with user email {email} does not exist")
         return f"Email hash is not valid. It is {email}", 400
     user_squad_existing_membership = SquadMembership.query.filter_by(
         user_id=user_obj.id, squad_id=squad_obj.id).first()
@@ -247,7 +302,7 @@ def createEvent():
         if (squadMembership.user_id != u.id):
             respondToEvent(squadMembership.user_id, e.id, False)
     num_squad_members = len(squadMemberships)
-    return e.jsonifyEvent()
+    return e.jsonify_event()
 
 
 @application.route("/get_events", methods=["GET"])
