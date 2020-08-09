@@ -23,6 +23,7 @@ export type Event = {
   down_threshold: number
 }
 
+
 export type RSVPUser = {
   user_id: String,
   email: String
