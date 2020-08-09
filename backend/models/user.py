@@ -1,6 +1,7 @@
 from extensions import db
 from flask import jsonify
 from flask_login import UserMixin
+import requests
 
 
 class User(UserMixin, db.Model):
@@ -26,3 +27,19 @@ class User(UserMixin, db.Model):
 
     def jsonifyUser(self):
         return jsonify(email=self.email, name=self.name, photo=self.photo)
+
+    def getToken(self, secrets, oauth_url):
+        # always refresh the token for now. Eventually we only need to refresh when the token actually expires
+        refresh_body = {
+            'client_id': secrets["GOOGLE_CLIENT_ID"],
+            'client_secret': secrets["GOOGLE_CLIENT_SECRET"],
+            'refresh_token': self.google_refresh_token,
+            'grant_type': 'refresh_token'
+        }
+        r = requests.post(oauth_url, data=refresh_body)
+        resp = r.json()
+        return resp['access_token']
+
+
+def GetUserById(id):
+    return User.query.filter_by(id=id).first()
