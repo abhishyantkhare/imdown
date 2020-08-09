@@ -23,7 +23,6 @@ export type Event = {
   down_threshold: number
 }
 
-
 export type RSVPUser = {
   user_id: String,
   email: String
@@ -100,7 +99,7 @@ const Events = (props) => {
 
   const goToEventDetailsPage = (event: Event) => {
     props.navigation.navigate("EventDetails", {
-      event: event,
+      eventId: event.id,
       userEmail: userEmail
     })
   }

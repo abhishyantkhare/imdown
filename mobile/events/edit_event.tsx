@@ -216,24 +216,7 @@ const EditEvent = (props) => {
             'Content-Type': 'application/json'
         },
     }
-    callBackend(endpoint, init).then(() => { refreshFromBackend() })
-  }
-
-  const refreshFromBackend = () => {
-    const endpoint = 'get_event?event_id=' + event.id
-    const init: RequestInit = {
-      method: "GET",
-      headers: {
-        'Content-Type': 'application/json'
-      },
-    }
-    callBackend(endpoint, init).then(response => { 
-      return response.json();
-    }).then(data => { 
-      const updatedEvent = toEvents([data])[0]
-      props.route.params.setEvent(updatedEvent)
-      props.navigation.pop()
-    });
+    callBackend(endpoint, init).then(() => { props.navigation.pop() })
   }
 
   return (

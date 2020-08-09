@@ -5,16 +5,37 @@ import moment from 'moment';
 import Divider  from '../components/divider/divider'
 import { callBackend } from  "../backend/backend"
 import { Event, toEvents, RSVPUser } from  "./events"
-import { DOWN_EMOJI_HEIGHT, DOWN_EMOJI_WIDTH, EVENT_PIC_HEIGHT, EVENT_PIC_WIDTH, ROW_BUTTON_HEIGHT, ROW_BUTTON_WIDTH } from "../constants"
+import { DEFAULT_EVENT, DOWN_EMOJI_HEIGHT, DOWN_EMOJI_WIDTH, EVENT_PIC_HEIGHT, EVENT_PIC_WIDTH, ROW_BUTTON_HEIGHT, ROW_BUTTON_WIDTH } from "../constants"
+import { useFocusEffect } from '@react-navigation/native';
 
 const EventDetails = (props) => {
-const [event, setEvent] = useState(props.route.params.event)
-const userEmail = props.route.params.userEmail
-const isUserEventAccepted = (event: Event) => {
-  return event.rsvp_users.some(item => item.email === userEmail)
-}
-const [isUserAccepted, setIsUserAccepted] = useState(isUserEventAccepted(event))
+  const eventId = props.route.params.eventId
+  const userEmail = props.route.params.userEmail
+  const [event, setEvent] = useState(DEFAULT_EVENT)
+  const [isUserAccepted, setIsUserAccepted] = useState(false)
+  const isUserEventAccepted = (event: Event) => {
+    return event.rsvp_users.some(item => item.email === userEmail)
+  }
 
+  useFocusEffect(
+    React.useCallback(() => {
+    const endpoint = 'get_event?event_id=' + eventId
+    const init: RequestInit = {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    }
+    callBackend(endpoint, init).then(response => { 
+      return response.json();
+    }).then(data => { 
+      const updatedEvent: Event = toEvents([data])[0]
+      setEvent(updatedEvent)
+      const isUserEventAccepted = updatedEvent.rsvp_users.some(item => item.email === userEmail)
+      setIsUserAccepted(isUserEventAccepted)
+    });
+  }, [])
+  );
 
   {/* Event title + pic + details box */}
   const renderTitlePicDetailsBox = () => {
