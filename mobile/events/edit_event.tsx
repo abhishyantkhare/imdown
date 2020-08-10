@@ -4,10 +4,10 @@ import { EditEventStyles } from "./edit_event_styles";
 import EmojiSelector, { Categories } from "react-native-emoji-selector";
 import DateTimeInput from "../components/date_time_input/date_time_input";
 import moment from 'moment';
-import Divider  from '../components/divider/divider'
-import { callBackend } from  "../backend/backend"
-import { toEvents } from  "./events"
-import { EVENT_PIC_HEIGHT, EVENT_PIC_WIDTH} from "../constants"
+import Divider from '../components/divider/divider'
+import { callBackend } from "../backend/backend"
+import { toEvents } from "./events"
+import { EVENT_PIC_HEIGHT, EVENT_PIC_WIDTH } from "../constants"
 
 const EditEvent = (props) => {
   const event = props.route.params.event
@@ -25,65 +25,65 @@ const EditEvent = (props) => {
 
   useLayoutEffect(() => {
     props.navigation.setOptions({
-        headerLeft: () => (
-          <Button
-            onPress={() => props.navigation.pop()}
-            title=" Cancel"
-            color="#007AFF"
-          />
-        ),
+      headerLeft: () => (
+        <Button
+          onPress={() => props.navigation.pop()}
+          title=" Cancel"
+          color="#007AFF"
+        />
+      ),
     });
   }, [props.navigation]);
 
-  {/* Event image circle */}
+  {/* Event image circle */ }
   const renderImageCircle = () => {
     return (
-      <View style = {EditEventStyles.event_pic_container}>
-        { event.image_url ?
-            <View style={EditEventStyles.event_picture}>
-                <Image source={{uri: event.image_url}}
-                style={{ borderColor: "#aaaaaa", borderWidth: 1, width: EVENT_PIC_WIDTH, height: EVENT_PIC_HEIGHT, borderRadius: EVENT_PIC_WIDTH/2 }}
-                />
-            </View> :
-            <View></View>
+      <View style={EditEventStyles.event_pic_container}>
+        {event.image_url ?
+          <View style={EditEventStyles.event_picture}>
+            <Image source={{ uri: event.image_url }}
+              style={{ borderColor: "#aaaaaa", borderWidth: 1, width: EVENT_PIC_WIDTH, height: EVENT_PIC_HEIGHT, borderRadius: EVENT_PIC_WIDTH / 2 }}
+            />
+          </View> :
+          <View></View>
         }
       </View>
     )
   }
 
-  {/* Event title box */}
+  {/* Event title box */ }
   const renderEventTitleBox = () => {
     return (
       <View style={EditEventStyles.event_title_container}>
-          <TextInput style={EditEventStyles.event_title} placeholder="Event Title" value={event_name} onChangeText={(value) => setEventName(value)} />
+        <TextInput style={EditEventStyles.event_title} placeholder="Event Title" value={event_name} onChangeText={(value) => setEventName(value)} />
       </View>
     );
   }
 
-  {/* Event details box (All fields shown on event details page) */}
+  {/* Event details box (All fields shown on event details page) */ }
   const renderEventDetailsBox = () => {
     return (
-      <View style = {EditEventStyles.event_details_edit_container}>
-        <DateTimeInput onChange={setEventStartMS} defaultValue={event_start_ms} />
-        { Divider() }
-        <DateTimeInput onChange={setEventEndMS} defaultValue={event_end_ms} />
-        { Divider() }
-        <TextInput style={[EditEventStyles.event_url, {textDecorationLine: event_url ? 'underline' : 'none'}]} placeholder="Event URL" value={event_url} onChangeText={(value) => setEventURL(value)} />
-        { Divider() }
+      <View style={EditEventStyles.event_details_edit_container}>
+        <DateTimeInput onChange={setEventStartMS} initialDateTime={event_start_ms} />
+        {Divider()}
+        <DateTimeInput onChange={setEventEndMS} initialDateTime={event_end_ms} />
+        {Divider()}
+        <TextInput style={[EditEventStyles.event_url, { textDecorationLine: event_url ? 'underline' : 'none' }]} placeholder="Event URL" value={event_url} onChangeText={(value) => setEventURL(value)} />
+        {Divider()}
         <TextInput style={EditEventStyles.event_description} placeholder="Event Description" value={event_description} onChangeText={(value) => setEventDescription(value)} />
       </View>
     );
   }
 
 
-  {/* Additional event fields box (Fields related to event not shown on details page) */}
+  {/* Additional event fields box (Fields related to event not shown on details page) */ }
   const renderAdditionalFieldsBox = () => {
     return (
       <View style={EditEventStyles.additional_fields_container}>
-        { renderEmojiField() }
-        { Divider() }
+        {renderEmojiField()}
+        {Divider()}
         <Text style={EditEventStyles.down_threshold_text}>Number of people down to auto create event: {event_down_threshold}</Text>
-        <View style = {{ marginHorizontal: 20, paddingBottom: 20 }} >
+        <View style={{ marginHorizontal: 20, paddingBottom: 20 }} >
           <Slider minimumValue={0} maximumValue={event.rsvp_users.length + event.declined_users.length} step={1} value={event_down_threshold} onValueChange={(sliderValue: number) => setEventDownThreshold(sliderValue)}>
           </Slider>
         </View>
@@ -94,7 +94,7 @@ const EditEvent = (props) => {
   const renderEmojiField = () => {
     return (
       <SafeAreaView style={EditEventStyles.emoji_container}>
-        <Text style = {EditEventStyles.event_emoji_text}>
+        <Text style={EditEventStyles.event_emoji_text}>
           Event Emoji:
         </Text>
         <View>
@@ -113,28 +113,28 @@ const EditEvent = (props) => {
 
   const renderEmojiPicker = () => {
     return (
-        showEmojiPicker &&
-        <View style = {EditEventStyles.emoji_picker_container}>
-          <EmojiSelector
-            category={Categories.symbols}
-            onEmojiSelected={emoji => {
-              setEventEmoji(emoji);
-              setShowEmojiPicker(false);
-            }}
-          />
-        </View>
+      showEmojiPicker &&
+      <View style={EditEventStyles.emoji_picker_container}>
+        <EmojiSelector
+          category={Categories.symbols}
+          onEmojiSelected={emoji => {
+            setEventEmoji(emoji);
+            setShowEmojiPicker(false);
+          }}
+        />
+      </View>
     )
   }
 
 
   const renderSaveButton = () => {
     return (
-      <View style = {{ alignItems: 'center' }}>
+      <View style={{ alignItems: 'center' }}>
         <TouchableOpacity onPress={saveEvent}>
-          <View style = {EditEventStyles.save_button}>
-            <Text style = {EditEventStyles.save_button_text}> {"Save"} </Text>
+          <View style={EditEventStyles.save_button}>
+            <Text style={EditEventStyles.save_button_text}> {"Save"} </Text>
           </View>
-        </TouchableOpacity>			
+        </TouchableOpacity>
       </View>
     );
   }
@@ -143,25 +143,25 @@ const EditEvent = (props) => {
   const saveEvent = () => {
     const endpoint = 'edit_event'
     const data = {
-        event_id: event.id,
-        email: userEmail,
-        title: event_name || null,
-        description: event_description || null,
-        down_threshold: event_down_threshold,
-        emoji: event_emoji,
-        event_url: event_url || null,
-        image_url: event.image_url || null,
-        squad_id: event.squadId,
-        start_time: event_start_ms ? moment(event_start_ms).valueOf() : null,
-        end_time: event_end_ms ? moment(event_end_ms).valueOf() : null,
+      event_id: event.id,
+      email: userEmail,
+      title: event_name || null,
+      description: event_description || null,
+      down_threshold: event_down_threshold,
+      emoji: event_emoji,
+      event_url: event_url || null,
+      image_url: event.image_url || null,
+      squad_id: event.squadId,
+      start_time: event_start_ms ? moment(event_start_ms).valueOf() : null,
+      end_time: event_end_ms ? moment(event_end_ms).valueOf() : null,
     }
     const init: RequestInit = {
-        method: 'PUT',
-        mode: 'no-cors',
-        body: JSON.stringify(data),
-        headers: {
-            'Content-Type': 'application/json'
-        },
+      method: 'PUT',
+      mode: 'no-cors',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json'
+      },
     }
     callBackend(endpoint, init).then(() => { props.navigation.pop() })
   }
@@ -169,14 +169,14 @@ const EditEvent = (props) => {
   return (
     <ScrollView style={EditEventStyles.container} >
       {/* Event image */}
-      { renderImageCircle() }
+      {renderImageCircle()}
       {/* Event title */}
-      { renderEventTitleBox() }
+      {renderEventTitleBox()}
       {/* Event info shown on event details page */}
-      { renderEventDetailsBox() }
+      {renderEventDetailsBox()}
       {/* Other additional event fields */}
-      { renderAdditionalFieldsBox() }
-      { renderSaveButton() }
+      {renderAdditionalFieldsBox()}
+      {renderSaveButton()}
     </ScrollView>
   );
 }

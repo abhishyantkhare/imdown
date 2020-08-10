@@ -6,9 +6,11 @@ import moment from "moment";
 
 // This can be extended for formatting, styling, and more.
 export interface DateTimeInputProps {
-  onChange: (dateTime: Date | null) => void;
+  onChange: (dateTime: Date) => void;
   // The default value of the selector.
-  defaultValue?: Date;
+  defaultSelectorValue?: Date;
+  // Initial value of the selected datetime.
+  initialDateTime?: Date;
 }
 
 /**
@@ -16,9 +18,10 @@ export interface DateTimeInputProps {
  * selector followed by a clock selector.
  */
 const DateTimeInput = (dateTimeInputProps: DateTimeInputProps) => {
-  const defaultDateTime = dateTimeInputProps.defaultValue || new Date();
+  const defaultDateTime = dateTimeInputProps.defaultSelectorValue || dateTimeInputProps.initialDateTime || new Date();
   const defaultMode = Platform.OS === 'ios' ? 'datetime' : 'date';
-  const [dateTime, setDateTime] = useState<Date | null>(defaultDateTime);
+  const [dateTime, setDateTime] = useState<Date | undefined>(dateTimeInputProps.initialDateTime);
+  const [finalDateTime, setFinalDateTime] = useState<Date | undefined>(dateTimeInputProps.initialDateTime);
   const [mode, setMode] = useState<'datetime' | 'date' | 'time'>(defaultMode);
   const [show, setShow] = useState(false);
 
@@ -34,6 +37,7 @@ const DateTimeInput = (dateTimeInputProps: DateTimeInputProps) => {
     // (Android) There is a Cancel button that will cause no results to be passed.
     if (!selectedValue) {
       setMode(defaultMode);
+      setShow(false);
       return;
     }
     // (iOS) Select the date and time in one step, and rely on a Button for submission.
@@ -51,13 +55,13 @@ const DateTimeInput = (dateTimeInputProps: DateTimeInputProps) => {
       updateDateTime({ time: selectedValue });
       setShow(false);
       setMode(defaultMode);
-      dateTimeInputProps.onChange(dateTime);
+      dateTimeInputProps.onChange(dateTime || defaultDateTime);
     }
   };
 
   const formatDate = () => {
-    return dateTime
-      ? `🗓 ${moment(dateTime).format('llll').toLocaleString()}`
+    return finalDateTime
+      ? `🗓 ${moment(finalDateTime).format('llll').toLocaleString()}`
       : "TBD";
   };
 
@@ -68,11 +72,15 @@ const DateTimeInput = (dateTimeInputProps: DateTimeInputProps) => {
       ? (
         <Modal>
           <DateTimePicker value={dateTime || defaultDateTime} mode={mode} onChange={onChange} />
-          <Button title="Cancel" onPress={() => setShow(false)} />
+          <Button title="Cancel" onPress={() => {
+            setShow(false)
+            setDateTime(dateTimeInputProps.initialDateTime)
+          }} />
           <Button title="Set Date" onPress={() => {
             setShow(false);
-            setDateTime(dateTime || defaultDateTime);
-            dateTimeInputProps.onChange(dateTime);
+            const selectedDate = dateTime || defaultDateTime;
+            setFinalDateTime(selectedDate);
+            dateTimeInputProps.onChange(selectedDate);
           }} />
         </Modal>
       )
