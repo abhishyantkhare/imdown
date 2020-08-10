@@ -2,7 +2,7 @@ import React, { useLayoutEffect, useState } from "react";
 import { Button, Image, SafeAreaView, ScrollView, Slider, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { EditEventStyles } from "./edit_event_styles";
 import EmojiSelector, { Categories } from "react-native-emoji-selector";
-import DatePickerModal from "../components/datepickermodal/datepickermodal";
+import DateTimeInput from "../components/date_time_input/date_time_input";
 import moment from 'moment';
 import Divider  from '../components/divider/divider'
 import { callBackend } from  "../backend/backend"
@@ -20,8 +20,6 @@ const EditEvent = (props) => {
   const [event_start_ms, setEventStartMS] = useState(event.start_ms)
   const [event_end_ms, setEventEndMS] = useState(event.end_ms)
   const [event_url, setEventURL] = useState(event.url)
-  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
-  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
 
@@ -66,9 +64,9 @@ const EditEvent = (props) => {
   const renderEventDetailsBox = () => {
     return (
       <View style = {EditEventStyles.event_details_edit_container}>
-        { renderStartDate() }
+        <DateTimeInput onChange={setEventStartMS} defaultValue={event_start_ms} />
         { Divider() }
-        { renderEndDate() }
+        <DateTimeInput onChange={setEventEndMS} defaultValue={event_end_ms} />
         { Divider() }
         <TextInput style={[EditEventStyles.event_url, {textDecorationLine: event_url ? 'underline' : 'none'}]} placeholder="Event URL" value={event_url} onChangeText={(value) => setEventURL(value)} />
         { Divider() }
@@ -91,57 +89,6 @@ const EditEvent = (props) => {
         </View>
       </View>
     );
-  }
-
-
-  const renderStartDate = () => {
-    return (
-      <View>
-        <TouchableOpacity onPress={() => { setShowStartDatePicker(true) }}>
-          <Text style={EditEventStyles.event_time}>
-            {`🗓 ${moment(event_start_ms).format('llll').toLocaleString()}`}
-          </Text>
-        </TouchableOpacity>
-        {renderStartDatePicker()}
-      </View>
-    )
-  }
-
-  const renderStartDatePicker = () => {
-    return (
-      showStartDatePicker &&
-      <DatePickerModal
-          onSubmit={(chosenDate: Date) => {
-            setEventStartMS(moment(chosenDate).valueOf())
-            setShowStartDatePicker(false);
-          }}
-      />
-    )
-  }
-
-  const renderEndDate = () => {
-    return (
-      <View>
-        <TouchableOpacity onPress={() => { setShowEndDatePicker(true) }}>
-          <Text style={EditEventStyles.event_time}>
-            {`🗓 ${moment(event_end_ms).format('llll').toLocaleString()}`}
-          </Text>
-        </TouchableOpacity>
-        {renderEndDatePicker()}
-      </View>
-    )
-  }
-
-  const renderEndDatePicker = () => {
-    return (
-      showEndDatePicker &&
-      <DatePickerModal
-          onSubmit={(chosenDate: Date) => {
-            setEventEndMS(moment(chosenDate).valueOf())
-            setShowEndDatePicker(false);
-          }}
-      />
-    )
   }
 
   const renderEmojiField = () => {
