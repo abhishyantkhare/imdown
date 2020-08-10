@@ -244,7 +244,7 @@ def addUserToSquad(squad_code, email):
         return f"Email hash is not valid. It is {email}", 400
     user_squad_existing_membership = SquadMembership.query.filter_by(
         user_id=user_obj.id, squad_id=squad_obj.id).first()
-    if not user_squad_existing_membership:
+    if user_squad_existing_membership:
         print("User is already in squad, not adding")
         return "User is already in squad, not adding"
     else:
@@ -304,8 +304,10 @@ def createEvent():
     num_squad_members = len(squadMemberships)
     return e.jsonify_event()
 
+
 @application.route("/edit_event", methods=["PUT"])
-@login_required # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+# If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+@login_required
 def editEvent():
     content = request.get_json()
     ok, err = validateArgsInRequest(content, "event_id", "email", "title", "emoji",
@@ -332,6 +334,7 @@ def editEvent():
     db.session.add(event)
     db.session.commit()
     return event.jsonifyEvent()
+
 
 @application.route("/get_events", methods=["GET"])
 # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
@@ -446,7 +449,8 @@ def get_users():
 
 
 @application.route("/delete_user", methods=["DELETE"])
-@login_required # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+# If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+@login_required
 def delete_user():
     content = request.get_json()
     ok, err = validateArgsInRequest(
