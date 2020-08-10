@@ -128,7 +128,7 @@ def respondToEvent(user_id, event_id, response):
     if user is None:
         return "Can't find user with user_id {}, so can't respond to event {}".format(user_id, event_id), 400
     user_id = user.id
-    event = Event.query.filter_by(id=event_id).first()
+    event = get_event_by_id(event_id)
     if event == None:
         response_msg = "No event found for event {}. Erroring".format(event_id)
         print(response_msg)
@@ -316,7 +316,7 @@ def editEvent():
     if u is None:
         return "User does not exist!", 400
     event_id = content["event_id"]
-    event = Event.query.filter_by(id=event_id).first()
+    event = get_event_by_id(event_id)
     if event is None:
         return "Event does not exist!", 400
 
@@ -363,7 +363,7 @@ def getEvent():
         print("validation error")
         return err, 400
     e_id = args["event_id"]
-    event = Event.query.filter_by(id=e_id).first()
+    event = get_event_by_id(e_id)
     if event is None:
         response_msg = "Event {} not found in DB. Erroring".format(e_id)
         print(response_msg)
