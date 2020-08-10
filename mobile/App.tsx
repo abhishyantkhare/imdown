@@ -30,7 +30,7 @@ export default function App() {
     return (
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
           <Stack.Screen name="Squads" component={Squads} />
           <Stack.Screen name="Add Squad" component={AddSquadModal} />
           <Stack.Screen name="Events" component={Events} />
