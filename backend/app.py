@@ -6,7 +6,7 @@ from models.user import User, GetUserById
 from models.event_response import EventResponse
 from models.event import Event, get_event_by_id
 from models.squad import Squad
-from models.squadmembership import SquadMembership
+from models.squadmembership import SquadMembership, GetUsersBySquadId
 from flask_login import login_user, login_required
 from collections import defaultdict
 import requests
@@ -441,13 +441,26 @@ def get_users():
     if not ok:
         return err, 400
     squad_id = args["squadId"]
-    user_squad_memberships = SquadMembership.query.filter_by(
-        squad_id=squad_id).all()
-    users_lst = []
-    for user_squad_membership in user_squad_memberships:
-        user_id = user_squad_membership.user_id
-        user = User.query.filter_by(id=user_id).first()
-        if user is None:
-            return "User {} is a member of squad {}, but user could not be retrieved".format(user_id, squad_id), 400
-        users_lst.append(user)
-    return jsonify(user_info=[user.userDict() for user in users_lst])
+    users = GetUsersBySquadId(squad_id)
+    return jsonify(user_info=users)
+
+
+@application.route("/delete_user", methods=["DELETE"])
+@login_required # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+def delete_user():
+    content = request.get_json()
+    ok, err = validateArgsInRequest(
+        content, "user_id", "squad_id")
+    if not ok:
+        return err, 400
+    user_id = content["user_id"]
+    squad_id = content["squad_id"]
+    to_delete = SquadMembership.query.filter_by(user_id=user_id).first()
+    if to_delete == None:
+        print("User is already deleted from squad.")
+        return "User is already deleted from squad."
+    else:
+        db.session.delete(to_delete)
+        db.session.commit()
+    users = GetUsersBySquadId(squad_id)
+    return jsonify(user_info=users)
