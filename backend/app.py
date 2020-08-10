@@ -128,7 +128,7 @@ def respondToEvent(user_id, event_id, response):
     if user is None:
         return "Can't find user with user_id {}, so can't respond to event {}".format(user_id, event_id), 400
     user_id = user.id
-    event = Event.query.filter_by(id=event_id).first()
+    event = get_event_by_id(event_id)
     if event == None:
         response_msg = "No event found for event {}. Erroring".format(event_id)
         print(response_msg)
@@ -304,6 +304,34 @@ def createEvent():
     num_squad_members = len(squadMemberships)
     return e.jsonify_event()
 
+@application.route("/edit_event", methods=["PUT"])
+@login_required # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+def editEvent():
+    content = request.get_json()
+    ok, err = validateArgsInRequest(content, "event_id", "email", "title", "emoji",
+                                    "description", "down_threshold", "start_time", "end_time", "event_url", "image_url")
+    if not ok:
+        return err, 400
+    u = User.query.filter_by(email=content["email"]).first()
+    if u is None:
+        return "User does not exist!", 400
+    event_id = content["event_id"]
+    event = get_event_by_id(event_id)
+    if event is None:
+        return "Event does not exist!", 400
+
+    event.title = content["title"]
+    event.description = content["description"]
+    event.down_threshold = content["down_threshold"]
+    event.event_emoji = content["emoji"]
+    event.event_url = content["event_url"]
+    event.image_url = content["image_url"]
+    event.start_time = content["start_time"]
+    event.end_time = content["end_time"]
+
+    db.session.add(event)
+    db.session.commit()
+    return event.jsonifyEvent()
 
 @application.route("/get_events", methods=["GET"])
 # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
@@ -335,7 +363,7 @@ def getEvent():
         print("validation error")
         return err, 400
     e_id = args["event_id"]
-    event = Event.query.filter_by(id=e_id).first()
+    event = get_event_by_id(e_id)
     if event is None:
         response_msg = "Event {} not found in DB. Erroring".format(e_id)
         print(response_msg)

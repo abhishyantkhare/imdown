@@ -100,7 +100,7 @@ const Events = (props) => {
 
   const goToEventDetailsPage = (event: Event) => {
     props.navigation.navigate("EventDetails", {
-      event: event,
+      eventId: event.id,
       userEmail: userEmail
     })
   }

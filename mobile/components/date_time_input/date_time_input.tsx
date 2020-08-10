@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Button, Modal, Platform, Text, TouchableOpacity, View } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { DateTimeInputStyles } from "./date_time_input_styles";
 import moment from "moment";
 
 // This can be extended for formatting, styling, and more.
@@ -17,7 +18,7 @@ export interface DateTimeInputProps {
 const DateTimeInput = (dateTimeInputProps: DateTimeInputProps) => {
   const defaultDateTime = dateTimeInputProps.defaultValue || new Date();
   const defaultMode = Platform.OS === 'ios' ? 'datetime' : 'date';
-  const [dateTime, setDateTime] = useState<Date | null>(null);
+  const [dateTime, setDateTime] = useState<Date | null>(defaultDateTime);
   const [mode, setMode] = useState<'datetime' | 'date' | 'time'>(defaultMode);
   const [show, setShow] = useState(false);
 
@@ -83,7 +84,7 @@ const DateTimeInput = (dateTimeInputProps: DateTimeInputProps) => {
       <TouchableOpacity onPress={() => {
         setShow(true);
       }}>
-        <Text>{formatDate()}</Text>
+        <Text style={DateTimeInputStyles.time_text}>{formatDate()}</Text>
       </TouchableOpacity>
       {show && renderDateTimePicker()}
     </View>
