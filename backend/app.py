@@ -88,14 +88,14 @@ def add_to_squad():
 def createSquad():
     content = request.get_json()
     ok, err = validateArgsInRequest(
-        content, "email", "squad_name", "squad_emoji")
+        content, "email", "admin_id", "squad_name", "squad_emoji")
     if not ok:
         return err, 400
     email = content["email"]
     user = User.query.filter_by(email=email).first()
     if user is None:
         return 'User does not exist!', 400
-    squad = Squad(name=content["squad_name"],
+    squad = Squad(name=content["squad_name"], admin_id=content["admin_id"],
                   squad_emoji=content["squad_emoji"])
     squad.generate_code()
     db.session.add(squad)
@@ -468,3 +468,19 @@ def delete_user():
         db.session.commit()
     users = GetUsersBySquadId(squad_id)
     return jsonify(user_info=users)
+
+@application.route("/get_user_id", methods=["GET"])
+# If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+@login_required
+def get_user_id():
+    args = request.args
+    ok, err = validateArgsInRequest(
+        args, "email")
+    if not ok:
+        return err, 400
+    email = args["email"]
+    user = User.query.filter_by(email=email).first()
+    if user is None:
+        return 'User with email of {} does not exist!'.format(email), 400
+    user_id = user.id
+    return jsonify(user_id=user_id)

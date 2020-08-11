@@ -8,6 +8,7 @@ import { callBackend } from "../backend/backend"
 type OwnProps = {
     visible: boolean,
     email: string,
+    admin_id: number,
     onPress: (squad: Squad) => void
 }
 
@@ -30,6 +31,7 @@ const AddSquadModal = (props: OwnProps) => {
         const endpoint = 'create_squad'
         const data = {
             email: props.email,
+            admin_id: props.admin_id,
             squad_name: squadName,
             squad_emoji: emojiPicked
         }
@@ -43,7 +45,7 @@ const AddSquadModal = (props: OwnProps) => {
         }
         callBackend(endpoint, init).then(() => { addSquad() })
     }
-
+    
     const addSquadByCodeOnBackend = () => {
         const endpoint = 'add_to_squad'
         const data = {
