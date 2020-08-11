@@ -1,16 +1,18 @@
 import React, { useLayoutEffect, useState, useEffect } from "react";
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, Alert } from "react-native";
 import { squad_styles } from "./squads_styles";
 import { Button } from "react-native";
 import AddSquadModal from "./add_squad"
 import { callBackend } from "../backend/backend"
+import { SwipeRow, SwipeListView } from "react-native-swipe-list-view"
 
 
 export type Squad = {
     id: number,
     name: string,
     squad_emoji: string,
-    code?: string
+    code?: string,
+    admin_id: number
 }
 
 const Squads = (props) => {
@@ -18,6 +20,7 @@ const Squads = (props) => {
     const [addSquadModalVisble, setAddSquadModalVisble] = useState(false)
     const [squads, setSquads] = useState(props.route.params.squads)
     const [email, setEmail] = useState(props.route.params.email)
+    const [userId, setUserId] = useState()
 
 
     useLayoutEffect(() => {
@@ -31,6 +34,21 @@ const Squads = (props) => {
             ),
         });
     }, [props.navigation]);
+
+    const getUserId = () => {
+        const endpoint = 'get_user_id?email=' + email
+        const init: RequestInit = {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        }
+        callBackend(endpoint, init).then(response => {
+            return response.json();
+        }).then(data => {
+            setUserId(data.user_id)
+        });
+    }
 
     const getSquads = () => {
         const endpoint = 'get_squads?email=' + email
@@ -48,7 +66,8 @@ const Squads = (props) => {
     }
 
     useEffect(() => {
-        getSquads()
+        getSquads();
+        getUserId();
     }, []);
 
 
@@ -70,28 +89,84 @@ const Squads = (props) => {
         })
     }
 
-    const renderSquadItem = ({ item }: { item: Squad }) => {
+    const deleteSquad = (squadId: number) => {
+        const endpoint = 'delete_squad'
+        const data = {
+            squad_id: squadId,
+            user_id: userId
+        }
+        const init: RequestInit = {
+            method: 'DELETE',
+            mode: 'no-cors',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        }
+        callBackend(endpoint, init).then(response => { 
+            return response.json();
+        }).then(data => { 
+            setSquads(data.squads);
+        });
+    }
+
+
+    const deleteBtn = (squadId: number, squadName: string) => {
         return (
-            <View style={squad_styles.squad_item}>
-                <TouchableOpacity onPress={() => { goToEvents(item.id, item.name, item.squad_emoji, item.code) }}>
-                    <Text style={squad_styles.squad_text}>{item.squad_emoji} {item.name}</Text>
-                </TouchableOpacity>
+            <TouchableOpacity
+                style={squad_styles.deleteBtn}
+                onPress={() => 
+                    Alert.alert(
+                        'Alert',
+                        'Are you sure you want to delete ' + squadName   + '?',
+                        [
+                            {
+                                text: 'Yes', 
+                                onPress: () => { deleteSquad(squadId) },
+                            },
+                            {
+                                text: 'Cancel', 
+                                style: "cancel"
+                            }
+                        ],
+                        { cancelable: true}
+                    )
+                    
+                }
+            >
+                <Text style={squad_styles.deleteText}>Delete</Text>
+            </TouchableOpacity>
+        )
+    } 
+
+
+    const renderSquadItem = ({ item, index }: { item: Squad, index: number }) => (
+        <SwipeRow
+            disableLeftSwipe={item.admin_id != userId}
+            rightOpenValue={-75}
+            disableRightSwipe={true}
+        >
+            <View style={squad_styles.rowBack}>
+                {deleteBtn(item.id, item.name)}
             </View>
-        );
-    };
-
-
+            
+                <View style={squad_styles.rowFront}>
+                    <View style={squad_styles.squad_item}>
+                        <TouchableOpacity onPress={() => { goToEvents(item.id, item.name, item.squad_emoji, item.code) }}>
+                            <Text style={squad_styles.squad_text}>{item.squad_emoji} {item.name}</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+        </SwipeRow>
+    );
 
     return (
         <View style={squad_styles.squads_container}>
-            <FlatList
-                data={squads}
-                renderItem={renderSquadItem}
-                style={squad_styles.squad_list}
-            />
+            <SwipeListView data={squads} renderItem={renderSquadItem} />
             <AddSquadModal
                 visible={addSquadModalVisble}
                 email={email}
+                admin_id={userId}
                 onPress={addSquad}
             />
         </View>

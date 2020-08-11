@@ -11,6 +11,7 @@ class Squad(db.Model):
     squad_emoji = db.Column(db.String(64), index=False, unique=False)
     invite_link = db.Column(db.String(64), index=False, unique=True)
     code = db.Column(db.String(64), index=False, unique=True)
+    admin_id = db.Column(db.Integer, index=False, unique=False)
 
     def squadDict(self):
         return {
@@ -18,7 +19,8 @@ class Squad(db.Model):
             'name': self.name,
             'squad_emoji': self.squad_emoji,
             'invite_link': self.invite_link,
-            'code': self.code
+            'code': self.code,
+            'admin_id': self.admin_id
         }
 
     def __repr__(self):
@@ -33,4 +35,4 @@ class Squad(db.Model):
         self.code = code
 
     def jsonifySquad(self):
-        return jsonify(id=self.id, squad_name=self.name, squad_emoji=self.squad_emoji, invite_link=self.invite_link, squad_id=self.id)
+        return jsonify(id=self.id, squad_name=self.name, squad_emoji=self.squad_emoji, invite_link=self.invite_link, squad_id=self.id, admin_id=self.admin_id)
