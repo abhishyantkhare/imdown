@@ -4,7 +4,7 @@ import { squad_styles } from "./squads_styles";
 import { Button } from "react-native";
 import AddSquadModal from "./add_squad"
 import { callBackend } from "../backend/backend"
-import Swipeout from "react-native-swipeout";
+import { SwipeRow, SwipeListView } from "react-native-swipe-list-view"
 
 
 export type Squad = {
@@ -110,16 +110,16 @@ const Squads = (props) => {
         });
     }
 
-    const deletebtn = (squadName: string, squadId: number) => {
+
+    const deleteBtn = (squadId: number, squadName: string) => {
         return (
-            [
-                {
-                  text: 'delete', 
-                  onPress: () => { 
+            <TouchableOpacity
+                style={squad_styles.deleteBtn}
+                onPress={() => 
                     Alert.alert(
-                       'Alert',
-                       'Are you sure you want to delete ' + squadName   + '?',
-                       [
+                        'Alert',
+                        'Are you sure you want to delete ' + squadName   + '?',
+                        [
                             {
                                 text: 'Yes', 
                                 onPress: () => { deleteSquad(squadId) },
@@ -128,50 +128,41 @@ const Squads = (props) => {
                                 text: 'Cancel', 
                                 style: "cancel"
                             }
-                       ],
-                       { cancelable: true}
-                    )   
-                  },
-                  backgroundColor: "red"
+                        ],
+                        { cancelable: true}
+                    )
+                    
                 }
-            ]
+            >
+                <Text style={squad_styles.deleteText}>Delete</Text>
+            </TouchableOpacity>
         )
     } 
 
-    const renderSquadItem = ({ item }: { item: Squad }) => {
-        if(item.admin_id == userId){
-            return (
-                <Swipeout right={deletebtn(item.name, item.id)} 
-                    backgroundColor="white"
-                    autoClose={true}
-                >
-                        <View style={squad_styles.squad_item}>
-                            <TouchableOpacity onPress={() => { goToEvents(item.id, item.name, item.squad_emoji, item.code) }}>
-                                <Text style={squad_styles.squad_text}>{item.squad_emoji} {item.name}</Text>
-                            </TouchableOpacity>
-                        </View>
-                </Swipeout>
-            );
-            
-        } else {
-            return (
-                <View style={squad_styles.squad_item}>
-                    <TouchableOpacity onPress={() => { goToEvents(item.id, item.name, item.squad_emoji, item.code) }}>
-                        <Text style={squad_styles.squad_text}>{item.squad_emoji} {item.name}</Text>
-                    </TouchableOpacity>
-                </View>
-            );
-        }
-    };
 
+    const renderSquadItem = ({ item, index }: { item: Squad, index: number }) => (
+        <SwipeRow
+            disableLeftSwipe={item.admin_id != userId}
+            rightOpenValue={-75}
+            disableRightSwipe={true}
+        >
+            <View style={squad_styles.rowBack}>
+                {deleteBtn(item.id, item.name)}
+            </View>
+            
+                <View style={squad_styles.rowFront}>
+                    <View style={squad_styles.squad_item}>
+                        <TouchableOpacity onPress={() => { goToEvents(item.id, item.name, item.squad_emoji, item.code) }}>
+                            <Text style={squad_styles.squad_text}>{item.squad_emoji} {item.name}</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+        </SwipeRow>
+    );
 
     return (
         <View style={squad_styles.squads_container}>
-            <FlatList
-                data={squads}
-                renderItem={renderSquadItem}
-                style={squad_styles.squad_list}
-            />
+            <SwipeListView data={squads} renderItem={renderSquadItem} />
             <AddSquadModal
                 visible={addSquadModalVisble}
                 email={email}
