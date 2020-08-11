@@ -449,8 +449,7 @@ def get_users():
 
 
 @application.route("/delete_user", methods=["DELETE"])
-# If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
-@login_required
+@login_required # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
 def delete_user():
     content = request.get_json()
     ok, err = validateArgsInRequest(
@@ -469,6 +468,7 @@ def delete_user():
     users = GetUsersBySquadId(squad_id)
     return jsonify(user_info=users)
 
+
 @application.route("/get_user_id", methods=["GET"])
 # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
 @login_required
@@ -484,3 +484,38 @@ def get_user_id():
         return 'User with email of {} does not exist!'.format(email), 400
     user_id = user.id
     return jsonify(user_id=user_id)
+
+
+@application.route("/delete_squad", methods=["DELETE"])
+# If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+@login_required 
+def delete_squad():
+    content = request.get_json()
+    ok, err = validateArgsInRequest(
+        content, "squad_id", "user_id")
+    if not ok:
+        return err, 400
+    squad_id = content["squad_id"]
+    user_id = content["user_id"]
+    squad_to_delete = Squad.query.filter_by(id=squad_id).first()
+    if squad_to_delete == None:
+        print("Squad is already deleted.")
+        return "Squad is already deleted."
+    else:
+        db.session.delete(squad_to_delete)
+        db.session.commit()
+    squad_members = SquadMembership.query.filter_by(squad_id=squad_id).all()
+    for squad_member in squad_members:
+        db.session.delete(squad_member)
+        db.session.commit()
+    #get squads 
+    user_squad_memberships = SquadMembership.query.filter_by(
+        user_id=user_id).all()
+    squads_lst = []
+    for user_squad_membership in user_squad_memberships:
+        squad_id = user_squad_membership.squad_id
+        squad = Squad.query.filter_by(id=squad_id).first()
+        if squad is None:
+            return "User {} is a member of squad {}, but squad could not be retrieved".format(user_id, squad_id), 400
+        squads_lst.append(squad)
+    return jsonify(squads=[squad.squadDict() for squad in squads_lst])

@@ -20,7 +20,7 @@ const Squads = (props) => {
     const [addSquadModalVisble, setAddSquadModalVisble] = useState(false)
     const [squads, setSquads] = useState(props.route.params.squads)
     const [email, setEmail] = useState(props.route.params.email)
-    const [user_id, setUserId] = useState()
+    const [userId, setUserId] = useState()
 
 
     useLayoutEffect(() => {
@@ -89,7 +89,28 @@ const Squads = (props) => {
         })
     }
 
-    const deletebtn = (squadName: string) => {
+    const deleteSquad = (squadId: number) => {
+        const endpoint = 'delete_squad'
+        const data = {
+            squad_id: squadId,
+            user_id: userId
+        }
+        const init: RequestInit = {
+            method: 'DELETE',
+            mode: 'no-cors',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        }
+        callBackend(endpoint, init).then(response => { 
+            return response.json();
+        }).then(data => { 
+            setSquads(data.squads);
+        });
+    }
+
+    const deletebtn = (squadName: string, squadId: number) => {
         return (
             [
                 {
@@ -101,7 +122,7 @@ const Squads = (props) => {
                        [
                             {
                                 text: 'Yes', 
-                                onPress: () => { console.log("deleted") },
+                                onPress: () => { deleteSquad(squadId) },
                             },
                             {
                                 text: 'Cancel', 
@@ -118,9 +139,9 @@ const Squads = (props) => {
     } 
 
     const renderSquadItem = ({ item }: { item: Squad }) => {
-        if(item.admin_id == user_id){
+        if(item.admin_id == userId){
             return (
-                <Swipeout right={deletebtn(item.name)} 
+                <Swipeout right={deletebtn(item.name, item.id)} 
                     backgroundColor="white"
                     autoClose={true}
                 >
@@ -144,7 +165,6 @@ const Squads = (props) => {
     };
 
 
-
     return (
         <View style={squad_styles.squads_container}>
             <FlatList
@@ -155,7 +175,7 @@ const Squads = (props) => {
             <AddSquadModal
                 visible={addSquadModalVisble}
                 email={email}
-                admin_id={user_id}
+                admin_id={userId}
                 onPress={addSquad}
             />
         </View>
