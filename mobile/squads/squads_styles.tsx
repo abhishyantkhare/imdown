@@ -34,14 +34,23 @@ export const squad_styles = StyleSheet.create({
       flexDirection: 'row',
       paddingLeft: 15,
   },
+  editText: {
+    color: '#FFF',
+  },
+  backRightBtns: {
+    alignItems: 'center',
+    bottom: 0,
+    justifyContent: 'center',
+    position: 'absolute',
+    top: 0,
+    width: 75,
+  },
+  editBtn: {
+      backgroundColor: 'blue',
+      right: 75,
+  },
   deleteBtn: {
-      alignItems: 'center',
-      bottom: 0,
-      justifyContent: 'center',
-      position: 'absolute',
-      top: 0,
-      width: 75,
       backgroundColor: 'red',
       right: 0,
-  }
+  },
 });
