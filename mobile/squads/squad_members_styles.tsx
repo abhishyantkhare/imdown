@@ -22,5 +22,30 @@ export const squad_members_styles = StyleSheet.create({
     width: 30, 
     height: 30,
     borderRadius: 24/2
+  },
+  deleteText: {
+      color: '#FFF',
+  },
+  rowFront: {
+      backgroundColor: '#fff',
+      justifyContent: 'center',
+      height: 50,
+  },
+  rowBack: {
+      alignItems: 'center',
+      backgroundColor: '#fff',
+      flex: 1,
+      flexDirection: 'row',
+      paddingLeft: 15,
+  },
+  deleteBtn: {
+      alignItems: 'center',
+      bottom: 0,
+      justifyContent: 'center',
+      position: 'absolute',
+      top: 0,
+      width: 75,
+      backgroundColor: 'red',
+      right: 0,
   }
 });
