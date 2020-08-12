@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, Image, Alert} from "react-native";
+import { View, Text, FlatList, Image, Alert, TouchableOpacity} from "react-native";
 import { squad_members_styles } from "./squad_members_styles";
 import { callBackend } from "../backend/backend"
 import { User } from "../types/user"
 import Swipeout from 'react-native-swipeout';
+import { SwipeListView, SwipeRow } from "react-native-swipe-list-view";
 
 const SquadMembers = (props) => {
     const [users, setUsers] = useState([])
@@ -45,16 +46,16 @@ const SquadMembers = (props) => {
         });
     }
 
-    const deletebtn = (id: number, name: string, index: number) => {
+
+    const deleteBtn = (id: number, name: string, index: number) => {
         return (
-            [
-                {
-                  text: 'delete', 
-                  onPress: () => { 
+            <TouchableOpacity
+                style={squad_members_styles.deleteBtn}
+                onPress={() => 
                     Alert.alert(
-                       'Alert',
-                       'Are you sure you want to delete ' + name   + '?',
-                       [
+                        'Alert',
+                        'Are you sure you want to delete ' + name   + '?',
+                        [
                             {
                                 text: 'Yes', 
                                 onPress: () => { deleteUser(id, index) },
@@ -63,42 +64,43 @@ const SquadMembers = (props) => {
                                 text: 'Cancel', 
                                 style: "cancel"
                             }
-                       ],
-                       { cancelable: true}
-                    )   
-                  },
-                  backgroundColor: "red"
+                        ],
+                        { cancelable: true}
+                    )
+                    
                 }
-            ]
+            >
+                <Text style={squad_members_styles.deleteText}>Delete</Text>
+            </TouchableOpacity>
         )
     } 
-    
 
-    const renderUsersItem = ({ item, index }: { item: User, index: number }) => {
-        return (
-          <Swipeout right={deletebtn(item.id, item.name, index)} 
-                    backgroundColor="white"
-                    autoClose={true}
-                    >
-                <View style={squad_members_styles.user_info_view}>
-                    <View style={{paddingRight: 10}}>
-                        <Image style={squad_members_styles.user_image} source={{ uri: item.photo }} />
-                    </View>
-                    <View style={{paddingBottom: 8}}>
-                        <Text style={squad_members_styles.user_text}>{item.name} </Text>
+
+    const renderUsersItem = ({ item, index }: { item: User, index: number }) => (
+        <SwipeRow
+            rightOpenValue={-75}
+            disableRightSwipe={true}
+        >
+            <View style={squad_members_styles.rowBack}>
+                {deleteBtn(item.id, item.name, index)}
+            </View>
+            
+                <View style={squad_members_styles.rowFront}>
+                    <View style={squad_members_styles.user_info_view}>
+                        <View style={{paddingRight: 10}}>
+                            <Image style={squad_members_styles.user_image} source={{ uri: item.photo }} />
+                        </View>
+                        <View style={{paddingBottom: 8}}>
+                            <Text style={squad_members_styles.user_text}>{item.name} </Text>
+                        </View>
                     </View>
                 </View>
-          </Swipeout>  
-        );
-      };
+        </SwipeRow>
+    );
 
   return (
     <View style={squad_members_styles.squads_members_container}>
-        <FlatList
-            data={users}
-            renderItem={renderUsersItem}
-            style={squad_members_styles.users_list}
-        />
+        <SwipeListView data={users} renderItem={renderUsersItem} />
     </View>
   );
 }
