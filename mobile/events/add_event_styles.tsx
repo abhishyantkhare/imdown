@@ -5,35 +5,14 @@ export const AddEventStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
-  from_url_button: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    marginTop: 10,
-    marginHorizontal: 5,
+  textInput: {
+    margin: 15,
+    borderColor: "white",
+    borderWidth: 1,
+    fontFamily: "Ubuntu_400Regular",
+    fontSize: 16
   },
-  next_button: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginVertical: 10
-  },
-  add_event_button: {
-    paddingTop: 15
-  },
-  emoji_and_event_name_container: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  emoji: {
-    fontSize: 40,
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  emoji_picker_container: {
-    paddingTop: 60
-  },
-  event_name: {
+  largeTextInput: {
     margin: 15,
     borderColor: "white",
     borderBottomColor: "#90BEDE",
@@ -41,5 +20,39 @@ export const AddEventStyles = StyleSheet.create({
     color: "#90BEDE",
     fontFamily: "Ubuntu_700Bold",
     fontSize: 32
+  },
+  optionalTextInput: {
+    margin: 15,
+    borderColor: "white",
+    borderWidth: 1,
+    color: "gray",
+    fontFamily: "Ubuntu_400Regular",
+    fontSize: 16
+  },
+  nextButton: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginVertical: 10
+  },
+  topRightButton: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    marginTop: 10,
+    marginHorizontal: 5,
+  },
+  emoji: {
+    fontSize: 40,
+  },
+  dateAndIcon: {
+    flexDirection: "row",
+    justifyContent: "space-around"
+  },
+  downSliderText: {
+    color: "gray",
+    fontFamily: "Ubuntu_400Regular",
+    textAlign: "center"
+  },
+  downSlider: {
+    margin: 20
   }
 });

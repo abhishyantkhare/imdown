@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Button, SafeAreaView, Slider, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { AddEventStyles } from "./add_event_styles"
-import EmojiSelector, { Categories } from "react-native-emoji-selector";
+import { Button, Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { AddEventStyles } from "./add_event_styles";
+import EmojiSelector from "react-native-emoji-selector";
 import DateTimeInput from "../components/date_time_input/date_time_input";
-import moment from 'moment';
+import moment from "moment";
 import { createStackNavigator } from "@react-navigation/stack";
 import { callBackend } from "../backend/backend";
 import { Event } from "./events";
+import Slider from "@react-native-community/slider";
 
 const Stack = createStackNavigator();
 
@@ -16,24 +17,24 @@ const Stack = createStackNavigator();
  */
 // TODO: Appropriately type these props (see https://reactnavigation.org/docs/typescript).
 const AddEventNameScreen = ({ navigation, route }) => {
-  const [eventName, setEventName] = useState("");
+  const [name, setName] = useState("");
 
   const goToAddMoreInfo = () => {
-    navigation.navigate("Add Event Details", { name: eventName });
+    navigation.navigate("Add Event Details", { name });
   };
 
   return (
     <View style={AddEventStyles.container}>
-      <View style={AddEventStyles.from_url_button}>
+      <View style={AddEventStyles.topRightButton}>
         <Button title="From URL" onPress={() => navigation.navigate("Add Event URL")} />
       </View>
-      <TextInput autoFocus onChangeText={setEventName} placeholder={"Event name"} style={AddEventStyles.event_name} />
-      <View style={AddEventStyles.next_button}>
-        <Button title={"Next"} onPress={goToAddMoreInfo} disabled={!eventName} />
+      <TextInput autoFocus onChangeText={setName} placeholder="Event name" style={AddEventStyles.largeTextInput} />
+      <View style={AddEventStyles.nextButton}>
+        <Button title="Next" onPress={goToAddMoreInfo} disabled={!name} />
       </View>
     </View>
   );
-}
+};
 
 /**
  * This is an optional screen to provide a URL for the event. It will be used to pre-populate the Add Event screen by
@@ -49,6 +50,7 @@ const AddEventURLScreen = ({ navigation, route }) => {
     setTimeout(() => {
       setIsSearchingForEvent(false);
       const dummyEvent: Event = {
+        creator_user_id: 0,
         id: 999,
         name: "Caribbean Cruise",
         emoji: "🌞",
@@ -58,91 +60,89 @@ const AddEventURLScreen = ({ navigation, route }) => {
         declined_users: [],
         down_threshold: 2,
         url: dummyEventURL
-      }
+      };
       navigation.navigate("Add Event Details", dummyEvent);
     }, 1000);
-  }
+  };
 
   return (
     <View style={AddEventStyles.container}>
-      {/* Including a URL will allow us to pre-populate the other fields! */}
-      <TextInput onChangeText={setEventURL} placeholder={"Event URL"} />
-      <Button title="Search 🔮" onPress={searchForExternalEvent} disabled={isSearchingForEvent} />
+      <TextInput onChangeText={setEventURL} placeholder="Event URL" style={AddEventStyles.textInput} />
+      {/* Here is where the result from the backend will be displayed. */}
+      <View style={AddEventStyles.nextButton}>
+        <Button title="Search 🔮" onPress={searchForExternalEvent} disabled={isSearchingForEvent} />
+      </View>
     </View>
   );
-}
+};
 
 const AddEventDetailsScreen = ({ navigation, route }) => {
   const squadId = route.params.squadId;
-  const userEmail = route.params.userEmail
+  const userEmail = route.params.userEmail;
 
   // Prefilled from the previous screen(s).
-  const [eventName, setEventName] = useState(route.params.name || "");
-  const [eventURL, setEventURL] = useState(route.params.url || "");
+  const [name, setName] = useState<string>(route.params.name || "");
+  const [url, setUrl] = useState<string>(route.params.url || "");
 
-  const [eventImageURL, setEventImageURL] = useState(route.params.image_url || "");
   const [startDate, setStartDate] = useState<Date | undefined>();
   const [endDate, setEndDate] = useState<Date | undefined>();
 
-  const [eventDescription, setEventDescription] = useState<string>("");
-  const [downThreshold, setDownThreshold] = useState<number>(1);
-  const [squadSize, setSquadSize] = useState<number>(1);
-  const [emojiPicked, setEmojiPicked] = useState(route.params.emoji || "🗓");
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [emoji, setEmojiPicked] = useState<string>(route.params.emoji || "🗓");
+  const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
+  const [imageUrl, setImageUrl] = useState(route.params.image_url || "");
+
+  const [description, setDescription] = useState<string>(route.params.description || "");
+  const [downThreshold, setDownThreshold] = useState<number>(route.params.down_threshold || 2);
+  const [squadSize, setSquadSize] = useState<number>(4);
 
   useEffect(() => {
-    const endpoint = 'get_users?squadId=' + squadId
+    const endpoint = "get_users?squadId=" + squadId;
     const init: RequestInit = {
       method: "GET",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       }
-    }
+    };
     callBackend(endpoint, init).then(response => response.json()).then(data => {
       setSquadSize(data.user_info.length);
-      setDownThreshold(Math.round(data.user_info.length / 2));
     });
   }, []);
 
-  const renderEmojiBox = () => {
+  const renderEmoji = () => {
+    return showEmojiPicker ? (
+      <Modal>
+        <EmojiSelector onEmojiSelected={emoji => {
+          setEmojiPicked(emoji);
+          setShowEmojiPicker(false);
+        }} />
+      </Modal>
+    ) : (
+      <TouchableOpacity onPress={() => setShowEmojiPicker(true)}>
+        <Text style={AddEventStyles.emoji}>{emoji}</Text>
+      </TouchableOpacity>
+    );
+  };
+  const renderDownSlider = () => {
     return (
-      <SafeAreaView style={AddEventStyles.emoji_and_event_name_container}>
-        <TouchableOpacity onPress={() => { setShowEmojiPicker(true) }}>
-          <Text style={AddEventStyles.emoji}>
-            {`${emojiPicked}`}
-          </Text>
-        </TouchableOpacity>
-        <View style={{ alignSelf: "center" }}>
-          {renderEmojiPicker()}
-        </View>
-      </SafeAreaView>
-    )
-  }
-
-  const renderEmojiPicker = () => {
-    return (
-      showEmojiPicker &&
-      <View style={AddEventStyles.emoji_picker_container}>
-        <EmojiSelector
-          category={Categories.all}
-          showSearchBar={false}
-          onEmojiSelected={emoji => {
-            setEmojiPicked(emoji);
-            setShowEmojiPicker(false);
-          }}
-        />
+      <View>
+        <Text style={AddEventStyles.downSliderText}>schedule once {downThreshold} people are down</Text>
+        {/* Allowing a maximum value of at least 4 in case not everybody has joined. */}
+        <Slider minimumValue={2} maximumValue={Math.max(squadSize, 4)} step={1}
+                value={downThreshold} onValueChange={setDownThreshold}
+                thumbImage={require("../assets/down_static.png")}
+                style={AddEventStyles.downSlider} />
       </View>
-    )
-  }
+    );
+  };
 
   const addEventOnBackend = () => {
-    const endpoint = 'create_event'
-    console.log(`startDate: ${startDate}`)
+    const endpoint = "create_event";
+    console.log(`startDate: ${startDate}`);
     const data = {
       email: userEmail,
-      title: eventName || null,
-      description: eventDescription || null,
-      emoji: emojiPicked,
+      title: name || null,
+      description: description || null,
+      emoji: emoji,
       start_time: startDate ? moment(startDate).valueOf() : null,
       end_time: endDate ? moment(endDate).valueOf() : null,
       // TODO: Add address + lat/lng to add event page
@@ -150,42 +150,45 @@ const AddEventDetailsScreen = ({ navigation, route }) => {
       // lat,
       // lng,
       squad_id: squadId,
-      event_url: eventURL || null,
-      image_url: eventImageURL || null,
+      event_url: url || null,
+      image_url: imageUrl || null,
       down_threshold: downThreshold
-    }
+    };
     const init: RequestInit = {
-      method: 'POST',
-      mode: 'no-cors',
+      method: "POST",
+      mode: "no-cors",
       body: JSON.stringify(data),
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       }
-    }
-    callBackend(endpoint, init).then(() => {
-      navigation.navigate("Events")
-    })
-  }
+    };
+    callBackend(endpoint, init).then(() => navigation.navigate("Events"));
+  };
 
   return (
     <View style={AddEventStyles.container}>
-      <TextInput defaultValue={eventName} onChangeText={setEventName} placeholder={"Event name"} />
-      <TextInput defaultValue={eventURL} onChangeText={setEventURL} placeholder={"Event URL"} />
-      <TextInput onChangeText={(URL) => setEventImageURL(URL)} placeholder={"Event Image URL 🥵"} />
-      {renderEmojiBox()}
-      <DateTimeInput onChange={setStartDate} defaultSelectorValue={startDate} />
-      <DateTimeInput onChange={setEndDate} defaultSelectorValue={endDate} />
-      <TextInput placeholder={"Event description"} onChangeText={setEventDescription} />
-      <View>
-        <Text style={{ color: 'gray' }}>Number of people down to auto create event: {downThreshold}</Text>
-        <Slider minimumValue={0} maximumValue={squadSize} step={1} value={downThreshold}
-                onValueChange={(sliderValue: number) => setDownThreshold(sliderValue)}>
-        </Slider>
+      {/* Event name and URL that were chosen in the previous screens. */}
+      <TextInput defaultValue={name} onChangeText={setName} placeholder="Event name" style={AddEventStyles.textInput} />
+      <TextInput defaultValue={url} onChangeText={setUrl} placeholder="URL" style={AddEventStyles.optionalTextInput} />
+      {/* Combined start time, thumbnail, and end time block. */}
+      <View style={AddEventStyles.dateAndIcon}>
+        <DateTimeInput initialDateTime={startDate} onChange={setStartDate} />
+        {renderEmoji()}
+        <DateTimeInput initialDateTime={endDate} onChange={setEndDate} />
       </View>
-      <Button title={"Let's go"} onPress={addEventOnBackend} />
+      {/* Additional event information (more can be added here). */}
+      {/* TODO: Create an image selector widget and fold it into the emoji selector. */}
+      <TextInput onChangeText={setImageUrl} placeholder="Image URL" style={AddEventStyles.optionalTextInput} />
+      <TextInput onChangeText={setDescription} placeholder="Description" style={AddEventStyles.optionalTextInput} />
+      {/* Slider to specify the required attendance for this event. */}
+      {renderDownSlider()}
+
+      <View style={AddEventStyles.nextButton}>
+        <Button onPress={addEventOnBackend} title="Let's go" />
+      </View>
     </View>
   );
-}
+};
 
 const AddEvent = ({ route }) => {
   return (
@@ -196,6 +199,6 @@ const AddEvent = ({ route }) => {
                     initialParams={{ squadId: route.params.squadId, userEmail: route.params.userEmail }} />
     </Stack.Navigator>
   );
-}
+};
 
 export default AddEvent;
