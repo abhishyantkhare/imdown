@@ -6,11 +6,12 @@ import Divider from '../components/divider/divider'
 import { callBackend } from "../backend/backend"
 import { Event, toEvents, RSVPUser } from "./events"
 import { DEFAULT_EVENT, DOWN_EMOJI_HEIGHT, DOWN_EMOJI_WIDTH, EVENT_PIC_HEIGHT, EVENT_PIC_WIDTH, ROW_BUTTON_HEIGHT, ROW_BUTTON_WIDTH } from "../constants"
-import { useFocusEffect, NavigationContainer } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 
 const EventDetails = (props) => {
   const eventId = props.route.params.eventId
   const userEmail = props.route.params.userEmail
+  const userId = props.route.params.userId
   const [event, setEvent] = useState(DEFAULT_EVENT)
   const [isUserAccepted, setIsUserAccepted] = useState(false)
   const isUserEventAccepted = (event: Event) => {
@@ -109,20 +110,19 @@ const EventDetails = (props) => {
       <View style={EventDetailsStyles.button_row_container}>
         { renderDeleteButton() }
         { renderRSVPButton() }
-        <TouchableOpacity onPress={() => { goToEditEvent(event) }} style ={EventDetailsStyles.edit_event_container}>
-            <Image source = {require('../assets/edit_event.png')} style = {{ width: ROW_BUTTON_HEIGHT, height: ROW_BUTTON_WIDTH }}/>
-            <Text style={EventDetailsStyles.button_row_text}> edit </Text>
-        </TouchableOpacity>
+        { renderEditButton() }
       </View>
     );
   };
 
   const renderDeleteButton = () => {
-    if (event.creator_email == userEmail) {
-      return (<TouchableOpacity onPress={() => { deleteEvent() }} style ={EventDetailsStyles.delete_event_container}>
-        <Image source = {require('../assets/delete_icon.png')} style = {{ width: ROW_BUTTON_HEIGHT, height: ROW_BUTTON_WIDTH }}/>
-        <Text style={EventDetailsStyles.button_row_text}> delete </Text>
-      </TouchableOpacity>);
+    if (event.creator_user_id == userId) {
+      return (
+        <TouchableOpacity onPress={() => { deleteEvent() }} style ={EventDetailsStyles.delete_event_container}>
+          <Image source = {require('../assets/delete_icon.png')} style = {{ width: ROW_BUTTON_HEIGHT, height: ROW_BUTTON_WIDTH }}/>
+          <Text style={EventDetailsStyles.button_row_text}> delete </Text>
+        </TouchableOpacity>
+      );
     } else {
       return (<View></View>);
     }
@@ -143,6 +143,19 @@ const EventDetails = (props) => {
           <Text style={EventDetailsStyles.button_row_text}> accept </Text>
         </TouchableOpacity>
       );
+    }
+  }
+
+  const renderEditButton = () => {
+    if (event.creator_user_id == userId) {
+      return (
+        <TouchableOpacity onPress={() => { goToEditEvent(event) }} style ={EventDetailsStyles.edit_event_container}>
+          <Image source = {require('../assets/edit_event.png')} style = {{ width: ROW_BUTTON_HEIGHT, height: ROW_BUTTON_WIDTH }}/>
+          <Text style={EventDetailsStyles.button_row_text}> edit </Text>
+        </TouchableOpacity>
+        );
+    } else {
+      return (<View></View>);
     }
   }
 

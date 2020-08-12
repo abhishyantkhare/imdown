@@ -20,5 +20,5 @@ export const DEFAULT_EVENT = {
   declined_users: [],
   url: "",
   down_threshold: 0,
-  creator_email: ""
+  creator_user_id: 0
 } as Event

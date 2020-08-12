@@ -23,7 +23,7 @@ class Event(db.Model):
     squad_id = db.Column(db.Integer, index=True, unique=False)
     down_threshold = db.Column(db.Integer, index=False, unique=False)
     calendar_event_uuid = db.Column(db.String(256), index=False, unique=True)
-    creator_email = db.Column(db.String(256), index=False, unique=False)
+    creator_user_id = db.Column(db.Integer, index=False, unique=False)
 
     def __repr__(self):
         return 'Event id {} with title {} and squad {}'.format(self.id, self.title, self.squad_id)
@@ -43,7 +43,7 @@ class Event(db.Model):
             'lng': self.lng,
             'squad_id': self.squad_id,
             'down_threshold': self.down_threshold,
-            'creator_email': self.creator_email
+            'creator_user_id': self.creator_user_id
         }
 
     def jsonify_event(self):

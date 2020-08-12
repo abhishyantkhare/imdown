@@ -311,7 +311,7 @@ def createEvent():
     down_threshold = content["down_threshold"]
 
     e = Event(title=title, event_emoji=event_emoji, description=desc, start_time=start_time,
-              end_time=end_time, squad_id=squad_id, event_url=event_url, image_url=image_url, down_threshold=down_threshold, creator_email=user_email)
+              end_time=end_time, squad_id=squad_id, event_url=event_url, image_url=image_url, down_threshold=down_threshold, creator_user_id=u.id)
     db.session.add(e)
     db.session.commit()
     respondToEvent(u.id, e.id, True)
@@ -353,7 +353,7 @@ def editEvent():
 
     db.session.add(event)
     db.session.commit()
-    return event.jsonifyEvent()
+    return event.jsonify_event()
 
 
 @application.route("/get_events", methods=["GET"])
