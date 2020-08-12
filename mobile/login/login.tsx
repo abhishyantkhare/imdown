@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Text, View } from "react-native";
 import { login_styles } from "./login_styles";
-import { GoogleSignin, GoogleSigninButton } from '@react-native-community/google-signin';
+import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-community/google-signin';
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-community/async-storage';
 import { BACKEND_URL } from "../backend/backend"
@@ -50,18 +50,30 @@ const Login = ({ navigation }) => {
 
     const signIn = async () => {
         try {
-            setIsSigninInProgress(true);
-            await GoogleSignin.hasPlayServices();
-            const resp = await GoogleSignin.signIn();
-            const user: User = {
-                email: resp.user.email,
-                name: resp.user.name,
-                photo: resp.user.photo
-            };
-            setIsSigninInProgress(false);
-            signInOnBackend(user, resp.serverAuthCode);
+          setIsSigninInProgress(true);
+          await GoogleSignin.hasPlayServices();
+          const resp = await GoogleSignin.signIn();
+          const user: User = {
+            email: resp.user.email,
+            name: resp.user.name,
+            photo: resp.user.photo
+          };
+          setIsSigninInProgress(false);
+          signInOnBackend(user, resp.serverAuthCode);
         } catch (error) {
-            // TODO: catch error codes here.
+          setIsSigninInProgress(false);
+          if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+            // user cancelled the login flow
+            console.log("Error signing into Google account. User cancelled the login flow. Error is " + error);
+          } else if (error.code === statusCodes.IN_PROGRESS) {
+            // operation (e.g. sign in) is in progress already
+            console.log("Error signing into Google account. User is already in the process of logging in. Error is " + error);
+          } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+            // play services not available or outdated
+            console.log("Error signing into Google account. Play services are not available. Error is " + error);
+          } else {
+            console.log("Error signing into Google account. Unidentified error. It is " + error);
+          }
         }
     };
 
