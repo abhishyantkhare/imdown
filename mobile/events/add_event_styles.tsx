@@ -1,10 +1,20 @@
 import { StyleSheet } from "react-native";
+
 export const AddEventStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center"
+  },
+  from_url_button: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    marginTop: 10,
+    marginHorizontal: 5,
+  },
+  next_button: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginVertical: 10
   },
   add_event_button: {
     paddingTop: 15
@@ -18,9 +28,9 @@ export const AddEventStyles = StyleSheet.create({
   emoji: {
     fontSize: 40,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
-  emoji_picker_container : {
+  emoji_picker_container: {
     paddingTop: 60
   },
   event_name: {
@@ -31,5 +41,5 @@ export const AddEventStyles = StyleSheet.create({
     color: "#90BEDE",
     fontFamily: "Ubuntu_700Bold",
     fontSize: 32
-  },
+  }
 });
