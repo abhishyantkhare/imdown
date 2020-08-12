@@ -11,6 +11,7 @@ from flask_login import login_user, login_required
 from collections import defaultdict
 import requests
 import json
+import time
 
 
 GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token'
@@ -161,6 +162,8 @@ def respondToEvent(user_id, event_id, response):
         print(response_msg)
         return response_msg, 400
 
+    # Calculate current unix time in ms
+    responded_at_time = int(round(time.time() * 1000))
     user_event_response = EventResponse.query.filter_by(
         event_id=event.id, user_id=user_id).first()
 
@@ -171,6 +174,7 @@ def respondToEvent(user_id, event_id, response):
                     user_id, event_id, user_event_response.response, response)
             print(response_msg)
             user_event_response.response = response
+            user_event_response.response_time = responded_at_time
             existing_entry_exists = True
         elif user_event_response.response is response:
             response_msg = "User {} already responded to event {} with response of {}. User gave same response.".format(
@@ -179,7 +183,7 @@ def respondToEvent(user_id, event_id, response):
             return response_msg, 200
     if not existing_entry_exists:
         user_event_response = EventResponse(
-            user_id=user_id, event_id=event_id, response=response)
+            user_id=user_id, event_id=event_id, response=response, response_time=responded_at_time)
         db.session.add(user_event_response)
     db.session.commit()
     getEventResponsesAndCheckDownThresh(event, user_id, response)
@@ -439,7 +443,10 @@ def getEventResponsesBatch(event_id_list):
     eventResponses = db.session.query(User, EventResponse).filter(
         User.id == EventResponse.user_id).filter(EventResponse.event_id.in_(event_id_list)).all()
     resp_dict = defaultdict(lambda: defaultdict(list))
-    for resp in eventResponses:
+    # sort responses by response time (in ascending order/earlier responses first), and all null response times at end
+    responses_sorted_by_response_time = sorted(eventResponses,
+        key=lambda resp: float('inf') if resp[1].response_time is None else resp[1].response_time)
+    for resp in responses_sorted_by_response_time:
         user = resp[0]
         event_resp = resp[1]
         resp_dict[event_resp.event_id][event_resp.response].append(

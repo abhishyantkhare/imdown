@@ -59,7 +59,7 @@ export const EditEventStyles = StyleSheet.create({
     fontSize: 15,
     paddingBottom: 40,
     paddingTop: 15,
-    paddingLeft: 10,
+    paddingHorizontal: 10,
   },
   additional_fields_container: {
     backgroundColor: "#ffff",

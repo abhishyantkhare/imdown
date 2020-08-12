@@ -40,6 +40,7 @@ export const event_styles = StyleSheet.create({
     flexGrow: 4,
     paddingHorizontal: 10,
     paddingVertical: 20,
+    width: '70%',
   },
   event_list_container: {
     alignSelf: 'stretch',
@@ -74,6 +75,7 @@ export const event_styles = StyleSheet.create({
   event_title: {
     fontFamily: "Inter_400Regular",
     fontSize: 20,
+    marginBottom: 3
   },
   squad_code_container: {
     borderRadius: 15,
