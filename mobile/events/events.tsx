@@ -20,7 +20,8 @@ export type Event = {
   rsvp_users: RSVPUser[],
   declined_users: RSVPUser[],
   url?: string,
-  down_threshold: number
+  down_threshold: number,
+  creator_email: string
 }
 
 
@@ -43,7 +44,8 @@ export const toEvents = (backendEvent) => {
       rsvp_users: it.event_responses.accepted,
       declined_users: it.event_responses.declined,
       url: it.event_url,
-      down_threshold: it.down_threshold
+      down_threshold: it.down_threshold,
+      creator_email: it.creator_email
     }
   })
 }

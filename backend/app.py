@@ -282,7 +282,8 @@ def createEvent():
                                     "description", "start_time", "end_time", "squad_id", "event_url", "image_url", "down_threshold")
     if not ok:
         return err, 400
-    u = User.query.filter_by(email=content["email"]).first()
+    user_email = content["email"]
+    u = User.query.filter_by(email=user_email).first()
     if u is None:
         return "User does not exist!", 400
     g = Squad.query.filter_by(id=content["squad_id"]).first()
@@ -310,7 +311,7 @@ def createEvent():
     down_threshold = content["down_threshold"]
 
     e = Event(title=title, event_emoji=event_emoji, description=desc, start_time=start_time,
-              end_time=end_time, squad_id=squad_id, event_url=event_url, image_url=image_url, down_threshold=down_threshold)
+              end_time=end_time, squad_id=squad_id, event_url=event_url, image_url=image_url, down_threshold=down_threshold, creator_email=user_email)
     db.session.add(e)
     db.session.commit()
     respondToEvent(u.id, e.id, True)
@@ -397,6 +398,25 @@ def getEvent():
     ret["event_responses"]["declined"] = event_responses[ret["id"]][False]
     return jsonify(ret)
 
+@application.route("/event", methods=["DELETE"])
+# If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+@login_required
+def deleteEvent():
+    args = request.args
+    ok, err = validateArgsInRequest(args, "event_id")
+    if not ok:
+        print("validation error")
+        return err, 400
+    e_id = args["event_id"]
+    event = get_event_by_id(e_id)
+    if event is None:
+        response_msg = "Event {} not found in DB. Therefore, no event to delete.".format(e_id)
+        print(response_msg)
+        return response_msg, 400
+    EventResponse.query.filter_by(event_id=e_id).delete()
+    db.session.delete(event)
+    db.session.commit()
+    return "Safely deleted event", 200
 
 @application.route("/get_event_responses", methods=["GET"])
 # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out

@@ -48,7 +48,7 @@ export const event_styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     marginTop: 30,
-    marginBottom: 30,
+    marginBottom: 150,
     paddingHorizontal: 10,
     paddingVertical: 10,
     flexGrow: 1
