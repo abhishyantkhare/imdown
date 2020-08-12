@@ -50,17 +50,19 @@ const Login = ({ navigation }) => {
 
     const signIn = async () => {
         try {
-            setIsSigninInProgress(true);
-            await GoogleSignin.hasPlayServices();
-            const resp = await GoogleSignin.signIn();
-            const user: User = {
-                email: resp.user.email,
-                name: resp.user.name,
-                photo: resp.user.photo
-            };
-            setIsSigninInProgress(false);
-            signInOnBackend(user, resp.serverAuthCode);
+          setIsSigninInProgress(true);
+          await GoogleSignin.hasPlayServices();
+          const resp = await GoogleSignin.signIn();
+          const user: User = {
+              email: resp.user.email,
+              name: resp.user.name,
+              photo: resp.user.photo
+          };
+          setIsSigninInProgress(false);
+          signInOnBackend(user, resp.serverAuthCode);
         } catch (error) {
+          setIsSigninInProgress(false);
+          console.log("Error signing into Google account. Error is " + error)
             // TODO: catch error codes here.
         }
     };
