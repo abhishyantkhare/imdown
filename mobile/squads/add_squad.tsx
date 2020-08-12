@@ -69,6 +69,7 @@ const AddSquadModal = (props: OwnProps) => {
             id: squadId,
             name: squadName,
             squad_emoji: emojiPicked,
+            admin_id: props.admin_id
         }
         props.onPress(squad)
     }
@@ -92,7 +93,8 @@ const AddSquadModal = (props: OwnProps) => {
         return (
             showEmojiPicker &&
             <EmojiSelector
-                category={Categories.symbols}
+                category={Categories.all}
+                showSearchBar={false}
                 onEmojiSelected={emoji => {
                     setEmojiPicked(emoji);
                     setShowEmojiPicker(false);

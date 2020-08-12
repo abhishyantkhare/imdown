@@ -59,7 +59,8 @@ const EditSquad = (props) => {
             showEmojiPicker &&
             <View style = {EditSquadStyles.emoji_picker_container}>
             <EmojiSelector
-                category={Categories.symbols}
+                category={Categories.all}
+                showSearchBar={false}
                 onEmojiSelected={emoji => {
                     setSquadEmoji(emoji);
                     setShowEmojiPicker(false);

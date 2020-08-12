@@ -64,7 +64,8 @@ const AddInfo = ({ navigation, route }) => {
       showEmojiPicker &&
       <View style={AddEventStyles.emoji_picker_container}>
         <EmojiSelector
-          category={Categories.symbols}
+          category={Categories.all}
+          showSearchBar={false}
           onEmojiSelected={emoji => {
             setEmojiPicked(emoji);
             setShowEmojiPicker(false);
