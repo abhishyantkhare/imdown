@@ -109,7 +109,8 @@ def createSquad():
 @login_required
 def edit_squad():
     content = request.get_json()
-    ok, err = validateArgsInRequest(content, "squad_id", "squad_name", "squad_emoji")
+    ok, err = validateArgsInRequest(
+        content, "squad_id", "squad_name", "squad_emoji")
     if not ok:
         return err, 400
     squad_id = content["squad_id"]
@@ -182,13 +183,15 @@ def respondToEvent(user_id, event_id, response):
             user_id=user_id, event_id=event_id, response=response)
         db.session.add(user_event_response)
     db.session.commit()
-    getEventResponsesAndCheckDownThresh(event, user_id, response)
+    getEventResponsesAndCheckDownThresh(event)
     if not user_event_response.response:
         removeEventFromCalendarIfExists(event, user_id)
     return user_event_response.jsonify_eventResponse()
 
 
-def getEventResponsesAndCheckDownThresh(event, user_id, response):
+def getEventResponsesAndCheckDownThresh(event):
+    if not event.start_time or not event.end_time:
+        return
     event_responses = EventResponse.query.filter_by(
         event_id=event.id).all()
     num_accepted = 0
@@ -207,6 +210,8 @@ def getEventResponsesAndCheckDownThresh(event, user_id, response):
 
 
 def removeEventFromCalendarIfExists(event, user_id):
+    if not event.start_time or not event.end_time:
+        return
     user = GetUserById(user_id)
     access_token = user.getToken(SECRETS, GOOGLE_TOKEN_URL)
     headers = {'Authorization': 'Bearer {}'.format(
@@ -353,6 +358,7 @@ def editEvent():
 
     db.session.add(event)
     db.session.commit()
+    getEventResponsesAndCheckDownThresh(event)
     return event.jsonify_event()
 
 
@@ -398,6 +404,7 @@ def getEvent():
     ret["event_responses"]["declined"] = event_responses[ret["id"]][False]
     return jsonify(ret)
 
+
 @application.route("/event", methods=["DELETE"])
 # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
 @login_required
@@ -410,13 +417,15 @@ def deleteEvent():
     e_id = args["event_id"]
     event = get_event_by_id(e_id)
     if event is None:
-        response_msg = "Event {} not found in DB. Therefore, no event to delete.".format(e_id)
+        response_msg = "Event {} not found in DB. Therefore, no event to delete.".format(
+            e_id)
         print(response_msg)
         return response_msg, 400
     EventResponse.query.filter_by(event_id=e_id).delete()
     db.session.delete(event)
     db.session.commit()
     return "Safely deleted event", 200
+
 
 @application.route("/get_event_responses", methods=["GET"])
 # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
@@ -488,7 +497,8 @@ def get_users():
 
 
 @application.route("/delete_user", methods=["DELETE"])
-@login_required # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+# If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+@login_required
 def delete_user():
     content = request.get_json()
     ok, err = validateArgsInRequest(
@@ -527,7 +537,7 @@ def get_user_id():
 
 @application.route("/delete_squad", methods=["DELETE"])
 # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
-@login_required 
+@login_required
 def delete_squad():
     content = request.get_json()
     ok, err = validateArgsInRequest(
@@ -547,7 +557,7 @@ def delete_squad():
     for squad_member in squad_members:
         db.session.delete(squad_member)
         db.session.commit()
-    #get squads 
+    # get squads
     user_squad_memberships = SquadMembership.query.filter_by(
         user_id=user_id).all()
     squads_lst = []
