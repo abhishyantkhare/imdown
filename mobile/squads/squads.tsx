@@ -87,7 +87,8 @@ const Squads = (props) => {
             squadName: name,
             squadEmoji: squad_emoji,
             squadCode: squad_code,
-            userEmail: email
+            userEmail: email,
+            userId: userId
         })
     }
 

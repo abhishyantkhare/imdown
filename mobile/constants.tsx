@@ -19,5 +19,6 @@ export const DEFAULT_EVENT = {
   rsvp_users: [],
   declined_users: [],
   url: "",
-  down_threshold: 0
+  down_threshold: 0,
+  creator_user_id: 0
 } as Event

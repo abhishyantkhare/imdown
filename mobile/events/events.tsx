@@ -20,7 +20,8 @@ export type Event = {
   rsvp_users: RSVPUser[],
   declined_users: RSVPUser[],
   url?: string,
-  down_threshold: number
+  down_threshold: number,
+  creator_user_id: number
 }
 
 
@@ -43,12 +44,14 @@ export const toEvents = (backendEvent) => {
       rsvp_users: it.event_responses.accepted,
       declined_users: it.event_responses.declined,
       url: it.event_url,
-      down_threshold: it.down_threshold
+      down_threshold: it.down_threshold,
+      creator_user_id: it.creator_user_id
     }
   })
 }
 
 const Events = (props) => {
+  const userId = props.route.params.userId
   const [events, setEvents] = useState([])
   const [squadId, setSquadId] = useState(props.route.params.squadId)
   const [squadCode, setSquadCode] = useState(props.route.params.squadCode)
@@ -65,7 +68,15 @@ const Events = (props) => {
 
   const goToSquadMembersPage = (squadId: number) => {
     props.navigation.navigate("SquadMembers", {
-      squadId: squadId
+      squadId: squadId,
+    })
+  }
+
+  const goToEventDetailsPage = (event: Event) => {
+    props.navigation.navigate("EventDetails", {
+      eventId: event.id,
+      userEmail: userEmail,
+      userId: userId
     })
   }
 
@@ -97,13 +108,6 @@ const Events = (props) => {
       ),
     });
   }, [props.navigation]);
-
-  const goToEventDetailsPage = (event: Event) => {
-    props.navigation.navigate("EventDetails", {
-      eventId: event.id,
-      userEmail: userEmail
-    })
-  }
 
   // Given event, returns string that describes how far (time-wise) event is from now.
   // For ex: "ended 3 days ago" / "starts 3 minutes from now" / "happening now!"
