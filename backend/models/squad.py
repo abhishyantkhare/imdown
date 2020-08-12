@@ -36,3 +36,6 @@ class Squad(db.Model):
 
     def jsonifySquad(self):
         return jsonify(id=self.id, squad_name=self.name, squad_emoji=self.squad_emoji, invite_link=self.invite_link, squad_id=self.id, admin_id=self.admin_id)
+
+def get_squad_by_id(id):
+    return Squad.query.filter_by(id=id).first()

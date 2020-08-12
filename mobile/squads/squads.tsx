@@ -5,6 +5,7 @@ import { Button } from "react-native";
 import AddSquadModal from "./add_squad"
 import { callBackend } from "../backend/backend"
 import { SwipeRow, SwipeListView } from "react-native-swipe-list-view"
+import { useFocusEffect } from "@react-navigation/native";
 
 
 export type Squad = {
@@ -16,7 +17,6 @@ export type Squad = {
 }
 
 const Squads = (props) => {
-
     const [addSquadModalVisble, setAddSquadModalVisble] = useState(false)
     const [squads, setSquads] = useState(props.route.params.squads)
     const [email, setEmail] = useState(props.route.params.email)
@@ -65,10 +65,12 @@ const Squads = (props) => {
         });
     }
 
-    useEffect(() => {
-        getSquads();
-        getUserId();
-    }, []);
+    useFocusEffect(
+        React.useCallback(() => {
+            getSquads();
+            getUserId();
+      }, [])
+    );
 
 
 
@@ -114,7 +116,7 @@ const Squads = (props) => {
     const deleteBtn = (squadId: number, squadName: string) => {
         return (
             <TouchableOpacity
-                style={squad_styles.deleteBtn}
+                style={[squad_styles.backRightBtns, squad_styles.deleteBtn]}
                 onPress={() => 
                     Alert.alert(
                         'Alert',
@@ -139,15 +141,37 @@ const Squads = (props) => {
         )
     } 
 
+    const goToEditSquad = (squadId: number, squadName: string, squadEmoji: string) => {
+        props.navigation.navigate("Edit Squad", {
+            squadId: squadId,
+            squadName: squadName,
+            squadEmoji: squadEmoji
+        });
+      }
+
+    const editBtn = (squadId: number, squadName: string, squadEmoji: string) => {
+        return (
+            <TouchableOpacity
+                style={[squad_styles.backRightBtns, squad_styles.editBtn]}
+                onPress={() => 
+                    { goToEditSquad(squadId, squadName, squadEmoji) }
+                }
+            >
+                <Text style={squad_styles.editText}>Edit</Text>
+            </TouchableOpacity>
+        )
+    }
+
 
     const renderSquadItem = ({ item, index }: { item: Squad, index: number }) => (
         <SwipeRow
             disableLeftSwipe={item.admin_id != userId}
-            rightOpenValue={-75}
+            rightOpenValue={-150}
             disableRightSwipe={true}
         >
             <View style={squad_styles.rowBack}>
-                {deleteBtn(item.id, item.name)}
+                { deleteBtn(item.id, item.name) }
+                { editBtn(item.id, item.name, item.squad_emoji) }
             </View>
             
                 <View style={squad_styles.rowFront}>
@@ -162,7 +186,10 @@ const Squads = (props) => {
 
     return (
         <View style={squad_styles.squads_container}>
-            <SwipeListView data={squads} renderItem={renderSquadItem} />
+            <SwipeListView 
+                data={squads} 
+                renderItem={renderSquadItem} 
+            />
             <AddSquadModal
                 visible={addSquadModalVisble}
                 email={email}

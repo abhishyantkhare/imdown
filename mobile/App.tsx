@@ -9,6 +9,7 @@ import Events from "./events/events";
 import AddEvent from "./events/add_event";
 import EventDetails from "./events/event_details";
 import EditEvent from "./events/edit_event";
+import EditSquad from "./squads/edit_squad"
 import SquadMembers from "./squads/squad_members";
 import { Ubuntu_400Regular, Ubuntu_400Regular_Italic, Ubuntu_700Bold, useFonts } from '@expo-google-fonts/ubuntu';
 import { Inter_400Regular } from '@expo-google-fonts/inter';
@@ -32,6 +33,7 @@ export default function App() {
         <Stack.Navigator>
           <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
           <Stack.Screen name="Squads" component={Squads} />
+          <Stack.Screen name="Edit Squad" component={EditSquad} />
           <Stack.Screen name="Add Squad" component={AddSquadModal} />
           <Stack.Screen name="Events" component={Events} />
           <Stack.Screen name="Add Event" component={AddEvent} />

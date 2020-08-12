@@ -5,7 +5,7 @@ from extensions import db
 from models.user import User, GetUserById
 from models.event_response import EventResponse
 from models.event import Event, get_event_by_id
-from models.squad import Squad
+from models.squad import Squad, get_squad_by_id
 from models.squadmembership import SquadMembership, GetUsersBySquadId
 from flask_login import login_user, login_required
 from collections import defaultdict
@@ -101,6 +101,25 @@ def createSquad():
     db.session.add(squad)
     db.session.commit()
     addUserToSquad(squad.code, email)
+    return squad.jsonifySquad()
+
+
+@application.route("/edit_squad", methods=["PUT"])
+# If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+@login_required
+def edit_squad():
+    content = request.get_json()
+    ok, err = validateArgsInRequest(content, "squad_id", "squad_name", "squad_emoji")
+    if not ok:
+        return err, 400
+    squad_id = content["squad_id"]
+    squad = get_squad_by_id(squad_id)
+    if not squad:
+        return "Squad does not exist!", 400
+    squad.name = content["squad_name"]
+    squad.squad_emoji = content["squad_emoji"]
+    db.session.add(squad)
+    db.session.commit()
     return squad.jsonifySquad()
 
 
