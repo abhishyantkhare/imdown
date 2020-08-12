@@ -4,6 +4,7 @@ import { AddSquadStyles } from "./add_squad_styles"
 import EmojiSelector, { Categories } from "react-native-emoji-selector";
 import { Squad } from "./squads"
 import { callBackend } from "../backend/backend"
+import { ScrollView } from "react-native-gesture-handler";
 
 type OwnProps = {
     visible: boolean,
@@ -156,14 +157,15 @@ const AddSquadModal = (props: OwnProps) => {
             visible={props.visible}
             presentationStyle={"formSheet"}
         >
-            <View style={AddSquadStyles.container}>
-                {renderAddSquadByCode()}
-                <Text style={AddSquadStyles.or_text}>
-                    {OR_TEXT}
-
-                </Text>
-                {renderCreateNewSquad()}
-            </View>
+            <ScrollView keyboardShouldPersistTaps="never" scrollEnabled={false} >
+                <View style={AddSquadStyles.container}>
+                    {renderAddSquadByCode()}
+                    <Text style={AddSquadStyles.or_text}>
+                        {OR_TEXT}
+                    </Text>
+                    {renderCreateNewSquad()}
+                </View>
+            </ScrollView>
 
         </Modal>
     );
