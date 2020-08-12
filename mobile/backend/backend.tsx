@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import CookieManager from '@react-native-community/cookies'
 
-export const BACKEND_URL = "http://localhost:5000/"
+export const BACKEND_URL = __DEV__ ? "http://localhost:5000/" : "https://app.imhelladown.com/"
 
 export const callBackend = async (endpoint: string, init: RequestInit = { headers: {} }) => {
     const sessionCookie = await AsyncStorage.getItem("sessionCookie")
