@@ -116,7 +116,8 @@ const EditEvent = (props) => {
       showEmojiPicker &&
       <View style={EditEventStyles.emoji_picker_container}>
         <EmojiSelector
-          category={Categories.symbols}
+          category={Categories.all}
+          showSearchBar={false}
           onEmojiSelected={emoji => {
             setEventEmoji(emoji);
             setShowEmojiPicker(false);
