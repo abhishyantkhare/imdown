@@ -75,33 +75,20 @@ const AddSquadModal = (props: OwnProps) => {
     }
 
     const renderEmoji = () => {
-        return (
-            <View >
-                <TouchableOpacity onPress={() => { setShowEmojiPicker(true) }} style={AddSquadStyles.squad_emoji}>
-                    <Text style={AddSquadStyles.emoji}>
-                        {`${showSquadEmoji ? emojiPicked : DEFAULT_EMOJI}`}
-                    </Text>
-                </TouchableOpacity>
-                <View style={AddSquadStyles.squad_emoji}>
-                    {renderEmojiPicker()}
-                </View>
-            </View>
-        )
-    }
-
-    const renderEmojiPicker = () => {
-        return (
-            showEmojiPicker &&
-            <EmojiSelector
-                category={Categories.all}
-                showSearchBar={false}
-                onEmojiSelected={emoji => {
-                    setEmojiPicked(emoji);
-                    setShowEmojiPicker(false);
-                    setShowSquadEmoji(true);
-                }}
-            />
-        )
+        return showEmojiPicker ? (
+            <Modal presentationStyle={"formSheet"} >
+                <EmojiSelector 
+                    showSearchBar={false}
+                    onEmojiSelected={emoji => {
+                        setEmojiPicked(emoji);
+                        setShowEmojiPicker(false);
+                    }} />
+            </Modal>
+            ) : (
+            <TouchableOpacity onPress={() => setShowEmojiPicker(true)}>
+                <Text style={AddSquadStyles.emoji}>{emojiPicked}</Text>
+            </TouchableOpacity>
+            );
     }
 
     const renderAddSquadByCode = () => {
@@ -162,7 +149,7 @@ const AddSquadModal = (props: OwnProps) => {
             visible={props.visible}
             presentationStyle={"formSheet"}
         >
-            <ScrollView keyboardShouldPersistTaps="never" scrollEnabled={false} >
+            <ScrollView keyboardShouldPersistTaps="handled" scrollEnabled={false} >
                 <View style={AddSquadStyles.container}>
                     {renderAddSquadByCode()}
                     <Text style={AddSquadStyles.or_text}>
