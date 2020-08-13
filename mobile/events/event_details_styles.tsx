@@ -30,7 +30,7 @@ export const EventDetailsStyles = StyleSheet.create({
     color: "#9C9C9C",
     fontFamily: "Ubuntu_400Regular",
     fontSize: 15,
-    paddingLeft: 10,
+    paddingHorizontal: 10,
     paddingVertical: 40,
   },
   event_time: {

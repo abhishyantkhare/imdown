@@ -55,7 +55,7 @@ const EditEvent = (props) => {
   const renderEventTitleBox = () => {
     return (
       <View style={EditEventStyles.event_title_container}>
-        <TextInput style={EditEventStyles.event_title} placeholder="Event Title" value={event_name} onChangeText={(value) => setEventName(value)} />
+        <TextInput style={EditEventStyles.event_title} placeholder="Event Title" value={event_name} multiline={true} onChangeText={(value) => setEventName(value)} />
       </View>
     );
   }
@@ -70,7 +70,7 @@ const EditEvent = (props) => {
         {Divider()}
         <TextInput style={[EditEventStyles.event_url, { textDecorationLine: event_url ? 'underline' : 'none' }]} placeholder="Event URL" value={event_url} onChangeText={(value) => setEventURL(value)} />
         {Divider()}
-        <TextInput style={EditEventStyles.event_description} placeholder="Event Description" value={event_description} onChangeText={(value) => setEventDescription(value)} />
+        <TextInput style={EditEventStyles.event_description} placeholder="Event Description" value={event_description} multiline={true} onChangeText={(value) => setEventDescription(value)} />
       </View>
     );
   }
