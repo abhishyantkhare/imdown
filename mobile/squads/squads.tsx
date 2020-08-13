@@ -12,22 +12,26 @@ export type Squad = {
     id: number,
     name: string,
     squad_emoji: string,
-    code?: string,
+    code: string,
     admin_id: number
 }
 
 const Squads = (props) => {
-    const [addSquadModalVisble, setAddSquadModalVisble] = useState(false)
     const [squads, setSquads] = useState(props.route.params.squads)
     const [email, setEmail] = useState(props.route.params.email)
     const [userId, setUserId] = useState()
 
+    const goToAddSquad = () => {
+        props.navigation.navigate("Add Squad", {
+            email: email,
+        });
+    }
 
     useLayoutEffect(() => {
         props.navigation.setOptions({
             headerRight: () => (
                 <Button
-                    onPress={() => setAddSquadModalVisble(true)}
+                    onPress={() => goToAddSquad()}
                     title="Add"
                     color="#000"
                 />
@@ -69,16 +73,9 @@ const Squads = (props) => {
         React.useCallback(() => {
             getSquads();
             getUserId();
-      }, [])
+        }, [])
     );
 
-
-
-    const addSquad = (newSquad: Squad) => {
-        //setSquads(squads.concat([newSquad]));
-        setAddSquadModalVisble(false)
-        getSquads()
-    }
 
 
     const goToEvents = (id: number, name: string, squad_emoji: string, squad_code: string) => {
@@ -106,9 +103,9 @@ const Squads = (props) => {
                 'Content-Type': 'application/json'
             },
         }
-        callBackend(endpoint, init).then(response => { 
+        callBackend(endpoint, init).then(response => {
             return response.json();
-        }).then(data => { 
+        }).then(data => {
             setSquads(data.squads);
         });
     }
@@ -118,29 +115,29 @@ const Squads = (props) => {
         return (
             <TouchableOpacity
                 style={[squad_styles.backRightBtns, squad_styles.deleteBtn]}
-                onPress={() => 
+                onPress={() =>
                     Alert.alert(
                         'Alert',
-                        'Are you sure you want to delete ' + squadName   + '?',
+                        'Are you sure you want to delete ' + squadName + '?',
                         [
                             {
-                                text: 'Yes', 
+                                text: 'Yes',
                                 onPress: () => { deleteSquad(squadId) },
                             },
                             {
-                                text: 'Cancel', 
+                                text: 'Cancel',
                                 style: "cancel"
                             }
                         ],
-                        { cancelable: true}
+                        { cancelable: true }
                     )
-                    
+
                 }
             >
                 <Text style={squad_styles.deleteText}>Delete</Text>
             </TouchableOpacity>
         )
-    } 
+    }
 
     const goToEditSquad = (squadId: number, squadName: string, squadEmoji: string) => {
         props.navigation.navigate("Edit Squad", {
@@ -148,14 +145,13 @@ const Squads = (props) => {
             squadName: squadName,
             squadEmoji: squadEmoji
         });
-      }
+    }
 
     const editBtn = (squadId: number, squadName: string, squadEmoji: string) => {
         return (
             <TouchableOpacity
                 style={[squad_styles.backRightBtns, squad_styles.editBtn]}
-                onPress={() => 
-                    { goToEditSquad(squadId, squadName, squadEmoji) }
+                onPress={() => { goToEditSquad(squadId, squadName, squadEmoji) }
                 }
             >
                 <Text style={squad_styles.editText}>Edit</Text>
@@ -171,31 +167,25 @@ const Squads = (props) => {
             disableRightSwipe={true}
         >
             <View style={squad_styles.rowBack}>
-                { deleteBtn(item.id, item.name) }
-                { editBtn(item.id, item.name, item.squad_emoji) }
+                {deleteBtn(item.id, item.name)}
+                {editBtn(item.id, item.name, item.squad_emoji)}
             </View>
-            
-                <View style={squad_styles.rowFront}>
-                    <View style={squad_styles.squad_item}>
-                        <TouchableOpacity onPress={() => { goToEvents(item.id, item.name, item.squad_emoji, item.code) }}>
-                            <Text style={squad_styles.squad_text}>{item.squad_emoji} {item.name}</Text>
-                        </TouchableOpacity>
-                    </View>
+
+            <View style={squad_styles.rowFront}>
+                <View style={squad_styles.squad_item}>
+                    <TouchableOpacity onPress={() => { goToEvents(item.id, item.name, item.squad_emoji, item.code) }}>
+                        <Text style={squad_styles.squad_text}>{item.squad_emoji} {item.name}</Text>
+                    </TouchableOpacity>
                 </View>
+            </View>
         </SwipeRow>
     );
 
     return (
         <View style={squad_styles.squads_container}>
-            <SwipeListView 
-                data={squads} 
-                renderItem={renderSquadItem} 
-            />
-            <AddSquadModal
-                visible={addSquadModalVisble}
-                email={email}
-                admin_id={userId}
-                onPress={addSquad}
+            <SwipeListView
+                data={squads}
+                renderItem={renderSquadItem}
             />
         </View>
     );

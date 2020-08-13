@@ -89,14 +89,14 @@ def add_to_squad():
 def createSquad():
     content = request.get_json()
     ok, err = validateArgsInRequest(
-        content, "email", "admin_id", "squad_name", "squad_emoji")
+        content, "email", "squad_name", "squad_emoji")
     if not ok:
         return err, 400
     email = content["email"]
     user = User.query.filter_by(email=email).first()
     if user is None:
         return 'User does not exist!', 400
-    squad = Squad(name=content["squad_name"], admin_id=content["admin_id"],
+    squad = Squad(name=content["squad_name"], admin_id=user.id,
                   squad_emoji=content["squad_emoji"])
     squad.generate_code()
     db.session.add(squad)
