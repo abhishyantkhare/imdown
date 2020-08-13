@@ -13,6 +13,7 @@ class User(UserMixin, db.Model):
                       unique=False, nullable=False)
     google_access_token = db.Column(db.String(255))
     google_refresh_token = db.Column(db.String(255))
+    device_token = db.Column(db.String(256))
 
     def userDict(self):
         return {
