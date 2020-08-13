@@ -4,7 +4,7 @@ import { callBackend } from "../backend/backend"
 import Divider from "../components/divider/divider";
 import { event_styles } from "./events_styles";
 import moment from 'moment';
-import  SquadMembers  from "../squads/squad_members"
+import SquadMembers from "../squads/squad_members"
 import { useFocusEffect } from '@react-navigation/native';
 
 const SQUAD_CODE_TITLE_TEXT = "Squad Code: "
@@ -32,7 +32,7 @@ export type RSVPUser = {
 
 // Converts response from backend for events into list of internally used Event objects
 export const toEvents = (backendEvent) => {
-  return backendEvent.map( (it) => {
+  return backendEvent.map((it) => {
     return {
       id: it.id,
       name: it.title,
@@ -81,7 +81,7 @@ const Events = (props) => {
   }
 
   useFocusEffect(
-      React.useCallback(() => {
+    React.useCallback(() => {
       const endpoint = 'get_events?squad_id=' + squadId
       const init: RequestInit = {
         method: "GET",
@@ -131,7 +131,7 @@ const Events = (props) => {
   const calcDownPercentage = (event: Event) => {
     const numDown = event.rsvp_users.length
     const totalNumPeople = event.rsvp_users.length + event.declined_users.length
-    const percentage = Math.round(numDown*100/totalNumPeople)
+    const percentage = Math.round(numDown * 100 / totalNumPeople)
     return percentage
   }
 
@@ -144,7 +144,7 @@ const Events = (props) => {
           <Text style={event_styles.squad_code_title_text}>
             {SQUAD_CODE_TITLE_TEXT}
           </Text>
-          <Text style={event_styles.squad_code_value_text}>
+          <Text style={event_styles.squad_code_value_text} selectable={true}>
             {squadCode}
           </Text>
         </View>
@@ -159,19 +159,19 @@ const Events = (props) => {
     const barWidth = `${downPercentage}%`
     const inlineStyleJSON = {
       backgroundColor: barColor,
-      borderBottomRightRadius: borderRightRadii, 
+      borderBottomRightRadius: borderRightRadii,
       borderTopRightRadius: borderRightRadii,
-      width: barWidth, 
+      width: barWidth,
     }
-    return (<View style = {[ event_styles.down_bar, inlineStyleJSON]}>
-          </View>);
+    return (<View style={[event_styles.down_bar, inlineStyleJSON]}>
+    </View>);
   }
 
   const renderEventItem = ({ item }: { item: Event }) => {
     return (
-      <TouchableOpacity activeOpacity={.7}  onPress={() => { goToEventDetailsPage(item) }}>
+      <TouchableOpacity activeOpacity={.7} onPress={() => { goToEventDetailsPage(item) }}>
         <View style={event_styles.event_item_outer_box}>
-          { renderDownBar(item) }
+          {renderDownBar(item)}
           <View style={event_styles.event_emoji_box}>
             <Text style={event_styles.event_emoji}>{item.emoji || ""}</Text>
           </View>
@@ -213,7 +213,7 @@ const Events = (props) => {
           renderItem={renderEventItem}
           style={event_styles.event_list}
           keyExtractor={(item, index) => index.toString()}
-          />
+        />
       </View>
     </View>
   );

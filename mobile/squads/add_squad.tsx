@@ -46,7 +46,7 @@ const AddSquadModal = (props: OwnProps) => {
         }
         callBackend(endpoint, init).then(() => { addSquad() })
     }
-    
+
     const addSquadByCodeOnBackend = () => {
         const endpoint = 'add_to_squad'
         const data = {
@@ -111,7 +111,10 @@ const AddSquadModal = (props: OwnProps) => {
                     {ADD_SQUAD_BY_CODE_TITLE}
                 </Text>
                 <SafeAreaView >
-                    <TextInput placeholder={ADD_SQUAD_BY_CODE_PLACEHOLDER} onChangeText={(code) => setSquadCode(code)}
+                    <TextInput
+                        placeholder={ADD_SQUAD_BY_CODE_PLACEHOLDER}
+                        autoCapitalize={'none'}
+                        onChangeText={(code) => setSquadCode(code)}
                         style={AddSquadStyles.squad_name}
                         placeholderTextColor="lightgray" />
                 </SafeAreaView>
