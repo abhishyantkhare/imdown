@@ -54,6 +54,10 @@ const Squads = (props) => {
         });
     }
 
+    const convertToKeyValDict = (squads: any) => {
+        return squads.map((_, i) => ({ key: i, squad: squads[i] }))
+    }
+
     const getSquads = () => {
         const endpoint = 'get_squads?email=' + email
         const init: RequestInit = {
@@ -65,7 +69,7 @@ const Squads = (props) => {
         callBackend(endpoint, init).then(response => {
             return response.json();
         }).then(data => {
-            setSquads(data.squads);
+            setSquads(convertToKeyValDict(data.squads));
         });
     }
 
@@ -106,32 +110,41 @@ const Squads = (props) => {
         callBackend(endpoint, init).then(response => {
             return response.json();
         }).then(data => {
-            setSquads(data.squads);
+            setSquads(convertToKeyValDict(data.squads));
         });
     }
 
+    const alertPopUp = (squadId: number, squadName: string) =>{
+        return (
+            Alert.alert(
+                'Alert',
+                'Are you sure you want to delete ' + squadName + '?',
+                [
+                    {
+                        text: 'Yes',
+                        onPress: () => { 
+                            deleteSquad(squadId) 
+                        },
+                    },
+                    {
+                        text: 'Cancel',
+                        style: "cancel"
+                    }
+                ],
+                { cancelable: true }
+            )
+        )
+    } 
 
-    const deleteBtn = (squadId: number, squadName: string) => {
+
+    const deleteBtn = (squadId: number, squadName: string, rowKey: number, rowMap: any) => {
         return (
             <TouchableOpacity
                 style={[squad_styles.backRightBtns, squad_styles.deleteBtn]}
-                onPress={() =>
-                    Alert.alert(
-                        'Alert',
-                        'Are you sure you want to delete ' + squadName + '?',
-                        [
-                            {
-                                text: 'Yes',
-                                onPress: () => { deleteSquad(squadId) },
-                            },
-                            {
-                                text: 'Cancel',
-                                style: "cancel"
-                            }
-                        ],
-                        { cancelable: true }
-                    )
-
+                onPress={() => {
+                    closeRow(rowMap, rowKey);
+                    alertPopUp(squadId, squadName);
+                  }
                 }
             >
                 <Text style={squad_styles.deleteText}>Delete</Text>
@@ -147,11 +160,14 @@ const Squads = (props) => {
         });
     }
 
-    const editBtn = (squadId: number, squadName: string, squadEmoji: string) => {
+    const editBtn = (squadId: number, squadName: string, squadEmoji: string, rowKey: number, rowMap: any) => {
         return (
             <TouchableOpacity
                 style={[squad_styles.backRightBtns, squad_styles.editBtn]}
-                onPress={() => { goToEditSquad(squadId, squadName, squadEmoji) }
+                onPress={() => { 
+                    closeRow(rowMap, rowKey);
+                    goToEditSquad(squadId, squadName, squadEmoji); 
+                  }
                 }
             >
                 <Text style={squad_styles.editText}>Edit</Text>
@@ -159,28 +175,33 @@ const Squads = (props) => {
         )
     }
 
+    const closeRow = (rowMap: any, rowKey: number) => {
+        if (rowMap[rowKey]) {
+            rowMap[rowKey].closeRow();
+        }
+    };
 
-    const renderSquadItem = ({ item, index }: { item: Squad, index: number }) => (
+    const renderSquadItem = (data: any, rowMap: any) => (
         <SwipeRow
-            disableLeftSwipe={item.admin_id != userId}
+            disableLeftSwipe={data.item.squad.admin_id != userId}
             rightOpenValue={-150}
             disableRightSwipe={true}
         >
             <View style={squad_styles.rowBack}>
-                {deleteBtn(item.id, item.name)}
-                {editBtn(item.id, item.name, item.squad_emoji)}
+                {deleteBtn(data.item.squad.id, data.item.squad.name, data.item.key, rowMap)}
+                {editBtn(data.item.squad.id, data.item.squad.name, data.item.squad.squad_emoji, data.item.key, rowMap)}
             </View>
 
             <View style={squad_styles.rowFront}>
                 <View style={squad_styles.squad_item}>
-                    <TouchableOpacity onPress={() => { goToEvents(item.id, item.name, item.squad_emoji, item.code) }}>
-                        <Text style={squad_styles.squad_text}>{item.squad_emoji} {item.name}</Text>
+                    <TouchableOpacity onPress={() => { goToEvents(data.item.squad.id, data.item.squad.name, data.item.squad.squad_emoji, data.item.squad.code) }}>
+                        <Text style={squad_styles.squad_text}>{data.item.squad.squad_emoji} {data.item.squad.name}</Text>
                     </TouchableOpacity>
                 </View>
             </View>
         </SwipeRow>
     );
-
+    
     return (
         <View style={squad_styles.squads_container}>
             <SwipeListView
