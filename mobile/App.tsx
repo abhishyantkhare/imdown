@@ -6,7 +6,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Squads from "./squads/squads";
 import Events from "./events/events";
-import AddEvent from "./events/add_event";
+import AddEventNavigator from "./events/AddEventNavigator";
 import EventDetails from "./events/event_details";
 import EditEvent from "./events/edit_event";
 import EditSquad from "./squads/edit_squad"
@@ -41,7 +41,7 @@ export default function App() {
           <Stack.Screen name="Edit Squad" component={EditSquad} />
           <Stack.Screen name="Add Squad" component={AddSquad} />
           <Stack.Screen name="Events" component={Events} />
-          <Stack.Screen name="Add Event" component={AddEvent} />
+          <Stack.Screen name="Add Event" component={AddEventNavigator} />
           <Stack.Screen name="EventDetails" component={EventDetails} />
           <Stack.Screen name="Edit Event" component={EditEvent} />
           <Stack.Screen name="SquadMembers" component={SquadMembers} />

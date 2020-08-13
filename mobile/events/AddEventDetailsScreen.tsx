@@ -1,80 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Button, Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { AddEventStyles } from "./add_event_styles";
-import EmojiSelector from "react-native-emoji-selector";
-import DateTimeInput from "../components/date_time_input/date_time_input";
-import moment from "moment";
-import { createStackNavigator } from "@react-navigation/stack";
 import { callBackend } from "../backend/backend";
-import { Event } from "./events";
+import { Button, Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
+import EmojiSelector from "react-native-emoji-selector";
+import { AddEventStyles } from "./add_event_styles";
 import Slider from "@react-native-community/slider";
-
-const Stack = createStackNavigator();
-
-/**
- * This is the entry screen. Enter a title and navigate directly to the details page, or navigate to the URL search
- * screen.
- */
-// TODO: Appropriately type these props (see https://reactnavigation.org/docs/typescript).
-const AddEventNameScreen = ({ navigation, route }) => {
-  const [name, setName] = useState("");
-
-  const goToAddMoreInfo = () => {
-    navigation.navigate("Add Event Details", { name });
-  };
-
-  return (
-    <View style={AddEventStyles.container}>
-      <View style={AddEventStyles.topRightButton}>
-        <Button title="From URL" onPress={() => navigation.navigate("Add Event URL")} />
-      </View>
-      <TextInput autoFocus onChangeText={setName} placeholder="Event name" style={AddEventStyles.largeTextInput} />
-      <View style={AddEventStyles.nextButton}>
-        <Button title="Next" onPress={goToAddMoreInfo} disabled={!name} />
-      </View>
-    </View>
-  );
-};
-
-/**
- * This is an optional screen to provide a URL for the event. It will be used to pre-populate the Add Event screen by
- * getting an Event response from the backend.
- */
-const AddEventURLScreen = ({ navigation, route }) => {
-  const [dummyEventURL, setEventURL] = useState("https://www.carnival.com/itinerary/4-day-western-caribbean-cruise/mobile/sensation/4-days/wc0");
-  const [isSearchingForEvent, setIsSearchingForEvent] = useState(false);
-
-  const searchForExternalEvent = () => {
-    setIsSearchingForEvent(true);
-    // "Call backend".
-    setTimeout(() => {
-      setIsSearchingForEvent(false);
-      const dummyEvent: Event = {
-        creator_user_id: 0,
-        id: 999,
-        name: "Caribbean Cruise",
-        emoji: "🌞",
-        description: "fun in de sun",
-        image_url: "https://s26162.pcdn.co/wp-content/uploads/2019/05/black-death.jpg",
-        rsvp_users: [],
-        declined_users: [],
-        down_threshold: 2,
-        url: dummyEventURL
-      };
-      navigation.navigate("Add Event Details", dummyEvent);
-    }, 1000);
-  };
-
-  return (
-    <View style={AddEventStyles.container}>
-      <TextInput onChangeText={setEventURL} placeholder="Event URL" style={AddEventStyles.textInput} />
-      {/* Here is where the result from the backend will be displayed. */}
-      <View style={AddEventStyles.nextButton}>
-        <Button title="Search 🔮" onPress={searchForExternalEvent} disabled={isSearchingForEvent} />
-      </View>
-    </View>
-  );
-};
+import moment from "moment";
+import DateTimeInput from "../components/date_time_input/date_time_input";
 
 const AddEventDetailsScreen = ({ navigation, route }) => {
   const squadId = route.params.squadId;
@@ -190,15 +121,4 @@ const AddEventDetailsScreen = ({ navigation, route }) => {
   );
 };
 
-const AddEvent = ({ route }) => {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="Add Event Name" component={AddEventNameScreen} />
-      <Stack.Screen name="Add Event URL" component={AddEventURLScreen} />
-      <Stack.Screen name="Add Event Details" component={AddEventDetailsScreen}
-                    initialParams={{ squadId: route.params.squadId, userEmail: route.params.userEmail }} />
-    </Stack.Navigator>
-  );
-};
-
-export default AddEvent;
+export default AddEventDetailsScreen;
