@@ -1,6 +1,6 @@
 import React from "react";
 import Login from "./login/login";
-import AddSquadModal from "./squads/add_squad";
+import AddSquad from "./squads/add_squad";
 import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -15,8 +15,13 @@ import { Ubuntu_400Regular, Ubuntu_400Regular_Italic, Ubuntu_700Bold, useFonts }
 import { Inter_400Regular } from '@expo-google-fonts/inter';
 import { AppLoading } from 'expo';
 
+export type RootStackParamList = {
+  AddSquad: {
+    email: string;
+  };
+};
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<RootStackParamList>();
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -34,7 +39,7 @@ export default function App() {
           <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
           <Stack.Screen name="Squads" component={Squads} />
           <Stack.Screen name="Edit Squad" component={EditSquad} />
-          <Stack.Screen name="Add Squad" component={AddSquadModal} />
+          <Stack.Screen name="Add Squad" component={AddSquad} />
           <Stack.Screen name="Events" component={Events} />
           <Stack.Screen name="Add Event" component={AddEvent} />
           <Stack.Screen name="EventDetails" component={EventDetails} />

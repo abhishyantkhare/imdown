@@ -1,17 +1,25 @@
 import React, { useState } from "react";
-import { View, Modal, TextInput, Text, TouchableOpacity, SafeAreaView } from "react-native";
+import { View, TextInput, Text, TouchableOpacity, SafeAreaView } from "react-native";
 import { AddSquadStyles } from "./add_squad_styles"
 import EmojiSelector, { Categories } from "react-native-emoji-selector";
-import { Squad } from "./squads"
+import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { callBackend } from "../backend/backend"
 import { ScrollView } from "react-native-gesture-handler";
+import { RootStackParamList } from "../App"
 
-type OwnProps = {
-    visible: boolean,
-    email: string,
-    admin_id: number,
-    onPress: (squad: Squad) => void
-}
+type AddSquadNavigationProp = StackNavigationProp<
+    RootStackParamList,
+    'AddSquad'
+>;
+
+type AddSquadRouteProp = RouteProp<RootStackParamList, 'AddSquad'>;
+
+type AddSquadProps = {
+    navigation: AddSquadNavigationProp;
+    route: AddSquadRouteProp
+};
+
 
 const DEFAULT_EMOJI = "😎"
 const ADD_SQUAD_BY_CODE_TITLE = "Have a Squad Code? Enter It Here"
@@ -20,19 +28,19 @@ const CREATE_NEW_SQUAD_TITLE = "Create A New Squad"
 const CREATE_NEW_SQUAD_PLACEHOLDER = "add squad name"
 const OR_TEXT = "OR"
 
-const AddSquadModal = (props: OwnProps) => {
-    const [squadId, setSquadId] = useState()
+const AddSquad = (props: AddSquadProps) => {
     const [squadName, setSquadName] = useState("")
     const [showSquadEmoji, setShowSquadEmoji] = useState(false)
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [emojiPicked, setEmojiPicked] = useState(DEFAULT_EMOJI);
     const [squadCode, setSquadCode] = useState("")
 
+    const email = props.route.params.email
+
     const addSquadOnBackend = () => {
         const endpoint = 'create_squad'
         const data = {
-            email: props.email,
-            admin_id: props.admin_id,
+            email: email,
             squad_name: squadName,
             squad_emoji: emojiPicked
         }
@@ -44,13 +52,13 @@ const AddSquadModal = (props: OwnProps) => {
                 'Content-Type': 'application/json'
             },
         }
-        callBackend(endpoint, init).then(() => { addSquad() })
+        callBackend(endpoint, init).then(() => { props.navigation.pop() })
     }
 
     const addSquadByCodeOnBackend = () => {
         const endpoint = 'add_to_squad'
         const data = {
-            email: props.email,
+            email: email,
             squad_code: squadCode
         }
         const init: RequestInit = {
@@ -61,33 +69,23 @@ const AddSquadModal = (props: OwnProps) => {
                 'Content-Type': 'application/json'
             },
         }
-        callBackend(endpoint, init).then(() => { addSquad() })
-    }
-
-    const addSquad = () => {
-        const squad: Squad = {
-            id: squadId,
-            name: squadName,
-            squad_emoji: emojiPicked,
-            admin_id: props.admin_id
-        }
-        props.onPress(squad)
+        callBackend(endpoint, init).then(() => { props.navigation.pop() })
     }
 
     const renderEmoji = () => {
         return showEmojiPicker ? (
             <Modal presentationStyle={"formSheet"} >
-                <EmojiSelector 
+                <EmojiSelector
                     showSearchBar={false}
                     onEmojiSelected={emoji => {
                         setEmojiPicked(emoji);
                         setShowEmojiPicker(false);
                     }} />
             </Modal>
-            ) : (
-            <TouchableOpacity onPress={() => setShowEmojiPicker(true)}>
-                <Text style={AddSquadStyles.emoji}>{emojiPicked}</Text>
-            </TouchableOpacity>
+        ) : (
+                <TouchableOpacity onPress={() => setShowEmojiPicker(true)}>
+                    <Text style={AddSquadStyles.emoji}>{emojiPicked}</Text>
+                </TouchableOpacity>
             );
     }
 
@@ -144,23 +142,18 @@ const AddSquadModal = (props: OwnProps) => {
     }
 
     return (
-        <Modal
-            transparent={false}
-            visible={props.visible}
-            presentationStyle={"formSheet"}
-        >
+        <View style={AddSquadStyles.container}>
             <ScrollView keyboardShouldPersistTaps="handled" scrollEnabled={false} >
-                <View style={AddSquadStyles.container}>
-                    {renderAddSquadByCode()}
-                    <Text style={AddSquadStyles.or_text}>
-                        {OR_TEXT}
-                    </Text>
-                    {renderCreateNewSquad()}
-                </View>
-            </ScrollView>
 
-        </Modal>
+                {renderAddSquadByCode()}
+                <Text style={AddSquadStyles.or_text}>
+                    {OR_TEXT}
+                </Text>
+                {renderCreateNewSquad()}
+            </ScrollView>
+        </View>
+
     );
 }
 
-export default AddSquadModal;
+export default AddSquad;

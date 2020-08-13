@@ -5,7 +5,6 @@ export const AddSquadStyles = StyleSheet.create({
     flexDirection: "column",
     backgroundColor: "#fff",
     alignItems: "center",
-    marginTop: 50
   },
   add_container: {
     alignItems: "center",
