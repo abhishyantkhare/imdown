@@ -1,6 +1,10 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import CookieManager from '@react-native-community/cookies'
 
+// If you're testing on a real device and
+// want to connect to your local backend
+// Download ngrok (https://dashboard.ngrok.com/get-started/setup)
+// Put the generated url here
 export const BACKEND_URL = __DEV__ ? "http://localhost:5000/" : "https://app.imhelladown.com/"
 
 export const callBackend = async (endpoint: string, init: RequestInit = { headers: {} }) => {

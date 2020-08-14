@@ -1,18 +1,42 @@
-import React, { useState } from "react";
-import { Text, View } from "react-native";
+import React, { useState, useEffect } from "react";
+import { Text, View, Platform } from "react-native";
 import { login_styles } from "./login_styles";
 import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-community/google-signin';
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-community/async-storage';
 import { BACKEND_URL } from "../backend/backend"
 import { User } from "../types/user"
-import PushNotificationIOS, { PushNotificationPermissions } from '@react-native-community/push-notification-ios';
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
 
 
 const Login = ({ navigation }) => {
     const [isSigninInProgress, setIsSigninInProgress] = useState(false);
     const IOS_CLIENT_ID = "1097983281822-8qr8vltrud1hj3rfme2khn1lmbj2s522.apps.googleusercontent.com";
     const WEB_ID = "1097983281822-8k2kede3hrgrqi15r869mf3u5at6q6ib.apps.googleusercontent.com"
+
+    const [deviceToken, setDeviceToken] = useState("")
+
+    const pushNotificationIOSSetup = () => {
+        PushNotificationIOS.addEventListener('register', (token: string) => setDeviceToken(token))
+        PushNotificationIOS.requestPermissions({ alert: true, badge: true });
+    }
+
+    const googleSetup = () => {
+        GoogleSignin.configure({
+            iosClientId: IOS_CLIENT_ID,
+            webClientId: WEB_ID,
+            offlineAccess: true,
+            scopes: ['https://www.googleapis.com/auth/calendar.events']
+        });
+    }
+
+
+    const setup = () => {
+        if (Platform.OS === 'ios') {
+            pushNotificationIOSSetup();
+        }
+        googleSetup()
+    }
 
 
     const goToSquads = (email: string) => {
@@ -28,7 +52,8 @@ const Login = ({ navigation }) => {
             email: user.email,
             name: user.name,
             photo: user.photo,
-            googleServerCode: googleServerCode
+            googleServerCode: googleServerCode,
+            deviceToken: deviceToken
         }
         fetch(login_url, {
             method: 'POST',
@@ -78,18 +103,7 @@ const Login = ({ navigation }) => {
         }
     };
 
-    PushNotificationIOS.addEventListener('register', (token) => console.log(`TOKEN: ${token})`))
-
-    PushNotificationIOS.requestPermissions({ alert: true, badge: true });
-
-
-    GoogleSignin.configure({
-        iosClientId: IOS_CLIENT_ID,
-        webClientId: WEB_ID,
-        offlineAccess: true,
-        scopes: ['https://www.googleapis.com/auth/calendar.events']
-    });
-
+    setup()
 
     return (
         <View style={login_styles.login_container}>

@@ -35,26 +35,30 @@ def hello():
 def signIn():
     content = request.get_json()
     ok, err = validateArgsInRequest(
-        content, 'email', 'name', 'photo', 'googleServerCode')
+        content, 'email', 'name', 'photo', 'googleServerCode', 'deviceToken')
     if not ok:
         return err, 400
     email = content["email"]
     photo = content["photo"]
     name = content["name"]
+    device_token = content["deviceToken"]
+    auth_code = content["googleServerCode"]
     u = User.query.filter_by(email=email).first()
     if u is None:
         u = User(email=email, name=name, photo=photo)
         db.session.add(u)
         db.session.commit()
     login_user(u)
-    update_user_tokens(u, content['googleServerCode'])
+    update_user_tokens(u, auth_code, device_token)
     return u.jsonifyUser()
 
 
-def update_user_tokens(user, auth_code):
+def update_user_tokens(user, auth_code, device_token):
     access_token, refresh_token = fetch_google_access_tokens(auth_code)
     user.google_access_token = access_token
     user.google_refresh_token = refresh_token
+    if device_token:
+        user.device_token = device_token
     db.session.commit()
 
 
