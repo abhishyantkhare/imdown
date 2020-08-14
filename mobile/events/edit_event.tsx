@@ -64,9 +64,9 @@ const EditEvent = (props) => {
   const renderEventDetailsBox = () => {
     return (
       <View style={EditEventStyles.event_details_edit_container}>
-        <DateTimeInput onChange={setEventStartMS} initialDateTime={event_start_ms} />
+        <DateTimeInput onChange={setEventStartMS} initialValue={event_start_ms} />
         {Divider()}
-        <DateTimeInput onChange={setEventEndMS} initialDateTime={event_end_ms} />
+        <DateTimeInput onChange={setEventEndMS} initialValue={event_end_ms} />
         {Divider()}
         <TextInput style={[EditEventStyles.event_url, { textDecorationLine: event_url ? 'underline' : 'none' }]} placeholder="Event URL" value={event_url} onChangeText={(value) => setEventURL(value)} />
         {Divider()}

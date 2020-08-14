@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import { Button, Modal, Platform, Text, TouchableOpacity, View } from "react-native";
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker, { AndroidEvent } from "@react-native-community/datetimepicker";
 import { DateTimeInputStyles } from "./date_time_input_styles";
 import moment from "moment";
 
 // This can be extended for formatting, styling, and more.
 export interface DateTimeInputProps {
   onChange: (dateTime: Date) => void;
-  // The default value of the selector.
-  defaultSelectorValue?: Date;
-  // Initial value of the selected datetime.
-  initialDateTime?: Date;
+  // Initial value of the selected datetime. If not provided, the display will be TBD.
+  initialValue?: Date;
+  // Initial value of the selector. Defaults to the field value or the present time if necessary.
+  // TODO: this prop is not used at the moment, but it can be used or maybe converted to something stateful if we want
+  //       to initialize the end date selector using the value of the start date.
+  suggestedValue?: Date;
 }
 
 /**
@@ -18,50 +20,58 @@ export interface DateTimeInputProps {
  * selector followed by a clock selector.
  */
 const DateTimeInput = (dateTimeInputProps: DateTimeInputProps) => {
-  const defaultDateTime = dateTimeInputProps.defaultSelectorValue || dateTimeInputProps.initialDateTime || new Date();
+  // iOS uses a combined datetime selector while Android uses separate date and time popups.
   const defaultMode = Platform.OS === 'ios' ? 'datetime' : 'date';
-  const [dateTime, setDateTime] = useState<Date | undefined>(dateTimeInputProps.initialDateTime);
-  const [finalDateTime, setFinalDateTime] = useState<Date | undefined>(dateTimeInputProps.initialDateTime);
   const [mode, setMode] = useState<'datetime' | 'date' | 'time'>(defaultMode);
+  // State of the input selector.
+  // TODO: Pick a better fallback time.
+  const defaultSelectorValue = dateTimeInputProps.initialValue || dateTimeInputProps.suggestedValue || new Date();
+  const [selectorDateTime, setSelectorDateTime] = useState<Date>(defaultSelectorValue);
+  // State of the input field.
+  const [dateTime, setDateTime] = useState<Date | undefined>(dateTimeInputProps.initialValue);
   const [show, setShow] = useState(false);
 
-  // When selecting the time, previously selected values will be present for date.
-  const updateDateTime = ({ date = dateTime || defaultDateTime, time = defaultDateTime }) => {
-    setDateTime(new Date(
-      date.getFullYear(), date.getMonth(), date.getDate(),
-      time.getHours(), time.getMinutes(), time.getSeconds()
-    ));
-  }
+  // Close the selector, set the field value to the selector value, and trigger the callback.
+  const submitDateTime = (selectedValue: Date) => {
+    close();
+    setDateTime(selectedValue);
+    dateTimeInputProps.onChange(selectedValue);
+  };
 
-  const onChange = (_event: Event, selectedValue?: Date) => {
-    // (Android) There is a Cancel button that will cause no results to be passed.
-    if (!selectedValue) {
-      setMode(defaultMode);
-      setShow(false);
+  // Close the selector without updating the field value.
+  const close = () => {
+    // (Android) Ensure the popup is hidden before updating the mode.
+    setShow(false);
+    setMode(defaultMode);
+  };
+
+  const onChange = (_event: AndroidEvent, selectedValue?: Date) => {
+    // (iOS) Select the date and time in one step, and rely on a Button for submission.
+    if (Platform.OS === 'ios') {
+      setSelectorDateTime(selectedValue || selectorDateTime);
       return;
     }
-    // (iOS) Select the date and time in one step, and rely on a Button for submission.
-    if (mode === 'datetime') {
-      setDateTime(selectedValue);
-    }
     // (Android) Set the date component, switch the selector type, and set the time component.
-    if (mode === 'date') {
-      updateDateTime({ date: selectedValue });
+    if (!selectedValue) {
+      close();
+    } else if (mode === defaultMode) {
+      // The date was provided, so update the date on the selector value.
       setShow(false);
+      setSelectorDateTime(selectedValue);
       setMode('time');
       setShow(true);
-    }
-    if (mode === 'time') {
-      updateDateTime({ time: selectedValue });
+    } else if (mode === 'time') {
+      // The time was provided, so update the selector value and the input value.
       setShow(false);
-      setMode(defaultMode);
-      dateTimeInputProps.onChange(dateTime || defaultDateTime);
+      setSelectorDateTime(selectedValue);
+      // selectorDateTime is asynchronously updated, so use selectedValue.
+      submitDateTime(selectedValue);
     }
   };
 
   const formatDate = () => {
-    return finalDateTime
-      ? `🗓 ${moment(finalDateTime).format('llll').toLocaleString()}`
+    return dateTime
+      ? `🗓 ${moment(dateTime).format("llll").toLocaleString()}`
       : "TBD";
   };
 
@@ -71,32 +81,22 @@ const DateTimeInput = (dateTimeInputProps: DateTimeInputProps) => {
     return Platform.OS === 'ios'
       ? (
         <Modal>
-          <DateTimePicker value={dateTime || defaultDateTime} mode={mode} onChange={onChange} />
-          <Button title="Cancel" onPress={() => {
-            setShow(false)
-            setDateTime(dateTimeInputProps.initialDateTime)
-          }} />
-          <Button title="Set Date" onPress={() => {
-            setShow(false);
-            const selectedDate = dateTime || defaultDateTime;
-            setFinalDateTime(selectedDate);
-            dateTimeInputProps.onChange(selectedDate);
-          }} />
+          <DateTimePicker value={selectorDateTime} mode={mode} onChange={onChange} />
+          <Button title="Cancel" onPress={close} />
+          <Button title="Set Date" onPress={() => submitDateTime(selectorDateTime)} />
         </Modal>
       )
-      : <DateTimePicker value={dateTime || defaultDateTime} mode={mode} onChange={onChange} />;
-  }
+      : <DateTimePicker value={selectorDateTime} mode={mode} onChange={onChange} />;
+  };
 
   return (
     <View>
-      <TouchableOpacity onPress={() => {
-        setShow(true);
-      }}>
+      <TouchableOpacity onPress={() => setShow(true)}>
         <Text style={DateTimeInputStyles.time_text}>{formatDate()}</Text>
       </TouchableOpacity>
       {show && renderDateTimePicker()}
     </View>
   );
-}
+};
 
-export default DateTimeInput
+export default DateTimeInput;

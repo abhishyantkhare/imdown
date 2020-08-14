@@ -103,9 +103,9 @@ const AddEventDetailsScreen = ({ navigation, route }) => {
       <TextInput defaultValue={url} onChangeText={setUrl} placeholder="URL" style={AddEventStyles.optionalTextInput} />
       {/* Combined start time, thumbnail, and end time block. */}
       <View style={AddEventStyles.dateAndIcon}>
-        <DateTimeInput initialDateTime={startDate} onChange={setStartDate} />
+        <DateTimeInput onChange={setStartDate} initialValue={startDate} />
         {renderEmoji()}
-        <DateTimeInput initialDateTime={endDate} onChange={setEndDate} />
+        <DateTimeInput onChange={setEndDate} initialValue={endDate} />
       </View>
       {/* Additional event information (more can be added here). */}
       {/* TODO: Create an image selector widget and fold it into the emoji selector. */}
