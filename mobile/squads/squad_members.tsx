@@ -3,7 +3,6 @@ import { View, Text, FlatList, Image, Alert, TouchableOpacity} from "react-nativ
 import { squad_members_styles } from "./squad_members_styles";
 import { callBackend } from "../backend/backend"
 import { User } from "../types/user"
-import Swipeout from 'react-native-swipeout';
 import { SwipeListView, SwipeRow } from "react-native-swipe-list-view";
 
 const SquadMembers = (props) => {
@@ -21,11 +20,15 @@ const SquadMembers = (props) => {
         callBackend(endpoint, init).then(response => { 
             return response.json();
         }).then(data => { 
-            setUsers(users.concat(data.user_info));
+            setUsers(convertToKeyValDict(data.user_info));
         });
     }, []);  
 
-    const deleteUser = (userId: number, index: number) => {
+    const convertToKeyValDict = (users: any) => {
+        return users.map((_, i) => ({ key: i, user: users[i] }))
+    }
+
+    const deleteUser = (userId: number) => {
         const endpoint = 'delete_user'
         const data = {
             user_id: userId,
@@ -42,32 +45,46 @@ const SquadMembers = (props) => {
         callBackend(endpoint, init).then(response => { 
             return response.json();
         }).then(data => { 
-            setUsers(data.user_info);
+            setUsers(convertToKeyValDict(data.user_info));
         });
     }
 
+    const alertPopUp = (id: number, name: string) => {
+        return (
+            Alert.alert(
+                'Alert',
+                'Are you sure you want to delete ' + name + '?',
+                [
+                    {
+                        text: 'Yes',
+                        onPress: () => { 
+                            deleteUser(id) 
+                        },
+                    },
+                    {
+                        text: 'Cancel',
+                        style: "cancel"
+                    }
+                ],
+                { cancelable: true }
+            )
+        )
+    } 
 
-    const deleteBtn = (id: number, name: string, index: number) => {
+    const closeRow = (rowMap: any, rowKey: number) => {
+        if (rowMap[rowKey]) {
+            rowMap[rowKey].closeRow();
+        }
+    };
+
+    const deleteBtn = (id: number, name: string, rowKey: number, rowMap: any) => {
         return (
             <TouchableOpacity
-                style={squad_members_styles.deleteBtn}
-                onPress={() => 
-                    Alert.alert(
-                        'Alert',
-                        'Are you sure you want to delete ' + name   + '?',
-                        [
-                            {
-                                text: 'Yes', 
-                                onPress: () => { deleteUser(id, index) },
-                            },
-                            {
-                                text: 'Cancel', 
-                                style: "cancel"
-                            }
-                        ],
-                        { cancelable: true}
-                    )
-                    
+                style={[squad_members_styles.backRightBtn, squad_members_styles.deleteBtn]}
+                onPress={() => {
+                    closeRow(rowMap, rowKey);
+                    alertPopUp(id, name);
+                  }   
                 }
             >
                 <Text style={squad_members_styles.deleteText}>Delete</Text>
@@ -76,22 +93,22 @@ const SquadMembers = (props) => {
     } 
 
 
-    const renderUsersItem = ({ item, index }: { item: User, index: number }) => (
+    const renderUsersItem = (data: any, rowMap: any) => (
         <SwipeRow
             rightOpenValue={-75}
             disableRightSwipe={true}
         >
             <View style={squad_members_styles.rowBack}>
-                {deleteBtn(item.id, item.name, index)}
+                {deleteBtn(data.item.user.id, data.item.user.name, data.item.key, rowMap)}
             </View>
             
                 <View style={squad_members_styles.rowFront}>
                     <View style={squad_members_styles.user_info_view}>
                         <View style={{paddingRight: 10}}>
-                            <Image style={squad_members_styles.user_image} source={{ uri: item.photo }} />
+                            <Image style={squad_members_styles.user_image} source={{ uri: data.item.user.photo }} />
                         </View>
                         <View style={{paddingBottom: 8}}>
-                            <Text style={squad_members_styles.user_text}>{item.name} </Text>
+                            <Text style={squad_members_styles.user_text}>{data.item.user.name} </Text>
                         </View>
                     </View>
                 </View>
@@ -100,7 +117,10 @@ const SquadMembers = (props) => {
 
   return (
     <View style={squad_members_styles.squads_members_container}>
-        <SwipeListView data={users} renderItem={renderUsersItem} />
+        <SwipeListView 
+            data={users} 
+            renderItem={renderUsersItem} 
+        />
     </View>
   );
 }

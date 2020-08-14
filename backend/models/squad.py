@@ -39,3 +39,4 @@ class Squad(db.Model):
 
 def get_squad_by_id(id):
     return Squad.query.filter_by(id=id).first()
+    
