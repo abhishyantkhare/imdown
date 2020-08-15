@@ -41,7 +41,7 @@ const AddEventDetailsScreen = ({ navigation, route }) => {
 
   const renderEmoji = () => {
     return showEmojiPicker ? (
-      <Modal>
+      <Modal presentationStyle="formSheet">
         <EmojiSelector onEmojiSelected={emoji => {
           setEmojiPicked(emoji);
           setShowEmojiPicker(false);

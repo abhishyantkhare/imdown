@@ -75,7 +75,6 @@ const AddSquad = (props: AddSquadProps) => {
         return showEmojiPicker ? (
             <Modal presentationStyle={"formSheet"} >
                 <EmojiSelector
-                    showSearchBar={false}
                     onEmojiSelected={emoji => {
                         setEmojiPicked(emoji);
                         setShowEmojiPicker(false);
