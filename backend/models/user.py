@@ -44,3 +44,4 @@ class User(UserMixin, db.Model):
 
 def GetUserById(id):
     return User.query.filter_by(id=id).first()
+    

@@ -142,7 +142,6 @@ const AddSquad = (props: AddSquadProps) => {
     return (
         <View style={AddSquadStyles.container}>
             <ScrollView keyboardShouldPersistTaps="handled" scrollEnabled={false} >
-
                 {renderAddSquadByCode()}
                 <Text style={AddSquadStyles.or_text}>
                     {OR_TEXT}

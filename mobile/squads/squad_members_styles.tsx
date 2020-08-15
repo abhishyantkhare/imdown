@@ -38,14 +38,16 @@ export const squad_members_styles = StyleSheet.create({
       flexDirection: 'row',
       paddingLeft: 15,
   },
+  backRightBtn: {
+    alignItems: 'center',
+    bottom: 0,
+    justifyContent: 'center',
+    position: 'absolute',
+    top: 0,
+    width: 75,
+  },
   deleteBtn: {
-      alignItems: 'center',
-      bottom: 0,
-      justifyContent: 'center',
-      position: 'absolute',
-      top: 0,
-      width: 75,
       backgroundColor: 'red',
       right: 0,
-  }
+  },
 });
