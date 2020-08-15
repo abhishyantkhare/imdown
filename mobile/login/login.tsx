@@ -6,6 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-community/async-storage';
 import { BACKEND_URL } from "../backend/backend"
 import { User } from "../types/user"
+import PushNotificationIOS, { PushNotificationPermissions } from '@react-native-community/push-notification-ios';
 
 
 const Login = ({ navigation }) => {
@@ -76,6 +77,10 @@ const Login = ({ navigation }) => {
           }
         }
     };
+
+    PushNotificationIOS.addEventListener('register', (token) => console.log(`TOKEN: ${token})`))
+
+    PushNotificationIOS.requestPermissions({ alert: true, badge: true });
 
 
     GoogleSignin.configure({
