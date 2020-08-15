@@ -12,7 +12,7 @@ export interface DateTimeInputProps {
   // Initial value of the selector. Defaults to the field value or the present time if necessary.
   // TODO: this prop is not used at the moment, but it can be used or maybe converted to something stateful if we want
   //       to initialize the end date selector using the value of the start date.
-  suggestedValue?: Date;
+  suggestedSelectorValue?: Date;
 }
 
 /**
@@ -25,7 +25,7 @@ const DateTimeInput = (dateTimeInputProps: DateTimeInputProps) => {
   const [mode, setMode] = useState<'datetime' | 'date' | 'time'>(defaultMode);
   // State of the input selector.
   // TODO: Pick a better fallback time.
-  const defaultSelectorValue = dateTimeInputProps.initialValue || dateTimeInputProps.suggestedValue || new Date();
+  const defaultSelectorValue = dateTimeInputProps.initialValue || dateTimeInputProps.suggestedSelectorValue || new Date();
   const [selectorDateTime, setSelectorDateTime] = useState<Date>(defaultSelectorValue);
   // State of the input field.
   const [dateTime, setDateTime] = useState<Date | undefined>(dateTimeInputProps.initialValue);
