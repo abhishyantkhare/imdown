@@ -3,10 +3,8 @@ import { Button, Image, SafeAreaView, ScrollView, Slider, Text, TextInput, Touch
 import { EditEventStyles } from "./edit_event_styles";
 import EmojiSelector, { Categories } from "react-native-emoji-selector";
 import DateTimeInput from "../components/date_time_input/date_time_input";
-import moment from 'moment';
 import Divider from '../components/divider/divider'
 import { callBackend } from "../backend/backend"
-import { toEvents } from "./events"
 import { EVENT_PIC_HEIGHT, EVENT_PIC_WIDTH } from "../constants"
 
 const EditEvent = (props) => {
@@ -17,8 +15,8 @@ const EditEvent = (props) => {
   const [event_down_threshold, setEventDownThreshold] = useState(event.down_threshold)
   const [event_emoji, setEventEmoji] = useState(event.emoji);
   const [event_name, setEventName] = useState(event.name)
-  const [event_start_ms, setEventStartMS] = useState(event.start_ms)
-  const [event_end_ms, setEventEndMS] = useState(event.end_ms)
+  const [eventStartTime, setEventStartTime] = useState<Date | undefined>(event.start_ms && new Date(event.start_ms));
+  const [eventEndTime, setEventEndTime] = useState<Date | undefined>(event.end_ms && new Date(event.end_ms));
   const [event_url, setEventURL] = useState(event.url)
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
@@ -64,9 +62,9 @@ const EditEvent = (props) => {
   const renderEventDetailsBox = () => {
     return (
       <View style={EditEventStyles.event_details_edit_container}>
-        <DateTimeInput onChange={setEventStartMS} initialValue={event_start_ms} />
+        <DateTimeInput onChange={setEventStartTime} initialValue={eventStartTime} />
         {Divider()}
-        <DateTimeInput onChange={setEventEndMS} initialValue={event_end_ms} />
+        <DateTimeInput onChange={setEventEndTime} initialValue={eventEndTime} />
         {Divider()}
         <TextInput style={[EditEventStyles.event_url, { textDecorationLine: event_url ? 'underline' : 'none' }]} placeholder="Event URL" value={event_url} onChangeText={(value) => setEventURL(value)} />
         {Divider()}
@@ -153,8 +151,8 @@ const EditEvent = (props) => {
       event_url: event_url || null,
       image_url: event.image_url || null,
       squad_id: event.squadId,
-      start_time: event_start_ms ? moment(event_start_ms).valueOf() : null,
-      end_time: event_end_ms ? moment(event_end_ms).valueOf() : null,
+      start_time: eventStartTime ? eventStartTime.getTime() : null,
+      end_time: eventEndTime ? eventEndTime.getTime() : null,
     }
     const init: RequestInit = {
       method: 'PUT',
