@@ -15,6 +15,7 @@
     "@react-native-community/google-signin": "^4.0.3",
     "@react-native-community/masked-view": "0.1.10",
     "@react-native-community/slider": "^3.0.3",
+    "@react-native-community/push-notification-ios": "^1.4.0",
     "@react-navigation/native": "^5.0.5",
     "@react-navigation/stack": "^5.0.5",
     "@types/node": "^14.0.25",
