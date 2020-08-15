@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { View, TextInput, Text, TouchableOpacity, SafeAreaView } from "react-native";
-import { AddSquadStyles } from "./add_squad_styles"
-import EmojiSelector, { Categories } from "react-native-emoji-selector";
-import { RouteProp } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { callBackend } from "../backend/backend"
+import { Modal, SafeAreaView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { AddSquadStyles } from "./add_squad_styles";
+import EmojiSelector from "react-native-emoji-selector";
+import { RouteProp } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { callBackend } from "../backend/backend";
 import { ScrollView } from "react-native-gesture-handler";
-import { RootStackParamList } from "../App"
+import { RootStackParamList } from "../App";
 
 type AddSquadNavigationProp = StackNavigationProp<
     RootStackParamList,
@@ -30,7 +30,6 @@ const OR_TEXT = "OR"
 
 const AddSquad = (props: AddSquadProps) => {
     const [squadName, setSquadName] = useState("")
-    const [showSquadEmoji, setShowSquadEmoji] = useState(false)
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [emojiPicked, setEmojiPicked] = useState(DEFAULT_EMOJI);
     const [squadCode, setSquadCode] = useState("")
@@ -76,7 +75,6 @@ const AddSquad = (props: AddSquadProps) => {
         return showEmojiPicker ? (
             <Modal presentationStyle={"formSheet"} >
                 <EmojiSelector
-                    showSearchBar={false}
                     onEmojiSelected={emoji => {
                         setEmojiPicked(emoji);
                         setShowEmojiPicker(false);
