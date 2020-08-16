@@ -5,7 +5,8 @@ import EmojiSelector, { Categories } from "react-native-emoji-selector";
 import DateTimeInput from "../components/date_time_input/date_time_input";
 import Divider from '../components/divider/divider'
 import { callBackend } from "../backend/backend"
-import { EVENT_PIC_HEIGHT, EVENT_PIC_WIDTH } from "../constants"
+import { IMG_URL_BASE_64_PREFIX } from "../constants"
+import ImagePicker from 'react-native-image-picker';
 
 const EditEvent = (props) => {
   const event = props.route.params.event
@@ -17,10 +18,35 @@ const EditEvent = (props) => {
   const [event_name, setEventName] = useState(event.name)
   const [eventStartTime, setEventStartTime] = useState<Date | undefined>(event.start_ms && new Date(event.start_ms));
   const [eventEndTime, setEventEndTime] = useState<Date | undefined>(event.end_ms && new Date(event.end_ms));
+  const [eventImage, setEventImage] = useState(event.image_url)
   const [event_url, setEventURL] = useState(event.url)
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
+  const image_picker_options = {
+    title: 'Select event photo',
+    customButtons: eventImage ? [{ name: 'remove', title: 'Remove photo' }] : [],
+    maxWidth: 200,
+    maxHeight: 200,
+    storageOptions: {
+      skipBackup: true,
+      path: 'images',
+    },
+  };
 
+  const showImagePicker = () => {
+    ImagePicker.showImagePicker(image_picker_options, (response) => {    
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        setEventImage(undefined)
+      } else {
+        setEventImage(IMG_URL_BASE_64_PREFIX + response.data);
+      }
+    });
+  }
+  
   useLayoutEffect(() => {
     props.navigation.setOptions({
       headerLeft: () => (
@@ -37,14 +63,9 @@ const EditEvent = (props) => {
   const renderImageCircle = () => {
     return (
       <View style={EditEventStyles.event_pic_container}>
-        {event.image_url ?
-          <View style={EditEventStyles.event_picture}>
-            <Image source={{ uri: event.image_url }}
-              style={{ borderColor: "#aaaaaa", borderWidth: 1, width: EVENT_PIC_WIDTH, height: EVENT_PIC_HEIGHT, borderRadius: EVENT_PIC_WIDTH / 2 }}
-            />
-          </View> :
-          <View></View>
-        }
+          <TouchableOpacity style={EditEventStyles.event_picture_button} onPress={() => { showImagePicker()}}>
+            <Image source={eventImage ? { uri: eventImage} : require('../assets/upload_photo.png') } style={EditEventStyles.event_picture} />
+          </TouchableOpacity>
       </View>
     )
   }
@@ -149,7 +170,7 @@ const EditEvent = (props) => {
       down_threshold: event_down_threshold,
       emoji: event_emoji,
       event_url: event_url || null,
-      image_url: event.image_url || null,
+      image_url: eventImage || null,
       squad_id: event.squadId,
       start_time: eventStartTime ? eventStartTime.getTime() : null,
       end_time: eventEndTime ? eventEndTime.getTime() : null,
