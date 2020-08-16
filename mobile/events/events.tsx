@@ -36,9 +36,9 @@ const Events = (props) => {
   }
 
   // Converts response from backend for events into list of internally used EventLite objects
-  // EventLite objects contain cursory details related to an Event, and is used solely on the Events
-  const toEventLites = (backendEventLites) => {
-    return backendEventLites.map((it) => {
+  // EventLite objects contain cursory details related to an Event, and is used solely on the Events List Page
+  const toEventLiteList = (backendEventLiteList) => {
+    return backendEventLiteList.map((it) => {
       return {
         id: it.id,
         name: it.title,
@@ -86,7 +86,7 @@ const Events = (props) => {
       callBackend(endpoint, init).then(response => {
         return response.json();
       }).then(data => {
-        setEvents(toEventLites(data));
+        setEvents(toEventLiteList(data));
       });
     }, [])
   );

@@ -81,9 +81,11 @@ const DateTimeInput = (dateTimeInputProps: DateTimeInputProps) => {
     return Platform.OS === 'ios'
       ? (
         <Modal>
-          <DateTimePicker value={selectorDateTime} mode={mode} onChange={onChange} />
-          <Button title="Cancel" onPress={close} />
-          <Button title="Set Date" onPress={() => submitDateTime(selectorDateTime)} />
+          <View style ={{marginTop: 300}}>
+            <DateTimePicker value={selectorDateTime} mode={mode} onChange={onChange} />
+            <Button title="Cancel" onPress={close} />
+            <Button title="Set Date" onPress={() => submitDateTime(selectorDateTime)} />
+          </View>
         </Modal>
       )
       : <DateTimePicker value={selectorDateTime} mode={mode} onChange={onChange} />;

@@ -40,7 +40,6 @@ const EditEvent = (props) => {
       } else if (response.error) {
         console.log('ImagePicker Error: ', response.error);
       } else if (response.customButton) {
-        console.log("event image is " + event_image)
         setEventImage(undefined)
       } else {
         setEventImage(IMG_URL_BASE_64_PREFIX + response.data);
@@ -60,21 +59,20 @@ const EditEvent = (props) => {
     });
   }, [props.navigation]);
 
-    {/* Event image circle */ }
-    const renderImageCircle = () => {
-      return (
-        <View style={EditEventStyles.event_pic_container}>
-            <TouchableOpacity onPress={() => { showImagePicker()}}>
-              <View style={EditEventStyles.event_picture}>
-                <Image source={event_image ? { uri: event_image} : require('../assets/upload_photo.png')}
-                  style={{ borderColor: "#aaaaaa", borderWidth: 1, width: EVENT_PIC_WIDTH, height: EVENT_PIC_HEIGHT, borderRadius: EVENT_PIC_WIDTH / 2 }}
-                />
-              </View> 
-            </TouchableOpacity>
-        </View>
-      )
-    }
-
+  {/* Event image circle */ }
+  const renderImageCircle = () => {
+    return (
+      <View style={EditEventStyles.event_pic_container}>
+          <TouchableOpacity onPress={() => { showImagePicker()}}>
+            <View style={EditEventStyles.event_picture}>
+              <Image source={event_image ? { uri: event_image} : require('../assets/upload_photo.png')}
+                style={{ borderColor: "#aaaaaa", borderWidth: 1, width: EVENT_PIC_WIDTH, height: EVENT_PIC_HEIGHT, borderRadius: EVENT_PIC_WIDTH / 2 }}
+              />
+            </View> 
+          </TouchableOpacity>
+      </View>
+    )
+  }
 
   {/* Event title box */ }
   const renderEventTitleBox = () => {

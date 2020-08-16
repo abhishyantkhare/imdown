@@ -390,6 +390,7 @@ def getEvents():
         event["event_responses"]["declined"] = event_responses[event["id"]][False]
     return jsonify(ret_list)
 
+
 @application.route("/get_event", methods=["GET"])
 # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
 @login_required

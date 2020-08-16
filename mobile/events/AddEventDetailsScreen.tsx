@@ -8,7 +8,6 @@ import moment from "moment";
 import DateTimeInput from "../components/date_time_input/date_time_input";
 import ImagePicker from 'react-native-image-picker';
 import { EVENT_PIC_HEIGHT, EVENT_PIC_WIDTH, IMG_URL_BASE_64_PREFIX } from "../constants"
-import { EditEventStyles } from "./edit_event_styles";
 
 const AddEventDetailsScreen = ({ navigation, route }) => {
   const squadId = route.params.squadId;
@@ -49,7 +48,6 @@ const AddEventDetailsScreen = ({ navigation, route }) => {
       } else if (response.customButton) {
         setImageUrl(undefined)
       } else {
-        console.log("response data is " + JSON.stringify(response.data))
         setImageUrl(IMG_URL_BASE_64_PREFIX + response.data);
       }
     });
@@ -142,6 +140,7 @@ const AddEventDetailsScreen = ({ navigation, route }) => {
 
   return (
     <View style={AddEventStyles.container}>
+      {/* Event picture, where user can select a picture to be shown on event details page */}
       { renderImageCircle() }
       {/* Event name and URL that were chosen in the previous screens. */}
       <TextInput defaultValue={name} onChangeText={setName} placeholder="Event name" style={AddEventStyles.textInput} />

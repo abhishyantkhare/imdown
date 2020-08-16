@@ -46,16 +46,18 @@
 			</dict>
 		</dict>
 	</dict>
-	<key>NSCameraUsageDescription</key>
-	<string>imdown would like to use your camera to set and modify event pictures</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSCameraUsageDescription</key>
+	<string>imdown would like to use your camera to set and modify event pictures</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>imdown would like to save photos to your photo gallery to set and modify event pictures</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>imdown would like access to your photo gallery to set and modify event pictures</string>
 	<key>UIBackgroundModes</key>
-	<array/>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>SplashScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
