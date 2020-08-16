@@ -518,7 +518,7 @@ def delete_user():
         return err, 400
     user_id = content["user_id"]
     squad_id = content["squad_id"]
-    to_delete = SquadMembership.query.filter_by(user_id=user_id).first()
+    to_delete = SquadMembership.query.filter_by(user_id=user_id, squad_id=squad_id).first()
     if to_delete == None:
         print("User is already deleted from squad.")
         return "User is already deleted from squad."
