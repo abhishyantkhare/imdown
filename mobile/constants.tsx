@@ -7,6 +7,7 @@ export const EVENT_PIC_HEIGHT = 130
 export const EVENT_PIC_WIDTH = 130
 export const ROW_BUTTON_HEIGHT = 40
 export const ROW_BUTTON_WIDTH = 40
+export const IMG_URL_BASE_64_PREFIX = "data:image/jpeg;base64,"
 
 export const DEFAULT_EVENT = {
   id: 0,

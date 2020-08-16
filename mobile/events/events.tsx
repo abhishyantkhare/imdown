@@ -9,45 +9,9 @@ import { useFocusEffect } from '@react-navigation/native';
 
 const SQUAD_CODE_TITLE_TEXT = "Squad Code: "
 
-export type Event = {
-  id: number,
-  name: string,
-  emoji?: string,
-  description?: string,
-  image_url?: string,
-  start_ms?: number,
-  end_ms?: number,
-  rsvp_users: RSVPUser[],
-  declined_users: RSVPUser[],
-  url?: string,
-  down_threshold: number,
-  creator_user_id: number
-}
-
-
 export type RSVPUser = {
   user_id: String,
   email: String
-}
-
-// Converts response from backend for events into list of internally used Event objects
-export const toEvents = (backendEvent) => {
-  return backendEvent.map((it) => {
-    return {
-      id: it.id,
-      name: it.title,
-      description: it.description,
-      emoji: it.event_emoji,
-      image_url: it.image_url,
-      start_ms: it.start_time,
-      end_ms: it.end_time,
-      rsvp_users: it.event_responses.accepted,
-      declined_users: it.event_responses.declined,
-      url: it.event_url,
-      down_threshold: it.down_threshold,
-      creator_user_id: it.creator_user_id
-    }
-  })
 }
 
 const Events = (props) => {
@@ -58,6 +22,36 @@ const Events = (props) => {
   const [squadName, setSquadName] = useState(props.route.params.squadName)
   const [squadEmoji, setSquadEmoji] = useState(props.route.params.squadEmoji)
   const [userEmail, setUserEmail] = useState(props.route.params.userEmail)
+
+  type EventLite = {
+    id: number,
+    name: string,
+    description?: string,
+    emoji?: string,
+    start_ms?: number,
+    end_ms?: number,
+    rsvp_users: RSVPUser[],
+    declined_users: RSVPUser[],
+    down_threshold: number,
+  }
+
+  // Converts response from backend for events into list of internally used EventLite objects
+  // EventLite objects contain cursory details related to an Event, and is used solely on the Events
+  const toEventLites = (backendEventLites) => {
+    return backendEventLites.map((it) => {
+      return {
+        id: it.id,
+        name: it.title,
+        description: it.description,
+        emoji: it.event_emoji,
+        start_ms: it.start_time,
+        end_ms: it.end_time,
+        rsvp_users: it.event_responses.accepted,
+        declined_users: it.event_responses.declined,
+        down_threshold: it.down_threshold,
+      }
+    })
+  }
 
   const goToAddEvent = () => {
     props.navigation.navigate("Add Event", {
@@ -72,7 +66,7 @@ const Events = (props) => {
     })
   }
 
-  const goToEventDetailsPage = (event: Event) => {
+  const goToEventDetailsPage = (event: EventLite) => {
     props.navigation.navigate("EventDetails", {
       eventId: event.id,
       userEmail: userEmail,
@@ -92,7 +86,7 @@ const Events = (props) => {
       callBackend(endpoint, init).then(response => {
         return response.json();
       }).then(data => {
-        setEvents(toEvents(data));
+        setEvents(toEventLites(data));
       });
     }, [])
   );
@@ -111,7 +105,7 @@ const Events = (props) => {
 
   // Given event, returns string that describes how far (time-wise) event is from now.
   // For ex: "ended 3 days ago" / "starts 3 minutes from now" / "happening now!"
-  const calcEventProximity = (event: Event) => {
+  const calcEventProximity = (event: EventLite) => {
     const now = parseInt(moment().format('x'))
     if (event.start_ms != null) {
       if (now < event.start_ms) {
@@ -128,7 +122,7 @@ const Events = (props) => {
     }
   }
 
-  const calcDownPercentage = (event: Event) => {
+  const calcDownPercentage = (event: EventLite) => {
     const numDown = event.rsvp_users.length
     const totalNumPeople = event.rsvp_users.length + event.declined_users.length
     const percentage = Math.round(numDown * 100 / totalNumPeople)
@@ -152,7 +146,7 @@ const Events = (props) => {
     )
   }
 
-  const renderDownBar = (event: Event) => {
+  const renderDownBar = (event: EventLite) => {
     const downPercentage = calcDownPercentage(event)
     const barColor = event.rsvp_users.length >= event.down_threshold ? '#68EDC6' : '#C7F9FF'
     const borderRightRadii = downPercentage > 95 ? 15 : 0
@@ -167,7 +161,7 @@ const Events = (props) => {
     </View>);
   }
 
-  const renderEventItem = ({ item }: { item: Event }) => {
+  const renderEventItem = ({ item }: { item: EventLite }) => {
     return (
       <TouchableOpacity activeOpacity={.7} onPress={() => { goToEventDetailsPage(item) }}>
         <View style={event_styles.event_item_outer_box}>

@@ -10,11 +10,11 @@ EVENT_UUID_ALPHABET = 'abcdefghijklmnopqrstuv0123456789'
 
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(64), index=False, unique=False)
-    description = db.Column(db.String(256), index=False, unique=False)
+    title = db.Column(db.String(128), index=False, unique=False)
+    description = db.Column(db.String(512), index=False, unique=False)
     event_emoji = db.Column(db.String(64), index=False, unique=False)
-    event_url = db.Column(db.String(256), index=False, unique=False)
-    image_url = db.Column(db.String(256), index=False, unique=False)
+    event_url = db.Column(db.String(1024), index=False, unique=False)
+    image_url = db.Column(db.Text(65536), index=False, unique=False)
     start_time = db.Column(db.BigInteger, index=False, unique=False)
     end_time = db.Column(db.BigInteger, index=False, unique=False)
     address = db.Column(db.String(256), index=False, unique=False)
@@ -44,6 +44,17 @@ class Event(db.Model):
             'squad_id': self.squad_id,
             'down_threshold': self.down_threshold,
             'creator_user_id': self.creator_user_id
+        }
+
+    def eventLiteDict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'description': self.description,
+            'event_emoji': self.event_emoji,
+            'start_time': self.start_time,
+            'end_time': self.end_time,
+            'down_threshold': self.down_threshold
         }
 
     def jsonify_event(self):

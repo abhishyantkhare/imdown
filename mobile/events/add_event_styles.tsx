@@ -5,6 +5,15 @@ export const AddEventStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
+  event_pic_container: {
+    marginBottom: 10,
+    marginTop: 20,
+  },
+  event_picture: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexGrow: 1,
+  },
   textInput: {
     margin: 15,
     borderColor: "white",

@@ -4,9 +4,43 @@ import { EventDetailsStyles } from "./event_details_styles";
 import moment from 'moment';
 import Divider from '../components/divider/divider'
 import { callBackend } from "../backend/backend"
-import { Event, toEvents, RSVPUser } from "./events"
+import { RSVPUser } from "./events"
 import { DEFAULT_EVENT, DOWN_EMOJI_HEIGHT, DOWN_EMOJI_WIDTH, EVENT_PIC_HEIGHT, EVENT_PIC_WIDTH, ROW_BUTTON_HEIGHT, ROW_BUTTON_WIDTH } from "../constants"
 import { useFocusEffect } from '@react-navigation/native';
+
+export type Event = {
+  id: number,
+  name: string,
+  emoji?: string,
+  description?: string,
+  image_url?: string,
+  start_ms?: number,
+  end_ms?: number,
+  rsvp_users: RSVPUser[],
+  declined_users: RSVPUser[],
+  url?: string,
+  down_threshold: number,
+  creator_user_id: number
+}
+
+// Converts response from backend for a single event into an internally used Event object
+// Event object contains all necessary and related information regarding an Event. It is used both on Event Details and Edit Event page
+export const toEvent = (backendEvent) => {
+  return ({
+    id: backendEvent.id,
+    name: backendEvent.title,
+    description: backendEvent.description,
+    emoji: backendEvent.event_emoji,
+    image_url: backendEvent.image_url,
+    start_ms: backendEvent.start_time,
+    end_ms: backendEvent.end_time,
+    rsvp_users: backendEvent.event_responses.accepted,
+    declined_users: backendEvent.event_responses.declined,
+    url: backendEvent.event_url,
+    down_threshold: backendEvent.down_threshold,
+    creator_user_id: backendEvent.creator_user_id
+  });
+}
 
 const EventDetails = (props) => {
   const eventId = props.route.params.eventId
@@ -30,7 +64,7 @@ const EventDetails = (props) => {
       callBackend(endpoint, init).then(response => {
         return response.json();
       }).then(data => {
-        const updatedEvent: Event = toEvents([data])[0]
+        const updatedEvent: Event = toEvent(data)
         setEvent(updatedEvent)
         const isUserEventAccepted = updatedEvent.rsvp_users.some(item => item.email === userEmail)
         setIsUserAccepted(isUserEventAccepted)
@@ -188,7 +222,7 @@ const EventDetails = (props) => {
     callBackend(endpoint, init).then(response => {
       return response.json();
     }).then(data => {
-      const updatedEvent = toEvents([data])[0]
+      const updatedEvent = toEvent(data)
       setEvent(updatedEvent)
       setIsUserAccepted(isUserEventAccepted(updatedEvent))
     });

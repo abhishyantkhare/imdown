@@ -9,6 +9,7 @@ from models.squad import Squad, get_squad_by_id
 from models.squadmembership import SquadMembership, GetUsersBySquadId
 from flask_login import login_user, login_required
 from collections import defaultdict
+from sqlalchemy.orm import load_only
 import requests
 import json
 import time
@@ -379,16 +380,15 @@ def getEvents():
     if not ok:
         return err, 400
     g_id = args["squad_id"]
-    events = Event.query.filter_by(squad_id=g_id).all()
+    events = Event.query.filter_by(squad_id=g_id).options(load_only('id', 'title', 'description', 'event_emoji', 'start_time', 'end_time', 'down_threshold')).all()
     event_ids = [e.id for e in events]
     event_responses = getEventResponsesBatch(event_ids)
-    ret_list = [e.eventDict() for e in events]
+    ret_list = [e.eventLiteDict() for e in events]
     for event in ret_list:
         event["event_responses"] = {}
         event["event_responses"]["accepted"] = event_responses[event["id"]][True]
         event["event_responses"]["declined"] = event_responses[event["id"]][False]
     return jsonify(ret_list)
-
 
 @application.route("/get_event", methods=["GET"])
 # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out

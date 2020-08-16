@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { callBackend } from "../backend/backend";
-import { Button, Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Button, Image, Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
 import EmojiSelector from "react-native-emoji-selector";
 import { AddEventStyles } from "./add_event_styles";
 import Slider from "@react-native-community/slider";
 import moment from "moment";
 import DateTimeInput from "../components/date_time_input/date_time_input";
+import ImagePicker from 'react-native-image-picker';
+import { EVENT_PIC_HEIGHT, EVENT_PIC_WIDTH, IMG_URL_BASE_64_PREFIX } from "../constants"
+import { EditEventStyles } from "./edit_event_styles";
 
 const AddEventDetailsScreen = ({ navigation, route }) => {
   const squadId = route.params.squadId;
@@ -26,6 +29,32 @@ const AddEventDetailsScreen = ({ navigation, route }) => {
   const [downThreshold, setDownThreshold] = useState<number>(route.params.down_threshold || 2);
   const [squadSize, setSquadSize] = useState<number>(4);
 
+  const image_picker_options = {
+    title: 'Select event photo',
+    customButtons: imageUrl ? [{ name: 'remove', title: 'Remove photo' }] : [],
+    maxWidth: 200,
+    maxHeight: 200,
+    storageOptions: {
+      skipBackup: true,
+      path: 'images',
+    },
+  };
+
+  const showImagePicker = () => {
+    ImagePicker.showImagePicker(image_picker_options, (response) => {    
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        setImageUrl(undefined)
+      } else {
+        console.log("response data is " + JSON.stringify(response.data))
+        setImageUrl(IMG_URL_BASE_64_PREFIX + response.data);
+      }
+    });
+  }
+
   useEffect(() => {
     const endpoint = "get_users?squadId=" + squadId;
     const init: RequestInit = {
@@ -38,6 +67,21 @@ const AddEventDetailsScreen = ({ navigation, route }) => {
       setSquadSize(data.user_info.length);
     });
   }, []);
+
+  {/* Event image circle */ }
+  const renderImageCircle = () => {
+    return (
+      <View style={EditEventStyles.event_pic_container}>
+          <TouchableOpacity onPress={() => { showImagePicker()}}>
+            <View style={EditEventStyles.event_picture}>
+              <Image source={imageUrl ? { uri: imageUrl} : require('../assets/upload_photo.png')}
+                style={{ borderColor: "#aaaaaa", borderWidth: 1, width: EVENT_PIC_WIDTH, height: EVENT_PIC_HEIGHT, borderRadius: EVENT_PIC_WIDTH / 2 }}
+              />
+            </View> 
+          </TouchableOpacity>
+      </View>
+    )
+  }
 
   const renderEmoji = () => {
     return showEmojiPicker ? (
@@ -98,6 +142,7 @@ const AddEventDetailsScreen = ({ navigation, route }) => {
 
   return (
     <View style={AddEventStyles.container}>
+      { renderImageCircle() }
       {/* Event name and URL that were chosen in the previous screens. */}
       <TextInput defaultValue={name} onChangeText={setName} placeholder="Event name" style={AddEventStyles.textInput} />
       <TextInput defaultValue={url} onChangeText={setUrl} placeholder="URL" style={AddEventStyles.optionalTextInput} />
