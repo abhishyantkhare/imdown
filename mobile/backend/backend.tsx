@@ -5,6 +5,7 @@ import CookieManager from '@react-native-community/cookies'
 // want to connect to your local backend
 // Download ngrok (https://dashboard.ngrok.com/get-started/setup)
 // Put the generated url here
+// export const BACKEND_URL = NGROK_URL
 export const BACKEND_URL = __DEV__ ? "http://localhost:5000/" : "https://app.imhelladown.com/"
 
 export const callBackend = async (endpoint: string, init: RequestInit = { headers: {} }) => {
