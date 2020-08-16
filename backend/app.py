@@ -47,7 +47,10 @@ def signIn():
     if u is None:
         u = User(email=email, name=name, photo=photo)
         db.session.add(u)
-        db.session.commit()
+    elif u.name != name or u.photo != photo:
+        u.name = name
+        u.photo = photo
+    db.session.commit()
     login_user(u)
     update_user_tokens(u, auth_code, device_token)
     return u.jsonifyUser()
@@ -458,7 +461,7 @@ def getEventResponsesBatch(event_id_list):
     resp_dict = defaultdict(lambda: defaultdict(list))
     # sort responses by response time (in ascending order/earlier responses first), and all null response times at end
     responses_sorted_by_response_time = sorted(eventResponses,
-        key=lambda resp: float('inf') if resp[1].response_time is None else resp[1].response_time)
+                                               key=lambda resp: float('inf') if resp[1].response_time is None else resp[1].response_time)
     for resp in responses_sorted_by_response_time:
         user = resp[0]
         event_resp = resp[1]
