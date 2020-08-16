@@ -1,4 +1,6 @@
 import { StyleSheet } from "react-native";
+import { EVENT_PIC_HEIGHT, EVENT_PIC_WIDTH } from "../constants"
+
 export const EditEventStyles = StyleSheet.create({
   container: {
     backgroundColor: "rgba(52, 52, 52, 0.05)",
@@ -8,10 +10,17 @@ export const EditEventStyles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 20,
   },
-  event_picture: {
+  event_picture_button: {
     alignItems: 'center',
     justifyContent: 'center',
     flexGrow: 1,
+  },
+  event_picture: { 
+    borderColor: "#aaaaaa", 
+    borderWidth: 1, 
+    width: EVENT_PIC_WIDTH, 
+    height: EVENT_PIC_HEIGHT, 
+    borderRadius: EVENT_PIC_WIDTH / 2 
   },
   event_title_container: {
     backgroundColor: "#ffff",

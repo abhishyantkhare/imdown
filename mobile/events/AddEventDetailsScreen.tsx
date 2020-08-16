@@ -7,7 +7,7 @@ import Slider from "@react-native-community/slider";
 import moment from "moment";
 import DateTimeInput from "../components/date_time_input/date_time_input";
 import ImagePicker from 'react-native-image-picker';
-import { EVENT_PIC_HEIGHT, EVENT_PIC_WIDTH, IMG_URL_BASE_64_PREFIX } from "../constants"
+import { IMG_URL_BASE_64_PREFIX } from "../constants"
 
 const AddEventDetailsScreen = ({ navigation, route }) => {
   const squadId = route.params.squadId;
@@ -69,13 +69,9 @@ const AddEventDetailsScreen = ({ navigation, route }) => {
   {/* Event image circle */ }
   const renderImageCircle = () => {
     return (
-      <View style={EditEventStyles.event_pic_container}>
-          <TouchableOpacity onPress={() => { showImagePicker()}}>
-            <View style={EditEventStyles.event_picture}>
-              <Image source={imageUrl ? { uri: imageUrl} : require('../assets/upload_photo.png')}
-                style={{ borderColor: "#aaaaaa", borderWidth: 1, width: EVENT_PIC_WIDTH, height: EVENT_PIC_HEIGHT, borderRadius: EVENT_PIC_WIDTH / 2 }}
-              />
-            </View> 
+      <View style={AddEventStyles.event_pic_container}>
+          <TouchableOpacity style={AddEventStyles.event_picture_button} onPress={() => { showImagePicker()}}>
+            <Image source={imageUrl ? { uri: imageUrl} : require('../assets/upload_photo.png') } style={AddEventStyles.event_picture} />
           </TouchableOpacity>
       </View>
     )

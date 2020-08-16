@@ -5,7 +5,7 @@ import EmojiSelector, { Categories } from "react-native-emoji-selector";
 import DateTimeInput from "../components/date_time_input/date_time_input";
 import Divider from '../components/divider/divider'
 import { callBackend } from "../backend/backend"
-import { EVENT_PIC_HEIGHT, EVENT_PIC_WIDTH, IMG_URL_BASE_64_PREFIX } from "../constants"
+import { IMG_URL_BASE_64_PREFIX } from "../constants"
 import ImagePicker from 'react-native-image-picker';
 
 const EditEvent = (props) => {
@@ -18,13 +18,13 @@ const EditEvent = (props) => {
   const [event_name, setEventName] = useState(event.name)
   const [eventStartTime, setEventStartTime] = useState<Date | undefined>(event.start_ms && new Date(event.start_ms));
   const [eventEndTime, setEventEndTime] = useState<Date | undefined>(event.end_ms && new Date(event.end_ms));
-  const [event_image, setEventImage] = useState(event.image_url)
+  const [eventImage, setEventImage] = useState(event.image_url)
   const [event_url, setEventURL] = useState(event.url)
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const image_picker_options = {
     title: 'Select event photo',
-    customButtons: event_image ? [{ name: 'remove', title: 'Remove photo' }] : [],
+    customButtons: eventImage ? [{ name: 'remove', title: 'Remove photo' }] : [],
     maxWidth: 200,
     maxHeight: 200,
     storageOptions: {
@@ -63,12 +63,8 @@ const EditEvent = (props) => {
   const renderImageCircle = () => {
     return (
       <View style={EditEventStyles.event_pic_container}>
-          <TouchableOpacity onPress={() => { showImagePicker()}}>
-            <View style={EditEventStyles.event_picture}>
-              <Image source={event_image ? { uri: event_image} : require('../assets/upload_photo.png')}
-                style={{ borderColor: "#aaaaaa", borderWidth: 1, width: EVENT_PIC_WIDTH, height: EVENT_PIC_HEIGHT, borderRadius: EVENT_PIC_WIDTH / 2 }}
-              />
-            </View> 
+          <TouchableOpacity style={EditEventStyles.event_picture_button} onPress={() => { showImagePicker()}}>
+            <Image source={eventImage ? { uri: eventImage} : require('../assets/upload_photo.png') } style={EditEventStyles.event_picture} />
           </TouchableOpacity>
       </View>
     )
@@ -174,7 +170,7 @@ const EditEvent = (props) => {
       down_threshold: event_down_threshold,
       emoji: event_emoji,
       event_url: event_url || null,
-      image_url: event_image || null,
+      image_url: eventImage || null,
       squad_id: event.squadId,
       start_time: eventStartTime ? eventStartTime.getTime() : null,
       end_time: eventEndTime ? eventEndTime.getTime() : null,
