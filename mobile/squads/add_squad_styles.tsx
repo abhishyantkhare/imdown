@@ -58,5 +58,5 @@ export const AddSquadStyles = StyleSheet.create({
     fontFamily: "Ubuntu_700Bold",
     fontSize: 32
   },
-
+  
 });

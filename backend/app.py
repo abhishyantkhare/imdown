@@ -279,23 +279,41 @@ def addUserToSquad(squad_code, email):
     squad_obj = Squad.query.filter_by(code=squad_code).first()
     if not squad_obj:
         print("Failure adding to squad. Squad code is not valid")
-        return f"Invite link not valid. It is {squad_code}", 400
+        response = {
+            "status_code": 400,
+            "message": "Invalid Squad Code",
+            "description": "Please enter a valid squad code"
+        }
+        return jsonify(response)
     user_obj = User.query.filter_by(email=email).first()
     if not user_obj:
         print(
             f"Failure adding to squad. User with user email {email} does not exist")
-        return f"Email hash is not valid. It is {email}", 400
+        response = {
+            "status_code": 400,
+            "message": "Invalid Email",
+            "description": "This email is invalid"
+        }
+        return jsonify(response)
     user_squad_existing_membership = SquadMembership.query.filter_by(
         user_id=user_obj.id, squad_id=squad_obj.id).first()
     if user_squad_existing_membership:
-        print("User is already in squad, not adding")
-        return "User is already in squad, not adding"
+        response = {
+            "status_code": 400,
+            "message": f"You are already a part of {squad_obj.name}.",
+            "description": "Please enter a new squad code."
+        }
+        return jsonify(response)
     else:
         to_insert = SquadMembership(squad_id=squad_obj.id, user_id=user_obj.id)
         db.session.add(to_insert)
         db.session.commit()
-        return to_insert.jsonifySquadMembership()
-
+        response = {
+            "status_code": 200,
+            "message": "Sucessfully added squad."
+        }
+        return jsonify(response)
+        
 
 @application.route("/create_event", methods=["POST"])
 # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out

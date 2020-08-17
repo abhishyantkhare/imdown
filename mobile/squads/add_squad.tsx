@@ -7,6 +7,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { callBackend } from "../backend/backend";
 import { ScrollView } from "react-native-gesture-handler";
 import { RootStackParamList } from "../App";
+import { showMessage } from "react-native-flash-message";
 
 type AddSquadNavigationProp = StackNavigationProp<
     RootStackParamList,
@@ -54,6 +55,16 @@ const AddSquad = (props: AddSquadProps) => {
         callBackend(endpoint, init).then(() => { props.navigation.pop() })
     }
 
+    const invalidSquadCodeMessage = (message: string, description: string) => {
+        return (
+            showMessage({
+                message: message,
+                description: description,
+                type: "danger",
+              })
+        )
+    }
+
     const addSquadByCodeOnBackend = () => {
         const endpoint = 'add_to_squad'
         const data = {
@@ -68,7 +79,15 @@ const AddSquad = (props: AddSquadProps) => {
                 'Content-Type': 'application/json'
             },
         }
-        callBackend(endpoint, init).then(() => { props.navigation.pop() })
+        callBackend(endpoint, init).then(response => { 
+            return response.json();
+        }).then(data => { 
+            if (data.status_code == 400){
+                invalidSquadCodeMessage(data.message, data.description);
+            } else {
+                props.navigation.pop();
+            }
+        });
     }
 
     const renderEmoji = () => {
@@ -149,7 +168,6 @@ const AddSquad = (props: AddSquadProps) => {
                 {renderCreateNewSquad()}
             </ScrollView>
         </View>
-
     );
 }
 
