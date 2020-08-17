@@ -38,7 +38,6 @@ export const EventDetailsStyles = StyleSheet.create({
     fontFamily: "Ubuntu_400Regular",
     fontSize: 15,
     paddingLeft: 10,
-    paddingTop: 10,
   },
   event_url: {
     color: "#9C9C9C",
@@ -50,6 +49,13 @@ export const EventDetailsStyles = StyleSheet.create({
   },
 
 //   styles for list of users who are down for event
+  down_threshold_text: {
+    color: "#9C9C9C",
+    fontFamily: "Ubuntu_400Regular",
+    fontSize: 15,
+    paddingLeft: 10,
+    paddingTop: 30
+  },
   down_list_outer_container: {
     flexDirection: 'row',
     flexGrow: 1,

@@ -89,16 +89,27 @@ const EventDetails = (props) => {
           <Text style={EventDetailsStyles.event_title}>
             {event.name}
           </Text>
+          <Text style={[EventDetailsStyles.event_time, {paddingTop: 10}]}>
+            {event.start_ms ? `🗓 Starts: ${moment(event.start_ms).format('llll').toLocaleString()}` : "Starts: TBD"}
+          </Text>
           <Text style={EventDetailsStyles.event_time}>
-            {event.start_ms ? `🗓 ${moment(event.start_ms).format('llll').toLocaleString()}` : "TBD"}
+            {event.end_ms ? `🗓 Ends: ${moment(event.end_ms).format('llll').toLocaleString()}` : "Ends: TBD"}
           </Text>
-          <Text onPress={() => Linking.openURL(`https://${event.url}`)} style={EventDetailsStyles.event_url}>
-            {event.url}
-          </Text>
+          {/* Commenting out URL for FMVP */}
+          {/* { renderURLField() } */}
         </View>
       </View>
     );
   }
+
+  const renderURLField= () => {
+    return (
+      event.url ? 
+      <Text onPress={() => event.url && Linking.openURL(`https://${event.url}`)} style={EventDetailsStyles.event_url}>
+        {event.url}
+      </Text> : null
+    );
+  };
 
   {/* Event description box */ }
   const renderEventDescriptionBox = () => {
@@ -261,6 +272,7 @@ const EventDetails = (props) => {
       {renderEventDescriptionBox()}
       {Divider()}
       {/* Event "down list" box */}
+      <Text style={EventDetailsStyles.down_threshold_text}> {`A calendar invite will be created once ${event.down_threshold} ${event.down_threshold > 1 ? "people are" : "person is"} down!`} </Text>
       {renderEventDownListBox()}
       {Divider()}
       {/* Button row */}
