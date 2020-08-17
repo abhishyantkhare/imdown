@@ -18,7 +18,7 @@ const AddEventNameScreen = ({ navigation, route }) => {
       {/*<View style={AddEventStyles.topRightButton}>*/}
       {/*  <Button title="From URL" onPress={() => navigation.navigate("Add Event URL")} />*/}
       {/*</View>*/}
-      <TextInput autoFocus onChangeText={setName} placeholder="Event name" style={AddEventStyles.largeTextInput} />
+      <TextInput autoFocus onChangeText={setName} placeholder="Event name" multiline={true} style={AddEventStyles.largeTextInput} />
       <View style={AddEventStyles.nextButton}>
         <Button title="Next" onPress={goToAddMoreInfo} disabled={!name} />
       </View>

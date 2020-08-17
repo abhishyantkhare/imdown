@@ -95,8 +95,8 @@ const AddEventDetailsScreen = ({ navigation, route }) => {
     return (
       <View>
         <Text style={AddEventStyles.downSliderText}>schedule once {downThreshold} people are down</Text>
-        {/* Allowing a maximum value of at least 4 in case not everybody has joined. */}
-        <Slider minimumValue={2} maximumValue={Math.max(squadSize, 4)} step={1}
+        {/* Allowing a maximum value of at least 2 in case not everybody has joined. */}
+        <Slider minimumValue={1} maximumValue={Math.max(squadSize, 2)} step={1}
                 value={downThreshold} onValueChange={setDownThreshold}
                 thumbImage={require("../assets/down_static.png")}
                 style={AddEventStyles.downSlider} />
@@ -139,8 +139,9 @@ const AddEventDetailsScreen = ({ navigation, route }) => {
       {/* Event picture, where user can select a picture to be shown on event details page */}
       { renderImageCircle() }
       {/* Event name and URL that were chosen in the previous screens. */}
-      <TextInput defaultValue={name} onChangeText={setName} placeholder="Event name" style={AddEventStyles.textInput} />
-      <TextInput defaultValue={url} onChangeText={setUrl} placeholder="URL" style={AddEventStyles.optionalTextInput} />
+      <TextInput defaultValue={name} onChangeText={setName} placeholder="Event name" multiline={true} style={AddEventStyles.textInput} />
+      {/* Commenting out URL for FMVP */}
+      {/* <TextInput defaultValue={url} onChangeText={setUrl} placeholder="URL" style={AddEventStyles.optionalTextInput} /> */}
       {/* Combined start time, thumbnail, and end time block. */}
       <View style={AddEventStyles.dateAndIcon}>
         <DateTimeInput onChange={setStartDate} initialValue={startDate} />
@@ -150,7 +151,7 @@ const AddEventDetailsScreen = ({ navigation, route }) => {
       {/* Additional event information (more can be added here). */}
       {/* TODO: Create an image selector widget and fold it into the emoji selector. */}
       <TextInput onChangeText={setImageUrl} placeholder="Image URL" style={AddEventStyles.optionalTextInput} />
-      <TextInput onChangeText={setDescription} placeholder="Description" style={AddEventStyles.optionalTextInput} />
+      <TextInput onChangeText={setDescription} placeholder="Description" multiline={true} style={AddEventStyles.optionalTextInput} />
       {/* Slider to specify the required attendance for this event. */}
       {renderDownSlider()}
 

@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useState } from "react";
-import { Button, Image, SafeAreaView, ScrollView, Slider, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Button, Image, Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { EditEventStyles } from "./edit_event_styles";
 import EmojiSelector, { Categories } from "react-native-emoji-selector";
 import DateTimeInput from "../components/date_time_input/date_time_input";
@@ -7,6 +7,7 @@ import Divider from '../components/divider/divider'
 import { callBackend } from "../backend/backend"
 import { IMG_URL_BASE_64_PREFIX } from "../constants"
 import ImagePicker from 'react-native-image-picker';
+import Slider from "@react-native-community/slider";
 
 const EditEvent = (props) => {
   const event = props.route.params.event
@@ -86,8 +87,9 @@ const EditEvent = (props) => {
         <DateTimeInput onChange={setEventStartTime} initialValue={eventStartTime} />
         {Divider()}
         <DateTimeInput onChange={setEventEndTime} initialValue={eventEndTime} />
-        {Divider()}
-        <TextInput style={[EditEventStyles.event_url, { textDecorationLine: event_url ? 'underline' : 'none' }]} placeholder="Event URL" value={event_url} onChangeText={(value) => setEventURL(value)} />
+        {/* Commenting out URL for FMVP */}
+        {/* {Divider()}
+        <TextInput style={[EditEventStyles.event_url, { textDecorationLine: event_url ? 'underline' : 'none' }]} placeholder="Event URL" value={event_url} autoCapitalize={'none'} onChangeText={(value) => setEventURL(value)} /> */}
         {Divider()}
         <TextInput style={EditEventStyles.event_description} placeholder="Event Description" value={event_description} multiline={true} onChangeText={(value) => setEventDescription(value)} />
       </View>
@@ -101,49 +103,40 @@ const EditEvent = (props) => {
       <View style={EditEventStyles.additional_fields_container}>
         {renderEmojiField()}
         {Divider()}
-        <Text style={EditEventStyles.down_threshold_text}>Number of people down to auto create event: {event_down_threshold}</Text>
-        <View style={{ marginHorizontal: 20, paddingBottom: 20 }} >
-          <Slider minimumValue={0} maximumValue={event.rsvp_users.length + event.declined_users.length} step={1} value={event_down_threshold} onValueChange={(sliderValue: number) => setEventDownThreshold(sliderValue)}>
-          </Slider>
-        </View>
+        { renderDownThresholdSlider() }
       </View>
     );
   }
 
   const renderEmojiField = () => {
-    return (
-      <SafeAreaView style={EditEventStyles.emoji_container}>
-        <Text style={EditEventStyles.event_emoji_text}>
-          Event Emoji:
-        </Text>
-        <View>
-          <TouchableOpacity onPress={() => { setShowEmojiPicker(true) }}>
-            <Text style={EditEventStyles.emoji}>
-              {`${event_emoji}`}
-            </Text>
-          </TouchableOpacity>
-          <View style={{ alignSelf: "center" }}>
-            {renderEmojiPicker()}
-          </View>
-        </View>
-      </SafeAreaView>
-    )
-  }
-
-  const renderEmojiPicker = () => {
-    return (
-      showEmojiPicker &&
-      <View style={EditEventStyles.emoji_picker_container}>
-        <EmojiSelector
-          category={Categories.all}
-          showSearchBar={false}
-          onEmojiSelected={emoji => {
-            setEventEmoji(emoji);
-            setShowEmojiPicker(false);
-          }}
-        />
+    return showEmojiPicker ? (
+      <Modal presentationStyle="formSheet">
+        <EmojiSelector onEmojiSelected={emoji => {
+          setEventEmoji(emoji);
+          setShowEmojiPicker(false);
+        }} />
+      </Modal>
+    ) : (
+      <View style={EditEventStyles.emoji_container }>
+        <Text style={EditEventStyles.event_emoji_text}>Event Emoji:</Text>
+        <TouchableOpacity onPress={() => setShowEmojiPicker(true)}>
+          <Text style={EditEventStyles.emoji}>{event_emoji}</Text>
+        </TouchableOpacity>
       </View>
-    )
+    );
+  };
+
+  const renderDownThresholdSlider = () => {
+    return (
+      <View>
+        <Text style={EditEventStyles.down_threshold_text}>Number of people down to create calendar event: {event_down_threshold}</Text>
+        {/* Allowing a maximum value of at least 2 in case not everybody has joined. */}
+        <Slider minimumValue={1} maximumValue={ Math.max(event.rsvp_users.length + event.declined_users.length, 2) } step={1}
+                value={event_down_threshold} onValueChange={setEventDownThreshold}
+                thumbImage={require("../assets/down_static.png")}
+                style={ EditEventStyles.down_threshold_slider } />
+      </View>
+    );
   }
 
 

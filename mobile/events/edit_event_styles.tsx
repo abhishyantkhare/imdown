@@ -80,6 +80,7 @@ export const EditEventStyles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     flexWrap: "wrap",
+    paddingVertical: 15,
   },
   event_emoji_text: {
     alignItems: "center",
@@ -87,15 +88,11 @@ export const EditEventStyles = StyleSheet.create({
     fontFamily: "Ubuntu_400Regular",
     fontSize: 15,
     margin: 15,
-    paddingVertical: 15
   },
   emoji: {
-    fontSize: 40,
+    fontSize: 50,
     alignItems: "center",
     justifyContent: "center",
-  },
-  emoji_picker_container : {
-    paddingTop: 60
   },
   down_threshold_text: {
     alignItems: "center",
@@ -104,6 +101,10 @@ export const EditEventStyles = StyleSheet.create({
     fontSize: 15,
     margin: 15,
     paddingTop: 20
+  },
+  down_threshold_slider: { 
+    marginHorizontal: 20, 
+    marginBottom: 20 
   },
   save_button: {
     alignItems: 'center',
