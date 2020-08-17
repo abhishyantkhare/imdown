@@ -37,7 +37,7 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-          <Stack.Screen name="Squads" component={Squads} />
+          <Stack.Screen name="Squads" component={Squads} options={{ gestureEnabled: false }} />
           <Stack.Screen name="Edit Squad" component={EditSquad} />
           <Stack.Screen name="Add Squad" component={AddSquad} />
           <Stack.Screen name="Events" component={Events} />

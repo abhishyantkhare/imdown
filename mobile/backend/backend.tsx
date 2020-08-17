@@ -9,6 +9,9 @@ import CookieManager from '@react-native-community/cookies'
 export const BACKEND_URL = __DEV__ ? "http://localhost:5000/" : "https://app.imhelladown.com/"
 
 export const callBackend = async (endpoint: string, init: RequestInit = { headers: {} }) => {
+    if (!init.headers) {
+        init.headers = {}
+    }
     const sessionCookie = await AsyncStorage.getItem("sessionCookie")
     init.headers["Cookie"] = sessionCookie
     init.credentials = "include"

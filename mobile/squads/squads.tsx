@@ -27,17 +27,35 @@ const Squads = (props) => {
         });
     }
 
+    const signOutUser = () => {
+        const endpoint = 'sign_out'
+        const init: RequestInit = {
+            method: "POST",
+        }
+        callBackend(endpoint, init).then(() => {
+            props.navigation.navigate("Login")
+        })
+    }
+
     useLayoutEffect(() => {
         props.navigation.setOptions({
             headerRight: () => (
                 <Button
                     onPress={() => goToAddSquad()}
-                    title="Add"
+                    title="Add Squad"
+                    color="#000"
+                />
+            ),
+            headerLeft: () => (
+                <Button
+                    onPress={() => signOutUser()}
+                    title="Sign Out"
                     color="#000"
                 />
             ),
         });
     }, [props.navigation]);
+
 
     const getUserId = () => {
         const endpoint = 'get_user_id?email=' + email
@@ -114,7 +132,7 @@ const Squads = (props) => {
         });
     }
 
-    const alertPopUp = (squadId: number, squadName: string) =>{
+    const alertPopUp = (squadId: number, squadName: string) => {
         return (
             Alert.alert(
                 'Alert',
@@ -122,8 +140,8 @@ const Squads = (props) => {
                 [
                     {
                         text: 'Yes',
-                        onPress: () => { 
-                            deleteSquad(squadId) 
+                        onPress: () => {
+                            deleteSquad(squadId)
                         },
                     },
                     {
@@ -134,7 +152,7 @@ const Squads = (props) => {
                 { cancelable: true }
             )
         )
-    } 
+    }
 
 
     const deleteBtn = (squadId: number, squadName: string, rowKey: number, rowMap: any) => {
@@ -144,7 +162,7 @@ const Squads = (props) => {
                 onPress={() => {
                     closeRow(rowMap, rowKey);
                     alertPopUp(squadId, squadName);
-                  }
+                }
                 }
             >
                 <Text style={squad_styles.deleteText}>Delete</Text>
@@ -164,10 +182,10 @@ const Squads = (props) => {
         return (
             <TouchableOpacity
                 style={[squad_styles.backRightBtns, squad_styles.editBtn]}
-                onPress={() => { 
+                onPress={() => {
                     closeRow(rowMap, rowKey);
-                    goToEditSquad(squadId, squadName, squadEmoji); 
-                  }
+                    goToEditSquad(squadId, squadName, squadEmoji);
+                }
                 }
             >
                 <Text style={squad_styles.editText}>Edit</Text>
@@ -201,7 +219,7 @@ const Squads = (props) => {
             </View>
         </SwipeRow>
     );
-    
+
     return (
         <View style={squad_styles.squads_container}>
             <SwipeListView
