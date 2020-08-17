@@ -7,7 +7,7 @@ from models.event_response import EventResponse
 from models.event import Event, get_event_by_id
 from models.squad import Squad, get_squad_by_id
 from models.squadmembership import SquadMembership, GetUsersBySquadId
-from flask_login import login_user, login_required
+from flask_login import login_user, login_required, logout_user
 from collections import defaultdict
 from sqlalchemy.orm import load_only
 import requests
@@ -76,6 +76,13 @@ def fetch_google_access_tokens(auth_code):
     r = requests.post('https://oauth2.googleapis.com/token', data=data)
     resp = r.json()
     return resp['access_token'], resp['refresh_token']
+
+
+@application.route("/sign_out", methods=['POST'])
+@login_required
+def signout():
+    logout_user()
+    return "Successfully signed out user!"
 
 
 @application.route("/add_to_squad", methods=['POST'])
@@ -383,7 +390,8 @@ def getEvents():
     if not ok:
         return err, 400
     g_id = args["squad_id"]
-    events = Event.query.filter_by(squad_id=g_id).options(load_only('id', 'title', 'description', 'event_emoji', 'start_time', 'end_time', 'down_threshold')).all()
+    events = Event.query.filter_by(squad_id=g_id).options(load_only(
+        'id', 'title', 'description', 'event_emoji', 'start_time', 'end_time', 'down_threshold')).all()
     event_ids = [e.id for e in events]
     event_responses = getEventResponsesBatch(event_ids)
     ret_list = [e.eventLiteDict() for e in events]
@@ -522,7 +530,8 @@ def delete_user():
         return err, 400
     user_id = content["user_id"]
     squad_id = content["squad_id"]
-    to_delete = SquadMembership.query.filter_by(user_id=user_id, squad_id=squad_id).first()
+    to_delete = SquadMembership.query.filter_by(
+        user_id=user_id, squad_id=squad_id).first()
     if to_delete == None:
         print("User is already deleted from squad.")
         return "User is already deleted from squad."
