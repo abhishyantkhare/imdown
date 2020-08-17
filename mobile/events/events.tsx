@@ -196,9 +196,14 @@ const Events = (props) => {
   return (
     <View style={event_styles.container}>
       <TouchableOpacity onPress={() => { goToSquadMembersPage(squadId) }}>
-        <Text style={event_styles.group_title}>
-          {squadEmoji} {squadName}
-        </Text>
+        <View style={event_styles.squad_name_emoji_container}>
+          <Text style={event_styles.group_title}>
+            {squadEmoji} {squadName}
+          </Text>
+          <Text style={event_styles.tap_for_details_text}>
+            Tap for details
+          </Text>
+        </View>
       </TouchableOpacity>
       {renderSquadCode()}
       <View style={event_styles.event_list_container}>

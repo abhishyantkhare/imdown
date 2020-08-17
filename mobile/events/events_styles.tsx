@@ -82,7 +82,7 @@ export const event_styles = StyleSheet.create({
     borderColor: "#EEEEEE",
     borderWidth: 2,
     borderStyle: "solid",
-    marginTop: 10
+    marginTop: 20
   },
   squad_code: {
     paddingHorizontal: 25,
@@ -95,8 +95,19 @@ export const event_styles = StyleSheet.create({
     fontFamily: "Ubuntu_400Regular",
     fontSize: 20
   },
+  squad_name_emoji_container: {
+    flexDirection: 'column', 
+    justifyContent: "center", 
+    alignItems: "center"
+  },
   squad_code_value_text: {
     fontFamily: "Ubuntu_400Regular",
     fontSize: 20
+  },
+  tap_for_details_text: {
+    fontFamily: "Ubuntu_400Regular",
+    fontSize: 15,
+    color: "darkgray",
+    alignContent:"center"
   }
 });
