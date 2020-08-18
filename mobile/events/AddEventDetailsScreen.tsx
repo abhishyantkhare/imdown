@@ -20,7 +20,7 @@ const AddEventDetailsScreen = ({ navigation, route }) => {
   const [startDate, setStartDate] = useState<Date | undefined>();
   const [endDate, setEndDate] = useState<Date | undefined>();
 
-  const [emoji, setEmojiPicked] = useState<string>(route.params.emoji || "🗓");
+  const [emoji, setEmojiPicked] = useState<string>(route.params.emoji || "😎");
   const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
   const [imageUrl, setImageUrl] = useState(route.params.image_url || "");
 
@@ -139,14 +139,22 @@ const AddEventDetailsScreen = ({ navigation, route }) => {
       {/* Event picture, where user can select a picture to be shown on event details page */}
       { renderImageCircle() }
       {/* Event name and URL that were chosen in the previous screens. */}
-      <TextInput defaultValue={name} onChangeText={setName} placeholder="Event name" multiline={true} style={AddEventStyles.textInput} />
+      <View style={AddEventStyles.emojiAndNameView}>
+        {renderEmoji()}
+        <TextInput defaultValue={name} onChangeText={setName} placeholder="Event name" multiline={true} style={AddEventStyles.textInput} />
+      </View>
       {/* Commenting out URL for FMVP */}
       {/* <TextInput defaultValue={url} onChangeText={setUrl} placeholder="URL" style={AddEventStyles.optionalTextInput} /> */}
       {/* Combined start time, thumbnail, and end time block. */}
-      <View style={AddEventStyles.dateAndIcon}>
-        <DateTimeInput onChange={setStartDate} initialValue={startDate} />
-        {renderEmoji()}
-        <DateTimeInput onChange={setEndDate} initialValue={endDate} />
+      <View style={AddEventStyles.dateView}>
+        <View style={AddEventStyles.startDatePickerView}>
+          <Text style={AddEventStyles.startEndText}>Start Time: </Text>
+          <DateTimeInput onChange={setStartDate} initialValue={startDate} />
+        </View>
+        <View style={AddEventStyles.endDatePickerView}>
+          <Text style={AddEventStyles.startEndText}>End Time: </Text>
+          <DateTimeInput onChange={setEndDate} initialValue={endDate} />
+        </View>   
       </View>
       {/* Additional event information (more can be added here). */}
       {/* TODO: Create an image selector widget and fold it into the emoji selector. */}

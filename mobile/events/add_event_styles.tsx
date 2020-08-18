@@ -27,7 +27,7 @@ export const AddEventStyles = StyleSheet.create({
     borderColor: "white",
     borderWidth: 1,
     fontFamily: "Ubuntu_400Regular",
-    fontSize: 16
+    fontSize: 35
   },
   largeTextInput: {
     margin: 15,
@@ -60,9 +60,24 @@ export const AddEventStyles = StyleSheet.create({
   emoji: {
     fontSize: 40,
   },
-  dateAndIcon: {
-    flexDirection: "row",
-    justifyContent: "space-around"
+  dateView: {
+    flexDirection: "column", 
+  },
+  startDatePickerView: {
+    flexDirection: "row", 
+    alignItems: "center",
+    marginLeft: 15
+  },
+  endDatePickerView: {
+    flexDirection: "row", 
+    alignItems: "center",
+    marginLeft: 15,
+    marginTop: -25
+  },
+  emojiAndNameView: {
+    flexDirection: "row", 
+    alignItems: "center",
+    justifyContent: "center",
   },
   downSliderText: {
     color: "gray",
@@ -71,5 +86,8 @@ export const AddEventStyles = StyleSheet.create({
   },
   downSlider: {
     margin: 20
+  },
+  startEndText: {
+    fontSize: 16,
   }
 });
