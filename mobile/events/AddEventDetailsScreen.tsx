@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { callBackend } from "../backend/backend";
 import { Button, Image, Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
-import EmojiSelector from "react-native-emoji-selector";
+import EmojiPicker from "../components/emojipicker/EmojiPicker"
 import { AddEventStyles } from "./add_event_styles";
 import Slider from "@react-native-community/slider";
 import moment from "moment";
@@ -20,8 +20,7 @@ const AddEventDetailsScreen = ({ navigation, route }) => {
   const [startDate, setStartDate] = useState<Date | undefined>();
   const [endDate, setEndDate] = useState<Date | undefined>();
 
-  const [emoji, setEmojiPicked] = useState<string>(route.params.emoji || "😎");
-  const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
+  const [emoji, setEmojiPicked] = useState<string>(route.params.emoji || "🗓");
   const [imageUrl, setImageUrl] = useState(route.params.image_url || "");
 
   const [description, setDescription] = useState<string>(route.params.description || "");
@@ -40,7 +39,7 @@ const AddEventDetailsScreen = ({ navigation, route }) => {
   };
 
   const showImagePicker = () => {
-    ImagePicker.showImagePicker(image_picker_options, (response) => {    
+    ImagePicker.showImagePicker(image_picker_options, (response) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
@@ -70,26 +69,19 @@ const AddEventDetailsScreen = ({ navigation, route }) => {
   const renderImageCircle = () => {
     return (
       <View style={AddEventStyles.event_pic_container}>
-          <TouchableOpacity style={AddEventStyles.event_picture_button} onPress={() => { showImagePicker()}}>
-            <Image source={imageUrl ? { uri: imageUrl} : require('../assets/upload_photo.png') } style={AddEventStyles.event_picture} />
-          </TouchableOpacity>
+        <TouchableOpacity style={AddEventStyles.event_picture_button} onPress={() => { showImagePicker() }}>
+          <Image source={imageUrl ? { uri: imageUrl } : require('../assets/upload_photo.png')} style={AddEventStyles.event_picture} />
+        </TouchableOpacity>
       </View>
     )
   }
 
   const renderEmoji = () => {
-    return showEmojiPicker ? (
-      <Modal presentationStyle="formSheet">
-        <EmojiSelector onEmojiSelected={emoji => {
-          setEmojiPicked(emoji);
-          setShowEmojiPicker(false);
-        }} />
-      </Modal>
-    ) : (
-      <TouchableOpacity onPress={() => setShowEmojiPicker(true)}>
-        <Text style={AddEventStyles.emoji}>{emoji}</Text>
-      </TouchableOpacity>
-    );
+    return <EmojiPicker
+      onEmojiPicked={(emoji: string) => setEmojiPicked(emoji)}
+      emojiPickerTitle={"Select Event Emoji"}
+      defaultEmoji={"🗓"}
+    />
   };
   const renderDownSlider = () => {
     return (
@@ -97,9 +89,9 @@ const AddEventDetailsScreen = ({ navigation, route }) => {
         <Text style={AddEventStyles.downSliderText}>schedule once {downThreshold} people are down</Text>
         {/* Allowing a maximum value of at least 2 in case not everybody has joined. */}
         <Slider minimumValue={1} maximumValue={Math.max(squadSize, 2)} step={1}
-                value={downThreshold} onValueChange={setDownThreshold}
-                thumbImage={require("../assets/down_static.png")}
-                style={AddEventStyles.downSlider} />
+          value={downThreshold} onValueChange={setDownThreshold}
+          thumbImage={require("../assets/down_static.png")}
+          style={AddEventStyles.downSlider} />
       </View>
     );
   };
@@ -137,7 +129,7 @@ const AddEventDetailsScreen = ({ navigation, route }) => {
   return (
     <View style={AddEventStyles.container}>
       {/* Event picture, where user can select a picture to be shown on event details page */}
-      { renderImageCircle() }
+      {renderImageCircle()}
       {/* Event name and URL that were chosen in the previous screens. */}
       <View style={AddEventStyles.emojiAndNameView}>
         {renderEmoji()}
@@ -154,7 +146,7 @@ const AddEventDetailsScreen = ({ navigation, route }) => {
         <View style={AddEventStyles.endDatePickerView}>
           <Text style={AddEventStyles.startEndText}>End Time: </Text>
           <DateTimeInput onChange={setEndDate} initialValue={endDate} />
-        </View>   
+        </View>
       </View>
       {/* Additional event information (more can be added here). */}
       {/* TODO: Create an image selector widget and fold it into the emoji selector. */}

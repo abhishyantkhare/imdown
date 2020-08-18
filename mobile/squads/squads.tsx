@@ -17,7 +17,7 @@ export type Squad = {
 }
 
 const Squads = (props) => {
-    const [squads, setSquads] = useState(props.route.params.squads)
+    const [squads, setSquads] = useState([])
     const [email, setEmail] = useState(props.route.params.email)
     const [userId, setUserId] = useState()
 

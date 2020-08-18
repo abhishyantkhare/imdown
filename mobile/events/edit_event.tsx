@@ -1,7 +1,7 @@
 import React, { useLayoutEffect, useState } from "react";
-import { Button, Image, Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Button, Image, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { EditEventStyles } from "./edit_event_styles";
-import EmojiSelector, { Categories } from "react-native-emoji-selector";
+import EmojiPicker from "../components/emojipicker/EmojiPicker";
 import DateTimeInput from "../components/date_time_input/date_time_input";
 import Divider from '../components/divider/divider'
 import { callBackend } from "../backend/backend"
@@ -21,7 +21,6 @@ const EditEvent = (props) => {
   const [eventEndTime, setEventEndTime] = useState<Date | undefined>(event.end_ms && new Date(event.end_ms));
   const [eventImage, setEventImage] = useState(event.image_url)
   const [event_url, setEventURL] = useState(event.url)
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const image_picker_options = {
     title: 'Select event photo',
@@ -35,7 +34,7 @@ const EditEvent = (props) => {
   };
 
   const showImagePicker = () => {
-    ImagePicker.showImagePicker(image_picker_options, (response) => {    
+    ImagePicker.showImagePicker(image_picker_options, (response) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
@@ -47,7 +46,7 @@ const EditEvent = (props) => {
       }
     });
   }
-  
+
   useLayoutEffect(() => {
     props.navigation.setOptions({
       headerLeft: () => (
@@ -64,9 +63,9 @@ const EditEvent = (props) => {
   const renderImageCircle = () => {
     return (
       <View style={EditEventStyles.event_pic_container}>
-          <TouchableOpacity style={EditEventStyles.event_picture_button} onPress={() => { showImagePicker()}}>
-            <Image source={eventImage ? { uri: eventImage} : require('../assets/upload_photo.png') } style={EditEventStyles.event_picture} />
-          </TouchableOpacity>
+        <TouchableOpacity style={EditEventStyles.event_picture_button} onPress={() => { showImagePicker() }}>
+          <Image source={eventImage ? { uri: eventImage } : require('../assets/upload_photo.png')} style={EditEventStyles.event_picture} />
+        </TouchableOpacity>
       </View>
     )
   }
@@ -103,27 +102,24 @@ const EditEvent = (props) => {
       <View style={EditEventStyles.additional_fields_container}>
         {renderEmojiField()}
         {Divider()}
-        { renderDownThresholdSlider() }
+        {renderDownThresholdSlider()}
       </View>
     );
   }
 
   const renderEmojiField = () => {
-    return showEmojiPicker ? (
-      <Modal presentationStyle="formSheet">
-        <EmojiSelector onEmojiSelected={emoji => {
-          setEventEmoji(emoji);
-          setShowEmojiPicker(false);
-        }} />
-      </Modal>
-    ) : (
-      <View style={EditEventStyles.emoji_container }>
-        <Text style={EditEventStyles.event_emoji_text}>Event Emoji:</Text>
-        <TouchableOpacity onPress={() => setShowEmojiPicker(true)}>
-          <Text style={EditEventStyles.emoji}>{event_emoji}</Text>
-        </TouchableOpacity>
-      </View>
-    );
+    return (
+      <SafeAreaView style={EditEventStyles.emoji_container}>
+        <Text style={EditEventStyles.event_emoji_text}>
+          Event Emoji:
+        </Text>
+        <EmojiPicker
+          onEmojiPicked={setEventEmoji}
+          emojiPickerTitle={"Select Event Emoji"}
+          defaultEmoji={event.emoji}
+        />
+      </SafeAreaView>
+    )
   };
 
   const renderDownThresholdSlider = () => {
@@ -131,14 +127,13 @@ const EditEvent = (props) => {
       <View>
         <Text style={EditEventStyles.down_threshold_text}>Number of people down to create calendar event: {event_down_threshold}</Text>
         {/* Allowing a maximum value of at least 2 in case not everybody has joined. */}
-        <Slider minimumValue={1} maximumValue={ Math.max(event.rsvp_users.length + event.declined_users.length, 2) } step={1}
-                value={event_down_threshold} onValueChange={setEventDownThreshold}
-                thumbImage={require("../assets/down_static.png")}
-                style={ EditEventStyles.down_threshold_slider } />
+        <Slider minimumValue={1} maximumValue={Math.max(event.rsvp_users.length + event.declined_users.length, 2)} step={1}
+          value={event_down_threshold} onValueChange={setEventDownThreshold}
+          thumbImage={require("../assets/down_static.png")}
+          style={EditEventStyles.down_threshold_slider} />
       </View>
     );
   }
-
 
   const renderSaveButton = () => {
     return (

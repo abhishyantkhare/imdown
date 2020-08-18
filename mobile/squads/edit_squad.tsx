@@ -1,12 +1,11 @@
 import React, { useLayoutEffect, useState } from "react";
-import { Button, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Button, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View, _View } from "react-native";
 import { EditSquadStyles } from "./edit_squad_styles";
-import EmojiSelector, { Categories } from "react-native-emoji-selector";
-import Divider  from '../components/divider/divider'
-import { callBackend } from  "../backend/backend"
+import EmojiPicker from "../components/emojipicker/EmojiPicker";
+import Divider from '../components/divider/divider'
+import { callBackend } from "../backend/backend"
 
 const EditSquad = (props) => {
-    const [showEmojiPicker, setShowEmojiPicker] = useState(false);  
     const [squadId, setSquadId] = useState(props.route.params.squadId);
     const [squadName, setSquadName] = useState(props.route.params.squadName);
     const [squadEmoji, setSquadEmoji] = useState(props.route.params.squadEmoji);
@@ -14,80 +13,60 @@ const EditSquad = (props) => {
     useLayoutEffect(() => {
         props.navigation.setOptions({
             headerLeft: () => (
-            <Button
-                onPress={() => props.navigation.pop()}
-                title=" Cancel"
-                color="#007AFF"
-            />
+                <Button
+                    onPress={() => props.navigation.pop()}
+                    title=" Cancel"
+                    color="#007AFF"
+                />
             ),
         });
     }, [props.navigation]);
 
 
-    {/* Squad title box */}
+    {/* Squad title box */ }
     const renderSquadTitleBox = () => {
         return (
-        <View style={EditSquadStyles.squad_title_container}>
-            <TextInput style={EditSquadStyles.squad_title} placeholder="Squad Name" value={squadName} onChangeText={(value) => setSquadName(value)} />
-        </View>
+            <View style={EditSquadStyles.squad_title_container}>
+                <TextInput style={EditSquadStyles.squad_title} placeholder="Squad Name" value={squadName} onChangeText={(value) => setSquadName(value)} />
+            </View>
         );
     }
 
 
     const renderEmojiField = () => {
         return (
-        <SafeAreaView style={EditSquadStyles.emoji_container}>
-            <Text style = {EditSquadStyles.squad_emoji_text}>
-                Squad Emoji:
+            <SafeAreaView style={EditSquadStyles.emoji_container}>
+                <Text style={EditSquadStyles.squad_emoji_text}>
+                    Squad Emoji:
             </Text>
-            <View>
-                <TouchableOpacity onPress={() => { setShowEmojiPicker(true) }}>
-                    <Text style={EditSquadStyles.emoji}>
-                    {`${squadEmoji}`}
-                    </Text>
-                </TouchableOpacity>
-                <View style={{ alignSelf: "center" }}>
-                    {renderEmojiPicker()}
-                </View>
-            </View>
-        </SafeAreaView>
+                <EmojiPicker
+                    onEmojiPicked={setSquadEmoji}
+                    emojiPickerTitle={"Select Squad Emoji"}
+                    defaultEmoji={props.route.params.squadEmoji}
+                />
+            </SafeAreaView>
         )
     }
 
-    const renderEmojiPicker = () => {
-        return (
-            showEmojiPicker &&
-            <View style = {EditSquadStyles.emoji_picker_container}>
-            <EmojiSelector
-                category={Categories.all}
-                showSearchBar={false}
-                onEmojiSelected={emoji => {
-                    setSquadEmoji(emoji);
-                    setShowEmojiPicker(false);
-                }}
-            />
-            </View>
-        )
-    }
 
     const renderAdditionalFieldsBox = () => {
         return (
-        <View style={EditSquadStyles.additional_fields_container}>
-            { renderEmojiField() }
-            { Divider() }
-        </View>
+            <View style={EditSquadStyles.additional_fields_container}>
+                {renderEmojiField()}
+                {Divider()}
+            </View>
         );
     }
 
     const renderSaveButton = () => {
         return (
-        <View style = {{ alignItems: 'center' }}>
-            <TouchableOpacity onPress={saveSquad}>
-                <View style = {EditSquadStyles.save_button}>
-                    <Text style = {EditSquadStyles.save_button_text}> {"Save"} </Text>
-                </View>
-            </TouchableOpacity>			
-        </View>
+            <View style={{ alignItems: 'center' }}>
+                <TouchableOpacity onPress={saveSquad}>
+                    <View style={EditSquadStyles.save_button}>
+                        <Text style={EditSquadStyles.save_button_text}> {"Save"} </Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
         );
     }
 
@@ -95,7 +74,7 @@ const EditSquad = (props) => {
     const saveSquad = () => {
         const endpoint = 'edit_squad'
         const data = {
-            squad_id: squadId, 
+            squad_id: squadId,
             squad_name: squadName,
             squad_emoji: squadEmoji
         }
@@ -112,9 +91,9 @@ const EditSquad = (props) => {
 
     return (
         <ScrollView style={EditSquadStyles.container} >
-            { renderSquadTitleBox() }
-            { renderAdditionalFieldsBox() }
-            { renderSaveButton() }
+            {renderSquadTitleBox()}
+            {renderAdditionalFieldsBox()}
+            {renderSaveButton()}
         </ScrollView>
     );
 }
