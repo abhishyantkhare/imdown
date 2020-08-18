@@ -46,8 +46,8 @@ export const EditSquadStyles = StyleSheet.create({
   save_button: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: "#68EDC6",
-    borderColor: "#aaaaaa",
+    backgroundColor: "#90BEDE",
+    borderColor: "#90BEDE",
     borderRadius: 30,
     borderWidth: 1,
     height: 75,
@@ -58,6 +58,7 @@ export const EditSquadStyles = StyleSheet.create({
   save_button_text: {
     fontFamily: "Ubuntu_400Regular",
     fontSize: 30,
+    color: "white"
   },
   additional_fields_container: {
     backgroundColor: "#ffff",
