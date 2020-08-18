@@ -96,7 +96,7 @@ const Events = (props) => {
       headerRight: () => (
         <Button
           onPress={goToAddEvent}
-          title="Add"
+          title="Add Event"
           color="#000"
         />
       ),
