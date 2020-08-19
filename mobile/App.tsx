@@ -14,6 +14,8 @@ import SquadMembers from "./squads/squad_members";
 import { Ubuntu_400Regular, Ubuntu_400Regular_Italic, Ubuntu_700Bold, useFonts } from '@expo-google-fonts/ubuntu';
 import { Inter_400Regular } from '@expo-google-fonts/inter';
 import { AppLoading } from 'expo';
+import { View } from "react-native";
+import FlashMessage from "react-native-flash-message";
 
 export type RootStackParamList = {
   AddSquad: {
@@ -34,19 +36,22 @@ export default function App() {
     return <AppLoading />;
   } else {
     return (
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-          <Stack.Screen name="Squads" component={Squads} options={{ gestureEnabled: false }} />
-          <Stack.Screen name="Edit Squad" component={EditSquad} />
-          <Stack.Screen name="Add Squad" component={AddSquad} />
-          <Stack.Screen name="Events" component={Events} />
-          <Stack.Screen name="Add Event" component={AddEventNavigator} />
-          <Stack.Screen name="EventDetails" component={EventDetails} />
-          <Stack.Screen name="Edit Event" component={EditEvent} />
-          <Stack.Screen name="SquadMembers" component={SquadMembers} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <View style={{flex: 1}}>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+            <Stack.Screen name="Squads" component={Squads} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="Edit Squad" component={EditSquad} />
+            <Stack.Screen name="Add Squad" component={AddSquad} />
+            <Stack.Screen name="Events" component={Events} />
+            <Stack.Screen name="Add Event" component={AddEventNavigator} />
+            <Stack.Screen name="EventDetails" component={EventDetails} />
+            <Stack.Screen name="Edit Event" component={EditEvent} />
+            <Stack.Screen name="SquadMembers" component={SquadMembers} />
+          </Stack.Navigator>
+        </NavigationContainer>
+        <FlashMessage position="top" hideStatusBar={true} />
+      </View>
     );
   }
 }
