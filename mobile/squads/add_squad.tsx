@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Modal, SafeAreaView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { AddSquadStyles } from "./add_squad_styles";
-import EmojiSelector from "react-native-emoji-selector";
+import EmojiPicker from "../components/emojipicker/EmojiPicker";
 import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { callBackend } from "../backend/backend";
@@ -30,7 +30,6 @@ const OR_TEXT = "OR"
 
 const AddSquad = (props: AddSquadProps) => {
     const [squadName, setSquadName] = useState("")
-    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [emojiPicked, setEmojiPicked] = useState(DEFAULT_EMOJI);
     const [squadCode, setSquadCode] = useState("")
 
@@ -72,19 +71,10 @@ const AddSquad = (props: AddSquadProps) => {
     }
 
     const renderEmoji = () => {
-        return showEmojiPicker ? (
-            <Modal presentationStyle={"formSheet"} >
-                <EmojiSelector
-                    onEmojiSelected={emoji => {
-                        setEmojiPicked(emoji);
-                        setShowEmojiPicker(false);
-                    }} />
-            </Modal>
-        ) : (
-                <TouchableOpacity onPress={() => setShowEmojiPicker(true)}>
-                    <Text style={AddSquadStyles.emoji}>{emojiPicked}</Text>
-                </TouchableOpacity>
-            );
+        return <EmojiPicker
+            onEmojiPicked={(emoji: string) => setEmojiPicked(emoji)}
+            emojiPickerTitle={"Select Squad Emoji"}
+        />
     }
 
     const renderAddSquadByCode = () => {
@@ -152,5 +142,6 @@ const AddSquad = (props: AddSquadProps) => {
 
     );
 }
+
 
 export default AddSquad;
