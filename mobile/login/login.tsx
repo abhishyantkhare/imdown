@@ -4,9 +4,10 @@ import { login_styles } from "./login_styles";
 import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-community/google-signin';
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-community/async-storage';
-import { BACKEND_URL } from "../backend/backend"
+import { BACKEND_URL, callBackend } from "../backend/backend"
 import { User } from "../types/user"
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import AuthLoadingScreen from './AuthLoadingScreen';
 
 
 const Login = ({ navigation }) => {
@@ -15,6 +16,7 @@ const Login = ({ navigation }) => {
     const WEB_ID = "1097983281822-8k2kede3hrgrqi15r869mf3u5at6q6ib.apps.googleusercontent.com"
 
     const [deviceToken, setDeviceToken] = useState("")
+    const [isSignedIn, setIsSignedIn] = useState<boolean>(undefined)
 
     const pushNotificationIOSSetup = () => {
         PushNotificationIOS.addEventListener('register', (token: string) => setDeviceToken(token))
@@ -30,18 +32,35 @@ const Login = ({ navigation }) => {
         });
     }
 
+    const checkIfUserSignedIn = async () => {
+        const userEmail = await AsyncStorage.getItem("email")
+        if (userEmail) {
+            const endpoint = `is_signed_in?email=${userEmail}`
+            const resp = await callBackend(endpoint)
+            if (resp.ok) {
+                goToSquads(userEmail)
+            }
+        }
+        setIsSignedIn(false)
+    }
 
     const setup = () => {
+        checkIfUserSignedIn()
         if (Platform.OS === 'ios') {
             pushNotificationIOSSetup();
         }
         googleSetup()
     }
 
+    useEffect(() => {
+        setup();
+    }, []);
+
+
+
 
     const goToSquads = (email: string) => {
         navigation.navigate("Squads", {
-            squads: [],
             email: email
         });
     };
@@ -67,8 +86,11 @@ const Login = ({ navigation }) => {
         })
     }
 
+
+
     const setCookieAndTransition = (sessionCookie: string, email: string) => {
-        AsyncStorage.setItem("sessionCookie", sessionCookie).then(() => {
+        const items = [["sessionCookie", sessionCookie], ["email", email]]
+        AsyncStorage.multiSet(items).then(() => {
             goToSquads(email);
         })
     }
@@ -76,39 +98,38 @@ const Login = ({ navigation }) => {
 
     const signIn = async () => {
         try {
-          setIsSigninInProgress(true);
-          await GoogleSignin.hasPlayServices();
-          const resp = await GoogleSignin.signIn();
-          const user: User = {
-            email: resp.user.email,
-            name: resp.user.name,
-            photo: resp.user.photo
-          };
-          setIsSigninInProgress(false);
-          signInOnBackend(user, resp.serverAuthCode);
+            setIsSigninInProgress(true);
+            await GoogleSignin.hasPlayServices();
+            const resp = await GoogleSignin.signIn();
+            const user: User = {
+                email: resp.user.email,
+                name: resp.user.name,
+                photo: resp.user.photo
+            };
+            setIsSigninInProgress(false);
+            signInOnBackend(user, resp.serverAuthCode);
         } catch (error) {
-          setIsSigninInProgress(false);
-          if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-            // user cancelled the login flow
-            console.log("Error signing into Google account. User cancelled the login flow. Error is " + error);
-          } else if (error.code === statusCodes.IN_PROGRESS) {
-            // operation (e.g. sign in) is in progress already
-            console.log("Error signing into Google account. User is already in the process of logging in. Error is " + error);
-          } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-            // play services not available or outdated
-            console.log("Error signing into Google account. Play services are not available. Error is " + error);
-          } else {
-            console.log("Error signing into Google account. Unidentified error. It is " + error);
-          }
+            setIsSigninInProgress(false);
+            if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+                // user cancelled the login flow
+                console.log("Error signing into Google account. User cancelled the login flow. Error is " + error);
+            } else if (error.code === statusCodes.IN_PROGRESS) {
+                // operation (e.g. sign in) is in progress already
+                console.log("Error signing into Google account. User is already in the process of logging in. Error is " + error);
+            } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+                // play services not available or outdated
+                console.log("Error signing into Google account. Play services are not available. Error is " + error);
+            } else {
+                console.log("Error signing into Google account. Unidentified error. It is " + error);
+            }
         }
     };
 
-    setup()
-
-    return (
+    return (isSignedIn === undefined ?
+        <AuthLoadingScreen /> :
         <View style={login_styles.login_container}>
             <LinearGradient
-                colors={["#90BEDE", "#C7F9FF"]}
+                colors={['#84D3FF', '#CFFFFF']}
                 style={login_styles.gradient_background}
             />
             <View style={login_styles.title_description_container}>
