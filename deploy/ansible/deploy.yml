@@ -11,7 +11,10 @@
         src: ../../backend/
         dest: /home/ubuntu/imdown/backend/
         delete: yes
-
+    - name: Delete .env file
+      file:
+        path: /home/ubuntu/imdown/backend/.env
+        state: absent
     - name: Update Requirements
       pip:
         requirements: /home/ubuntu/imdown/backend/requirements.txt
