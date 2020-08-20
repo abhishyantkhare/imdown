@@ -11,13 +11,25 @@
         src: ../../backend/
         dest: /home/ubuntu/imdown/backend/
         delete: yes
-
+    - name: Delete .env file
+      file:
+        path: /home/ubuntu/imdown/backend/.env
+        state: absent
     - name: Update Requirements
       pip:
         requirements: /home/ubuntu/imdown/backend/requirements.txt
 
-    - name: Start imdown
-      service:
-        name: imdown
-        state: started
-      become: yes
+    - block:
+      - name: Start imdown
+        service:
+          name: imdown
+          state: started
+        become: yes
+      rescue:
+        - command: journalctl --unit=imdown.service -n 100 --no-pager
+          register: status
+          ignore_errors: yes
+        - debug:
+            var: status.stdout_lines
+        - fail:
+            msg: rrrr u broke th e server!!1!
