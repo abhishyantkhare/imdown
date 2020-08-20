@@ -8,6 +8,8 @@ import moment from "moment";
 import DateTimeInput from "../components/date_time_input/date_time_input";
 import ImagePicker from 'react-native-image-picker';
 import { IMG_URL_BASE_64_PREFIX } from "../constants"
+import { Tooltip } from 'react-native-elements';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 const AddEventDetailsScreen = ({ navigation, route }) => {
   const squadId = route.params.squadId;
@@ -83,15 +85,34 @@ const AddEventDetailsScreen = ({ navigation, route }) => {
       defaultEmoji={"🗓"}
     />
   };
+
+  const renderPopover = () => {
+    return (
+      <Text style={AddEventStyles.toolTipText}>
+        Once the minimum number of RSVPs is reached, the event is confirmed! Attendees will receive an invitation on Google Calendar. 
+      </Text>
+    )
+  }
+
   const renderDownSlider = () => {
     return (
       <View>
-        <Text style={AddEventStyles.downSliderText}>schedule once {downThreshold} people are down</Text>
+        <View style={AddEventStyles.downThresholdAndIcon}>
+          <Text style={AddEventStyles.downSliderText}>Minimum RSVPs Required: {downThreshold}   </Text>
+          <Tooltip
+                popover = { renderPopover() }
+                backgroundColor = "#90BEDE"
+                width = {220}
+                height = {120}
+            >
+            <Entypo name='info-with-circle' style={AddEventStyles.infoIcon}/>
+          </Tooltip>
+        </View>
         {/* Allowing a maximum value of at least 2 in case not everybody has joined. */}
         <Slider minimumValue={1} maximumValue={Math.max(squadSize, 2)} step={1}
           value={downThreshold} onValueChange={setDownThreshold}
           thumbImage={require("../assets/down_static.png")}
-          style={AddEventStyles.downSlider} />
+          style={AddEventStyles.downSlider} minimumTrackTintColor="#90BEDE"/>
       </View>
     );
   };
@@ -150,13 +171,13 @@ const AddEventDetailsScreen = ({ navigation, route }) => {
       </View>
       {/* Additional event information (more can be added here). */}
       {/* TODO: Create an image selector widget and fold it into the emoji selector. */}
-      <TextInput onChangeText={setImageUrl} placeholder="Image URL" style={AddEventStyles.optionalTextInput} />
+      {/* <TextInput onChangeText={setImageUrl} placeholder="Image URL" style={AddEventStyles.optionalTextInput} /> */}
       <TextInput onChangeText={setDescription} placeholder="Description" multiline={true} style={AddEventStyles.optionalTextInput} />
       {/* Slider to specify the required attendance for this event. */}
       {renderDownSlider()}
 
       <View style={AddEventStyles.nextButton}>
-        <Button onPress={addEventOnBackend} title="Let's go" />
+        <Button onPress={addEventOnBackend} color= "#90BEDE" title="Let's go" />
       </View>
     </View>
   );
