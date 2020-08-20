@@ -7,7 +7,7 @@ from models.event_response import EventResponse
 from models.event import Event, get_event_by_id
 from models.squad import Squad, get_squad_by_id
 from models.squadmembership import SquadMembership, GetUsersBySquadId
-from flask_login import login_user, login_required, logout_user
+from flask_login import login_user, login_required, logout_user, current_user
 from collections import defaultdict
 from sqlalchemy.orm import load_only
 import requests
@@ -83,6 +83,18 @@ def fetch_google_access_tokens(auth_code):
 def signout():
     logout_user()
     return "Successfully signed out user!"
+
+
+@application.route("/is_signed_in", methods=["GET"])
+@login_required
+def is_logged_in():
+    args = request.args
+    ok, err = validateArgsInRequest(args, "email")
+    if not ok:
+        return err, 400
+    if current_user.email != args['email']:
+        return 'Incorrect email', 403
+    return "Signed in!", 200
 
 
 @application.route("/add_to_squad", methods=['POST'])
