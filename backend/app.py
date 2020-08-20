@@ -59,8 +59,10 @@ def signIn():
 
 def update_user_tokens(user, auth_code, device_token):
     access_token, refresh_token = fetch_google_access_tokens(auth_code)
-    user.google_access_token = access_token
-    user.google_refresh_token = refresh_token
+    if access_token:
+        user.google_access_token = access_token
+    if refresh_token:
+        user.google_refresh_token = refresh_token
     if device_token:
         user.device_token = device_token
     db.session.commit()
@@ -75,7 +77,13 @@ def fetch_google_access_tokens(auth_code):
             }
     r = requests.post('https://oauth2.googleapis.com/token', data=data)
     resp = r.json()
-    return resp['access_token'], resp['refresh_token']
+    refresh_token = ""
+    if 'refresh_token' in resp:
+        refresh_token = resp['refresh_token']
+    access_token = ""
+    if 'access_token' in resp:
+        access_token = resp['access_token']
+    return access_token, refresh_token
 
 
 @application.route("/sign_out", methods=['POST'])
