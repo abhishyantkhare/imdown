@@ -13,9 +13,10 @@ import EditSquad from "./squads/edit_squad"
 import SquadMembers from "./squads/squad_members";
 import { Ubuntu_400Regular, Ubuntu_400Regular_Italic, Ubuntu_700Bold, useFonts } from '@expo-google-fonts/ubuntu';
 import { Inter_400Regular } from '@expo-google-fonts/inter';
-import { AppLoading } from 'expo';
 import { View } from "react-native";
 import FlashMessage from "react-native-flash-message";
+import AuthLoadingScreen from './login/AuthLoadingScreen';
+
 
 export type RootStackParamList = {
   AddSquad: {
@@ -32,11 +33,12 @@ export default function App() {
     Inter_400Regular,
     Ubuntu_400Regular_Italic
   });
+
   if (!fontsLoaded) {
-    return <AppLoading />;
+    return <AuthLoadingScreen />;
   } else {
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <NavigationContainer>
           <Stack.Navigator>
             <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
