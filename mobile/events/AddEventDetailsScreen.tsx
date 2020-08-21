@@ -102,7 +102,7 @@ const AddEventDetailsScreen = ({ navigation, route }) => {
           <Tooltip
                 popover = { renderPopover() }
                 backgroundColor = "#90BEDE"
-                width = {220}
+                width = {240}
                 height = {120}
             >
             <Entypo name='info-with-circle' style={AddEventStyles.infoIcon}/>
