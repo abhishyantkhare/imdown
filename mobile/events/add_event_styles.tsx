@@ -72,7 +72,7 @@ export const AddEventStyles = StyleSheet.create({
     flexDirection: "row", 
     alignItems: "center",
     marginLeft: 15,
-    marginTop: -25
+    marginTop: -15
   },
   emojiAndNameView: {
     flexDirection: "row", 
