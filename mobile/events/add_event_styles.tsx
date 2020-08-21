@@ -89,5 +89,17 @@ export const AddEventStyles = StyleSheet.create({
   },
   startEndText: {
     fontSize: 16,
+  },
+  downThresholdAndIcon: {
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  toolTipText: {
+    fontSize: 16, 
+    color: "white"
+  },
+  infoIcon: {
+    fontSize: 18, 
+    color: "#90BEDE"
   }
 });

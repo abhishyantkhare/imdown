@@ -20,7 +20,7 @@ const AddEventNameScreen = ({ navigation, route }) => {
       {/*</View>*/}
       <TextInput autoFocus onChangeText={setName} placeholder="Event name" multiline={true} style={AddEventStyles.largeTextInput} />
       <View style={AddEventStyles.nextButton}>
-        <Button title="Next" onPress={goToAddMoreInfo} disabled={!name} />
+        <Button title="Next" onPress={goToAddMoreInfo} color= "#90BEDE" disabled={!name} />
       </View>
     </View>
   );
