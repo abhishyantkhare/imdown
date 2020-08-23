@@ -6,7 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-community/async-storage';
 import { BACKEND_URL, callBackend } from "../backend/backend"
 import { User } from "../types/user"
-import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import messaging from '@react-native-firebase/messaging';
 import AuthLoadingScreen from './AuthLoadingScreen';
 
 
@@ -18,10 +18,23 @@ const Login = ({ navigation }) => {
     const [deviceToken, setDeviceToken] = useState("")
     const [isSignedIn, setIsSignedIn] = useState<boolean>(undefined)
 
-    const pushNotificationIOSSetup = () => {
-        PushNotificationIOS.addEventListener('register', (token: string) => setDeviceToken(token))
-        PushNotificationIOS.requestPermissions({ alert: true, badge: true });
+
+    const requestNotificationPermission = () => {
+        messaging().requestPermission();
     }
+
+    const getDeviceToken = () => {
+        messaging()
+            .getToken()
+            .then(setDeviceToken);
+    }
+
+    const notificationsSetup = () => {
+        requestNotificationPermission();
+        getDeviceToken();
+    }
+
+
 
     const googleSetup = () => {
         GoogleSignin.configure({
@@ -46,9 +59,7 @@ const Login = ({ navigation }) => {
 
     const setup = () => {
         checkIfUserSignedIn()
-        if (Platform.OS === 'ios') {
-            pushNotificationIOSSetup();
-        }
+        notificationsSetup();
         googleSetup()
     }
 
