@@ -22,7 +22,6 @@
     - name: Install Requirements
       pip:
         requirements: /home/ubuntu/imdown/backend/requirements.txt
-
     - name: Copy systemd Configuration
       copy:
         src: files/imdown.service
