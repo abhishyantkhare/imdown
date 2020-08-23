@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FlatList, Image, Linking, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, Image, Linking, Text, TouchableOpacity, View, ScrollView } from "react-native";
 import { EventDetailsStyles } from "./event_details_styles";
 import moment from 'moment';
 import Divider from '../components/divider/divider'
@@ -265,17 +265,19 @@ const EventDetails = (props) => {
 
   return (
     <View style={EventDetailsStyles.container}>
-      {/* Event title + pic + details box */}
-      {renderTitlePicDetailsBox()}
-      {Divider()}
-      {/* Event description box */}
-      {renderEventDescriptionBox()}
-      {Divider()}
-      {/* Event "down list" box */}
-      <Text style={EventDetailsStyles.down_threshold_text}> {`A calendar invite will be created once ${event.down_threshold} ${event.down_threshold > 1 ? "people are" : "person is"} down!`} </Text>
-      {renderEventDownListBox()}
-      {Divider()}
-      {/* Button row */}
+      <ScrollView keyboardShouldPersistTaps="handled" >
+        {/* Event title + pic + details box */}
+        {renderTitlePicDetailsBox()}
+        {Divider()}
+        {/* Event description box */}
+        {renderEventDescriptionBox()}
+        {Divider()}
+        {/* Event "down list" box */}
+        <Text style={EventDetailsStyles.down_threshold_text}> {`A calendar invite will be created once ${event.down_threshold} ${event.down_threshold > 1 ? "people are" : "person is"} down!`} </Text>
+        {renderEventDownListBox()}
+        {Divider()}
+      </ScrollView>
+        {/* Button row */}
       {renderBottomRowButtons()}
     </View>
   );
