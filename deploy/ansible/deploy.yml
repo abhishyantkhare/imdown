@@ -5,12 +5,17 @@
         name: imdown
         state: stopped
       become: yes
-
     - name: Deploy Application Files
       synchronize:
         src: ../../backend/
         dest: /home/ubuntu/imdown/backend/
         delete: yes
+    - name: Download FireBase Credentials
+      aws_s3:
+        bucket: imdown-credentials
+        object: /firebase/imdown_firebase_cert.json
+        dest: /home/ubuntu/imdown/backend/imdown_firebase_cert.json
+        mode: get 
     - name: Delete .env file
       file:
         path: /home/ubuntu/imdown/backend/.env

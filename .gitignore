@@ -5,3 +5,4 @@ backend/.env
 backend/env/*
 mobile/.DS_Store
 mobile/imdown.xcodeproj
+imdown_firebase_cert.json

@@ -13,10 +13,13 @@ from sqlalchemy.orm import load_only
 import requests
 import json
 import time
+import firebase_admin
+from firebase_admin import messaging
 
 
 GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token'
 GOOGLE_CALENDAR_API = 'https://www.googleapis.com/calendar/v3/calendars/primary/events'
+firebase_app = firebase_admin.initialize_app()
 
 
 def validateArgsInRequest(content, *args):
@@ -333,7 +336,7 @@ def addUserToSquad(squad_code, email):
             "message": "Sucessfully added squad."
         }
         return jsonify(response)
-        
+
 
 @application.route("/create_event", methods=["POST"])
 # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
@@ -380,11 +383,31 @@ def createEvent():
     # set every other user in squad to false
     squadMemberships = SquadMembership.query.filter_by(
         squad_id=squad_id).all()
+
     for squadMembership in squadMemberships:
         if (squadMembership.user_id != u.id):
             respondToEvent(squadMembership.user_id, e.id, False)
-    num_squad_members = len(squadMemberships)
+    send_event_notification(squadMemberships, u.id, e.title)
     return e.jsonify_event()
+
+
+def send_event_notification(squadMemberships, user_id, event_title):
+    device_tokens = []
+    for sqm in squadMemberships:
+        if sqm.user_id != user_id:
+            device_tokens.append(GetUserById(sqm.user_id).device_token)
+    squad = get_squad_by_id(squadMemberships[0].squad_id)
+    title = f"New Event In {squad.name}!"
+    body = f"{event_title}"
+    notification = messaging.Notification(title=title, body=body)
+    android_config = messaging.AndroidConfig(priority="high")
+
+    message = messaging.MulticastMessage(
+        notification=notification,
+        tokens=device_tokens,
+        android=android_config,
+    )
+    response = messaging.send_multicast(message)
 
 
 @application.route("/edit_event", methods=["PUT"])

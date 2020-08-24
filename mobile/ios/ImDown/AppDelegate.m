@@ -11,6 +11,7 @@
 #import <UMReactNativeAdapter/UMModuleRegistryAdapter.h>
 #import <EXSplashScreen/EXSplashScreenService.h>
 #import <UMCore/UMModuleRegistryProvider.h>
+#import <Firebase.h>
 
 #if DEBUG
 #import <FlipperKit/FlipperClient.h>
@@ -98,6 +99,11 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
     controller.delegate = self;
     [controller startAndShowLaunchScreen:self.window];
   #endif
+  
+  // Firebase setup
+  if ([FIRApp defaultApp] == nil) {
+    [FIRApp configure];
+  }
 
   [super application:application didFinishLaunchingWithOptions:launchOptions];
   // Define UNUserNotificationCenter

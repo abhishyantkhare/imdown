@@ -8,3 +8,4 @@ shortuuid
 requests
 boto3
 pytest
+firebase-admin
