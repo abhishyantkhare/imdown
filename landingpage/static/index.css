@@ -1,0 +1,69 @@
+
+body {
+    height: 100vh;
+    width: 100vw;
+    background: linear-gradient(111.96deg, #84D3FF 0.26%, #CFFFFF 101.18%);
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+@font-face {
+    font-family: SourceSansProBold;
+    src: url(SourceSansPro-Bold.ttf);
+    font-weight: bold;
+}
+
+@font-face {
+font-family: SourceSansProRegular;
+src: url(SourceSansPro-Regular.ttf);
+}
+
+.content {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.imdown-title {
+    margin-top: 30vh;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 48px;
+    color: #FFFFFF;
+    font-family: "SourceSansProBold"
+}
+
+.imdown-desc {
+    margin-top: 5vh;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+    color: #FFFFFF;
+    font-family: "SourceSansProBold"
+}
+
+.imdown-links {
+    margin-top: 3vh;
+    display: flex;
+    flex-direction: row;
+}
+
+.imdown-beta-link {
+    font-style: normal;
+    font-size: 16px;
+    color: #FFFFFF;
+    font-family: "SourceSansProRegular"
+}
+
+.imdown-separator {
+    font-style: normal;
+    font-size: 16px;
+    color: #FFFFFF;
+    font-family: "SourceSansProRegular";
+    padding-left: 1vw;
+    padding-right: 1vw;
+}
