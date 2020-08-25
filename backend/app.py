@@ -25,7 +25,7 @@ firebase_app = firebase_admin.initialize_app()
 
 def validate_request_args(content: dict, *required_args):
     """Verify that all required arguments are present in the request."""
-    missing_args = set(content.keys()).symmetric_difference(set(required_args))
+    missing_args = required_args - content.keys()
     if missing_args:
         raise BadRequest(f"Missing args: {', '.join(missing_args)}")
 
