@@ -89,7 +89,7 @@ const AddEventDetailsScreen = ({ navigation, route }) => {
   const renderPopover = () => {
     return (
       <Text style={AddEventStyles.toolTipText}>
-        Once the minimum number of RSVPs is reached, the event is confirmed! Attendees will receive an invitation on Google Calendar. 
+        Once the minimum number of RSVPs is reached, the event is confirmed! Attendees will receive an invitation on Google Calendar.
       </Text>
     )
   }
@@ -100,19 +100,19 @@ const AddEventDetailsScreen = ({ navigation, route }) => {
         <View style={AddEventStyles.downThresholdAndIcon}>
           <Text style={AddEventStyles.downSliderText}>Minimum RSVPs Required: {downThreshold}   </Text>
           <Tooltip
-                popover = { renderPopover() }
-                backgroundColor = "#90BEDE"
-                width = {240}
-                height = {120}
-            >
-            <Entypo name='info-with-circle' style={AddEventStyles.infoIcon}/>
+            popover={renderPopover()}
+            backgroundColor="#90BEDE"
+            width={240}
+            height={120}
+          >
+            <Entypo name='info-with-circle' style={AddEventStyles.infoIcon} />
           </Tooltip>
         </View>
         {/* Allowing a maximum value of at least 2 in case not everybody has joined. */}
         <Slider minimumValue={1} maximumValue={Math.max(squadSize, 2)} step={1}
           value={downThreshold} onValueChange={setDownThreshold}
           thumbImage={require("../assets/down_static.png")}
-          style={AddEventStyles.downSlider} minimumTrackTintColor="#90BEDE"/>
+          style={AddEventStyles.downSlider} minimumTrackTintColor="#90BEDE" />
       </View>
     );
   };
@@ -173,11 +173,16 @@ const AddEventDetailsScreen = ({ navigation, route }) => {
         {/* Additional event information (more can be added here). */}
         {/* TODO: Create an image selector widget and fold it into the emoji selector. */}
         {/* <TextInput onChangeText={setImageUrl} placeholder="Image URL" style={AddEventStyles.optionalTextInput} /> */}
-        <TextInput onChangeText={setDescription} placeholder="Description" multiline={true} style={AddEventStyles.optionalTextInput} />
+        <TextInput
+          onChangeText={setDescription}
+          placeholder="Description"
+          multiline={true}
+          numberOfLines={3}
+          style={AddEventStyles.optionalTextInput} />
         {/* Slider to specify the required attendance for this event. */}
         {renderDownSlider()}
         <View style={AddEventStyles.nextButton}>
-          <Button onPress={addEventOnBackend} color= "#90BEDE" title="Let's go" />
+          <Button onPress={addEventOnBackend} color="#90BEDE" title="Let's go" />
         </View>
       </ScrollView>
     </View>
