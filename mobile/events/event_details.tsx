@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FlatList, Image, Linking, Text, TouchableOpacity, View, ScrollView } from "react-native";
 import { EventDetailsStyles } from "./event_details_styles";
 import moment from 'moment';
 import Divider from '../components/divider/divider'
-import { callBackend } from "../backend/backend"
+import { callBackend, getUsersInSquad } from "../backend/backend"
 import { RSVPUser } from "./events"
 import { DEFAULT_EVENT, DOWN_EMOJI_HEIGHT, DOWN_EMOJI_WIDTH, EVENT_PIC_HEIGHT, EVENT_PIC_WIDTH, ROW_BUTTON_HEIGHT, ROW_BUTTON_WIDTH } from "../constants"
-import { useFocusEffect } from '@react-navigation/native';
 
 export type Event = {
   id: number,
@@ -46,31 +45,33 @@ const EventDetails = (props) => {
   const eventId = props.route.params.eventId
   const userEmail = props.route.params.userEmail
   const userId = props.route.params.userId
+  const numUsers = props.route.params.numUsers
   const [event, setEvent] = useState(DEFAULT_EVENT)
   const [isUserAccepted, setIsUserAccepted] = useState(false)
   const isUserEventAccepted = (event: Event) => {
     return event.rsvp_users.some(item => item.email === userEmail)
   }
 
-  useFocusEffect(
-    React.useCallback(() => {
-      const endpoint = 'get_event?event_id=' + eventId
-      const init: RequestInit = {
-        method: "GET",
-        headers: {
-          'Content-Type': 'application/json'
-        },
-      }
-      callBackend(endpoint, init).then(response => {
-        return response.json();
-      }).then(data => {
-        const updatedEvent: Event = toEvent(data)
-        setEvent(updatedEvent)
-        const isUserEventAccepted = updatedEvent.rsvp_users.some(item => item.email === userEmail)
-        setIsUserAccepted(isUserEventAccepted)
-      });
-    }, [])
-  );
+  const getEventDetails = () => {
+    const endpoint = 'get_event?event_id=' + eventId
+    const init: RequestInit = {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    }
+    callBackend(endpoint, init).then(response => {
+      return response.json();
+    }).then(data => {
+      const updatedEvent: Event = toEvent(data);
+      setEvent(updatedEvent);
+      const isUserEventAccepted = updatedEvent.rsvp_users.some(item => item.email === userEmail);
+      setIsUserAccepted(isUserEventAccepted);
+    });
+  }
+
+  useEffect(getEventDetails, [])
+
 
 
   {/* Event title + pic + details box */ }
@@ -89,7 +90,7 @@ const EventDetails = (props) => {
           <Text style={EventDetailsStyles.event_title}>
             {event.name}
           </Text>
-          <Text style={[EventDetailsStyles.event_time, {paddingTop: 10}]}>
+          <Text style={[EventDetailsStyles.event_time, { paddingTop: 10 }]}>
             {event.start_ms ? `🗓 Starts: ${moment(event.start_ms).format('llll').toLocaleString()}` : "Starts: TBD"}
           </Text>
           <Text style={EventDetailsStyles.event_time}>
@@ -102,12 +103,12 @@ const EventDetails = (props) => {
     );
   }
 
-  const renderURLField= () => {
+  const renderURLField = () => {
     return (
-      event.url ? 
-      <Text onPress={() => event.url && Linking.openURL(`https://${event.url}`)} style={EventDetailsStyles.event_url}>
-        {event.url}
-      </Text> : null
+      event.url ?
+        <Text onPress={() => event.url && Linking.openURL(`https://${event.url}`)} style={EventDetailsStyles.event_url}>
+          {event.url}
+        </Text> : null
     );
   };
 
@@ -129,7 +130,7 @@ const EventDetails = (props) => {
         <View style={EventDetailsStyles.down_list_inner_container}>
           <Text style={EventDetailsStyles.down_list_title}>
             {/* Hard code for now. Will calculate once hooked up */}
-            {`${calculateDownRSVPPercentage(event.rsvp_users.length, event.declined_users.length)}% Down (${event.rsvp_users.length}/${event.rsvp_users.length + event.declined_users.length})`}
+            {`${calculateDownRSVPPercentage(event.rsvp_users.length)}% Down (${event.rsvp_users.length}/${numUsers})`}
           </Text>
           <FlatList
             data={event.rsvp_users}
@@ -153,9 +154,9 @@ const EventDetails = (props) => {
   const renderBottomRowButtons = () => {
     return (
       <View style={EventDetailsStyles.button_row_container}>
-        { renderDeleteButton() }
-        { renderRSVPButton() }
-        { renderEditButton() }
+        {renderDeleteButton()}
+        {renderRSVPButton()}
+        {renderEditButton()}
       </View>
     );
   };
@@ -163,8 +164,8 @@ const EventDetails = (props) => {
   const renderDeleteButton = () => {
     if (event.creator_user_id == userId) {
       return (
-        <TouchableOpacity onPress={() => { deleteEvent() }} style ={EventDetailsStyles.delete_event_container}>
-          <Image source = {require('../assets/delete_icon.png')} style = {{ width: ROW_BUTTON_HEIGHT, height: ROW_BUTTON_WIDTH }}/>
+        <TouchableOpacity onPress={() => { deleteEvent() }} style={EventDetailsStyles.delete_event_container}>
+          <Image source={require('../assets/delete_icon.png')} style={{ width: ROW_BUTTON_HEIGHT, height: ROW_BUTTON_WIDTH }} />
           <Text style={EventDetailsStyles.button_row_text}> delete </Text>
         </TouchableOpacity>
       );
@@ -194,11 +195,11 @@ const EventDetails = (props) => {
   const renderEditButton = () => {
     if (event.creator_user_id == userId) {
       return (
-        <TouchableOpacity onPress={() => { goToEditEvent(event) }} style ={EventDetailsStyles.edit_event_container}>
-          <Image source = {require('../assets/edit_event.png')} style = {{ width: ROW_BUTTON_HEIGHT, height: ROW_BUTTON_WIDTH }}/>
+        <TouchableOpacity onPress={() => { goToEditEvent(event) }} style={EventDetailsStyles.edit_event_container}>
+          <Image source={require('../assets/edit_event.png')} style={{ width: ROW_BUTTON_HEIGHT, height: ROW_BUTTON_WIDTH }} />
           <Text style={EventDetailsStyles.button_row_text}> edit </Text>
         </TouchableOpacity>
-        );
+      );
     } else {
       return (<View></View>);
     }
@@ -251,15 +252,16 @@ const EventDetails = (props) => {
   }
 
 
-  const calculateDownRSVPPercentage = (num_accepted: number, num_declined: number) => {
-    return Math.round(num_accepted * 100 / (num_accepted + num_declined))
+  const calculateDownRSVPPercentage = (num_accepted: number) => {
+    return Math.round(num_accepted * 100 / (numUsers))
   }
 
   const goToEditEvent = (event: Event) => {
     props.navigation.navigate("Edit Event", {
       event: event,
       userEmail: userEmail,
-      setEvent: setEvent
+      setEvent: setEvent,
+      numUsers: numUsers
     });
   }
 
@@ -277,7 +279,7 @@ const EventDetails = (props) => {
         {renderEventDownListBox()}
         {Divider()}
       </ScrollView>
-        {/* Button row */}
+      {/* Button row */}
       {renderBottomRowButtons()}
     </View>
   );
