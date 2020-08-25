@@ -3,6 +3,7 @@ from flask import jsonify
 from init import application, SECRETS
 from extensions import db
 from models.user import User, GetUserById
+from errors import HttpError, BadRequest, Unauthorized, Forbidden, NotFound
 from models.event_response import EventResponse
 from models.event import Event, get_event_by_id
 from models.squad import Squad, get_squad_by_id
@@ -22,12 +23,11 @@ GOOGLE_CALENDAR_API = 'https://www.googleapis.com/calendar/v3/calendars/primary/
 firebase_app = firebase_admin.initialize_app()
 
 
-def validateArgsInRequest(content, *args):
-    for arg in args:
-        if arg not in content:
-            print('{} not in request!'.format(arg))
-            return False, '{} not in request!'.format(arg)
-    return True, None
+def validate_request_args(content: dict, *required_args):
+    """Verify that all required arguments are present in the request."""
+    missing_args = set(content.keys()).symmetric_difference(set(required_args))
+    if missing_args:
+        raise BadRequest(f"Missing args: {', '.join(missing_args)}")
 
 
 @application.route("/")
@@ -38,10 +38,7 @@ def hello():
 @application.route("/sign_in", methods=['POST'])
 def signIn():
     content = request.get_json()
-    ok, err = validateArgsInRequest(
-        content, 'email', 'name', 'photo', 'googleServerCode', 'deviceToken')
-    if not ok:
-        return err, 400
+    validate_request_args(content, 'email', 'name', 'photo', 'googleServerCode', 'deviceToken')
     email = content["email"]
     photo = content["photo"]
     name = content["name"]
@@ -100,11 +97,9 @@ def signout():
 @login_required
 def is_logged_in():
     args = request.args
-    ok, err = validateArgsInRequest(args, "email")
-    if not ok:
-        return err, 400
+    validate_request_args(args, "email")
     if current_user.email != args['email']:
-        return 'Incorrect email', 403
+        raise Unauthorized("Incorrect email")
     return "Signed in!", 200
 
 
@@ -113,9 +108,7 @@ def is_logged_in():
 @login_required
 def add_to_squad():
     content = request.get_json()
-    ok, err = validateArgsInRequest(content, 'email', 'squad_code')
-    if not ok:
-        return err, 400
+    validate_request_args(content, 'email', 'squad_code')
     email = content['email']
     squad_code = content['squad_code']
     return addUserToSquad(squad_code, email)
@@ -126,16 +119,12 @@ def add_to_squad():
 @login_required
 def createSquad():
     content = request.get_json()
-    ok, err = validateArgsInRequest(
-        content, "email", "squad_name", "squad_emoji")
-    if not ok:
-        return err, 400
+    validate_request_args(content, 'email', 'squad_name', 'squad_emoji')
     email = content["email"]
     user = User.query.filter_by(email=email).first()
-    if user is None:
-        return 'User does not exist!', 400
-    squad = Squad(name=content["squad_name"], admin_id=user.id,
-                  squad_emoji=content["squad_emoji"])
+    if not user:
+        raise NotFound(f"Could not find User {email}")
+    squad = Squad(name=content['squad_name'], admin_id=user.id, squad_emoji=content['squad_emoji'])
     squad.generate_code()
     db.session.add(squad)
     db.session.commit()
@@ -148,14 +137,11 @@ def createSquad():
 @login_required
 def edit_squad():
     content = request.get_json()
-    ok, err = validateArgsInRequest(
-        content, "squad_id", "squad_name", "squad_emoji")
-    if not ok:
-        return err, 400
+    validate_request_args(content, "squad_id", "squad_name", "squad_emoji")
     squad_id = content["squad_id"]
     squad = get_squad_by_id(squad_id)
     if not squad:
-        return "Squad does not exist!", 400
+        raise NotFound(f"Could not find Squad {squad_id}")
     squad.name = content["squad_name"]
     squad.squad_emoji = content["squad_emoji"]
     db.session.add(squad)
@@ -168,38 +154,28 @@ def edit_squad():
 @login_required
 def respond_to_event():
     content = request.get_json()
-    ok, err = validateArgsInRequest(
-        content, "email", "event_id", "response")
-    if not ok:
-        return err, 400
+    validate_request_args(content, "email", "event_id", "response")
     email = content["email"]
     event_id = content["event_id"]
     response = content["response"]
     user = User.query.filter_by(email=email).first()
-    if user is None:
-        return "Can't find user with email {}, so can't respond to event {}".format(email, event_id), 400
+    if not user:
+        raise NotFound(f"Could not find User {email}")
     return respondToEvent(user.id, event_id, response)
 
 
 def respondToEvent(user_id, event_id, response):
     existing_entry_exists = False
     user = User.query.filter_by(id=user_id).first()
-    if user is None:
-        return "Can't find user with user_id {}, so can't respond to event {}".format(user_id, event_id), 400
-    user_id = user.id
+    if not user:
+        raise NotFound(f"Could not find User {user_id}")
     event = get_event_by_id(event_id)
-    if event == None:
-        response_msg = "No event found for event {}. Erroring".format(event_id)
-        print(response_msg)
-        return response_msg, 400
+    if not event:
+        raise NotFound(f"Could not find Event {event_id}")
     event_squad_id = event.squad_id
-    squad_membership = SquadMembership.query.filter_by(
-        squad_id=event_squad_id, user_id=user_id).first()
-    if squad_membership == None:
-        response_msg = "User {} is not part of squad {} that event {} was made for. Erroring".format(
-            user_id, event_squad_id, event_id)
-        print(response_msg)
-        return response_msg, 400
+    squad_membership = SquadMembership.query.filter_by(squad_id=event_squad_id, user_id=user_id).first()
+    if not squad_membership:
+        raise NotFound(f"User {user_id} is not a member of Squad {event_squad_id}")
 
     # Calculate current unix time in ms
     responded_at_time = int(round(time.time() * 1000))
@@ -343,21 +319,19 @@ def addUserToSquad(squad_code, email):
 @login_required
 def createEvent():
     content = request.get_json()
-    ok, err = validateArgsInRequest(content, "email", "title", "emoji",
-                                    "description", "start_time", "end_time", "squad_id", "event_url", "image_url", "down_threshold")
-    if not ok:
-        return err, 400
-    user_email = content["email"]
+    validate_request_args(content, 'email', 'title', 'emoji', 'description',
+                          'start_time', 'end_time', 'squad_id', 'event_url',
+                          'image_url', 'down_threshold')
+    user_email = content['email']
     u = User.query.filter_by(email=user_email).first()
-    if u is None:
-        return "User does not exist!", 400
-    g = Squad.query.filter_by(id=content["squad_id"]).first()
-    if g is None:
-        return "Squad does not exist!", 400
-    membership = SquadMembership.query.filter_by(
-        user_id=u.id, squad_id=g.id).first()
+    if not u:
+        raise NotFound(f"Could not find User {user_email}")
+    squad_id = content['squad_id']
+    if not get_squad_by_id(squad_id):
+        raise NotFound(f"Could not find Squad {squad_id}")
+    membership = SquadMembership.query.filter_by(user_id=u.id, squad_id=squad_id).first()
     if membership is None:
-        return "User is not a member of squad!", 400
+        raise NotFound("User is not a member of squad")
     title = content["title"]
     desc = content["description"]
     event_emoji = content["emoji"]
@@ -415,17 +389,16 @@ def send_event_notification(squadMemberships, user_id, event_title):
 @login_required
 def editEvent():
     content = request.get_json()
-    ok, err = validateArgsInRequest(content, "event_id", "email", "title", "emoji",
-                                    "description", "down_threshold", "start_time", "end_time", "event_url", "image_url")
-    if not ok:
-        return err, 400
-    u = User.query.filter_by(email=content["email"]).first()
-    if u is None:
-        return "User does not exist!", 400
-    event_id = content["event_id"]
+    validate_request_args(content, 'event_id', 'email', 'title', 'emoji',
+                          'description', 'down_threshold', 'start_time',
+                          'end_time', 'event_url', 'image_url')
+    u = User.query.filter_by(email=content['email']).first()
+    if not u:
+        raise NotFound(f"Could not find User {content['email']}")
+    event_id = content['event_id']
     event = get_event_by_id(event_id)
     if event is None:
-        return "Event does not exist!", 400
+        raise NotFound(f"Could not find Event {event_id}")
 
     event.title = content["title"]
     event.description = content["description"]
@@ -447,9 +420,7 @@ def editEvent():
 @login_required
 def getEvents():
     args = request.args
-    ok, err = validateArgsInRequest(args, "squad_id")
-    if not ok:
-        return err, 400
+    validate_request_args(args, 'squad_id')
     g_id = args["squad_id"]
     events = Event.query.filter_by(squad_id=g_id).options(load_only(
         'id', 'title', 'description', 'event_emoji', 'start_time', 'end_time', 'down_threshold')).all()
@@ -468,16 +439,11 @@ def getEvents():
 @login_required
 def getEvent():
     args = request.args
-    ok, err = validateArgsInRequest(args, "event_id")
-    if not ok:
-        print("validation error")
-        return err, 400
+    validate_request_args(args, 'event_id')
     e_id = args["event_id"]
     event = get_event_by_id(e_id)
     if event is None:
-        response_msg = "Event {} not found in DB. Erroring".format(e_id)
-        print(response_msg)
-        return response_msg, 400
+        raise NotFound(f"Event {e_id} does not exist")
     event_responses = getEventResponsesBatch([event.id])
     ret = event.eventDict()
     ret["event_responses"] = {}
@@ -491,17 +457,11 @@ def getEvent():
 @login_required
 def deleteEvent():
     args = request.args
-    ok, err = validateArgsInRequest(args, "event_id")
-    if not ok:
-        print("validation error")
-        return err, 400
+    validate_request_args(args, 'event_id')
     e_id = args["event_id"]
     event = get_event_by_id(e_id)
     if event is None:
-        response_msg = "Event {} not found in DB. Therefore, no event to delete.".format(
-            e_id)
-        print(response_msg)
-        return response_msg, 400
+        raise NotFound(f"Could not find Event {e_id}")
     EventResponse.query.filter_by(event_id=e_id).delete()
     db.session.delete(event)
     db.session.commit()
@@ -513,9 +473,7 @@ def deleteEvent():
 @login_required
 def getEventResponses():
     args = request.args
-    ok, err = validateArgsInRequest(args, "event_id")
-    if not ok:
-        return err, 400
+    validate_request_args(args, 'event_id')
     return getEventResponses(args["event_id"])
 
 
@@ -545,14 +503,11 @@ def getEventResponsesBatch(event_id_list):
 @login_required
 def get_squads():
     args = request.args
-    ok, err = validateArgsInRequest(
-        args, "email")
-    if not ok:
-        return err, 400
+    validate_request_args(args, 'email')
     email = args["email"]
     user = User.query.filter_by(email=email).first()
-    if user is None:
-        return 'User with email of {} does not exist!'.format(email), 400
+    if not user:
+        raise NotFound(f"Could not find User {email}")
     user_id = user.id
     user_squad_memberships = SquadMembership.query.filter_by(
         user_id=user_id).all()
@@ -561,7 +516,7 @@ def get_squads():
         squad_id = user_squad_membership.squad_id
         squad = Squad.query.filter_by(id=squad_id).first()
         if squad is None:
-            return "User {} is a member of squad {}, but squad could not be retrieved".format(user_id, squad_id), 400
+            raise NotFound(f"Could not find Squad {squad_id}")
         squads_lst.append(squad)
     return jsonify(squads=[squad.squadDict() for squad in squads_lst])
 
@@ -571,10 +526,7 @@ def get_squads():
 @login_required
 def get_users():
     args = request.args
-    ok, err = validateArgsInRequest(
-        args, "squadId")
-    if not ok:
-        return err, 400
+    validate_request_args(args, 'squadId')
     squad_id = args["squadId"]
     users = GetUsersBySquadId(squad_id)
     return jsonify(user_info=users)
@@ -585,10 +537,7 @@ def get_users():
 @login_required
 def delete_user():
     content = request.get_json()
-    ok, err = validateArgsInRequest(
-        content, "user_id", "squad_id")
-    if not ok:
-        return err, 400
+    validate_request_args(content, 'user_id', 'squad_id')
     user_id = content["user_id"]
     squad_id = content["squad_id"]
     to_delete = SquadMembership.query.filter_by(
@@ -608,14 +557,11 @@ def delete_user():
 @login_required
 def get_user_id():
     args = request.args
-    ok, err = validateArgsInRequest(
-        args, "email")
-    if not ok:
-        return err, 400
+    validate_request_args(args, 'email')
     email = args["email"]
     user = User.query.filter_by(email=email).first()
-    if user is None:
-        return 'User with email of {} does not exist!'.format(email), 400
+    if user:
+        raise NotFound(f"Could not find User {email}")
     user_id = user.id
     return jsonify(user_id=user_id)
 
@@ -625,10 +571,7 @@ def get_user_id():
 @login_required
 def delete_squad():
     content = request.get_json()
-    ok, err = validateArgsInRequest(
-        content, "squad_id", "user_id")
-    if not ok:
-        return err, 400
+    validate_request_args(content, 'squad_id', 'user_id')
     squad_id = content["squad_id"]
     user_id = content["user_id"]
     squad_to_delete = Squad.query.filter_by(id=squad_id).first()
@@ -650,6 +593,6 @@ def delete_squad():
         squad_id = user_squad_membership.squad_id
         squad = Squad.query.filter_by(id=squad_id).first()
         if squad is None:
-            return "User {} is a member of squad {}, but squad could not be retrieved".format(user_id, squad_id), 400
+            raise NotFound(f"Could not find Squad {squad_id}")
         squads_lst.append(squad)
     return jsonify(squads=[squad.squadDict() for squad in squads_lst])
