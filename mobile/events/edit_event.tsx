@@ -12,7 +12,7 @@ import Slider from "@react-native-community/slider";
 const EditEvent = (props) => {
   const event = props.route.params.event
   const userEmail = props.route.params.userEmail
-
+  const numUsers = props.route.params.numUsers
   const [event_description, setEventDescription] = useState(event.description)
   const [event_down_threshold, setEventDownThreshold] = useState(event.down_threshold)
   const [event_emoji, setEventEmoji] = useState(event.emoji);
@@ -127,7 +127,7 @@ const EditEvent = (props) => {
       <View>
         <Text style={EditEventStyles.down_threshold_text}>Number of people down to create calendar event: {event_down_threshold}</Text>
         {/* Allowing a maximum value of at least 2 in case not everybody has joined. */}
-        <Slider minimumValue={1} maximumValue={Math.max(event.rsvp_users.length + event.declined_users.length, 2)} step={1}
+        <Slider minimumValue={1} maximumValue={Math.max(numUsers, 2)} step={1}
           value={event_down_threshold} onValueChange={setEventDownThreshold}
           thumbImage={require("../assets/down_static.png")}
           style={EditEventStyles.down_threshold_slider} />

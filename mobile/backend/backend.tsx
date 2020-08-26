@@ -24,3 +24,15 @@ export const callBackend = async (endpoint: string, init: RequestInit = { header
     return fetch(BACKEND_URL + endpoint, init)
 }
 
+export const getUsersInSquad = (squadId: number) => {
+    const endpoint = 'get_users?squadId=' + squadId
+    const init: RequestInit = {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    }
+    return callBackend(endpoint, init).then(response => {
+        return response.json();
+    })
+}

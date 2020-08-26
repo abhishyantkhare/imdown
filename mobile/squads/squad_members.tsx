@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, Image, Alert, TouchableOpacity} from "react-native";
+import { View, Text, Image, Alert, TouchableOpacity } from "react-native";
 import { squad_members_styles } from "./squad_members_styles";
-import { callBackend } from "../backend/backend"
-import { User } from "../types/user"
+import { callBackend, getUsersInSquad } from "../backend/backend"
 import { SwipeListView, SwipeRow } from "react-native-swipe-list-view";
 
 const SquadMembers = (props) => {
@@ -10,19 +9,10 @@ const SquadMembers = (props) => {
     const [squadId, setSquadId] = useState(props.route.params.squadId)
 
     useEffect(() => {
-        const endpoint = 'get_users?squadId=' + squadId
-        const init: RequestInit = {
-            method: "GET",
-            headers: {
-            'Content-Type': 'application/json'
-            },
-        }
-        callBackend(endpoint, init).then(response => { 
-            return response.json();
-        }).then(data => { 
+        getUsersInSquad(squadId).then(data => {
             setUsers(convertToKeyValDict(data.user_info));
         });
-    }, []);  
+    }, []);
 
     const convertToKeyValDict = (users: any) => {
         return users.map((_, i) => ({ key: i, user: users[i] }))
@@ -42,9 +32,9 @@ const SquadMembers = (props) => {
                 'Content-Type': 'application/json'
             },
         }
-        callBackend(endpoint, init).then(response => { 
+        callBackend(endpoint, init).then(response => {
             return response.json();
-        }).then(data => { 
+        }).then(data => {
             setUsers(convertToKeyValDict(data.user_info));
         });
     }
@@ -57,8 +47,8 @@ const SquadMembers = (props) => {
                 [
                     {
                         text: 'Yes',
-                        onPress: () => { 
-                            deleteUser(id) 
+                        onPress: () => {
+                            deleteUser(id)
                         },
                     },
                     {
@@ -69,7 +59,7 @@ const SquadMembers = (props) => {
                 { cancelable: true }
             )
         )
-    } 
+    }
 
     const closeRow = (rowMap: any, rowKey: number) => {
         if (rowMap[rowKey]) {
@@ -84,13 +74,13 @@ const SquadMembers = (props) => {
                 onPress={() => {
                     closeRow(rowMap, rowKey);
                     alertPopUp(id, name);
-                  }   
+                }
                 }
             >
                 <Text style={squad_members_styles.deleteText}>Delete</Text>
             </TouchableOpacity>
         )
-    } 
+    }
 
 
     const renderUsersItem = (data: any, rowMap: any) => (
@@ -101,28 +91,28 @@ const SquadMembers = (props) => {
             <View style={squad_members_styles.rowBack}>
                 {deleteBtn(data.item.user.id, data.item.user.name, data.item.key, rowMap)}
             </View>
-            
-                <View style={squad_members_styles.rowFront}>
-                    <View style={squad_members_styles.user_info_view}>
-                        <View style={{paddingRight: 10}}>
-                            <Image style={squad_members_styles.user_image} source={{ uri: data.item.user.photo }} />
-                        </View>
-                        <View style={{paddingBottom: 8}}>
-                            <Text style={squad_members_styles.user_text}>{data.item.user.name} </Text>
-                        </View>
+
+            <View style={squad_members_styles.rowFront}>
+                <View style={squad_members_styles.user_info_view}>
+                    <View style={{ paddingRight: 10 }}>
+                        <Image style={squad_members_styles.user_image} source={{ uri: data.item.user.photo }} />
+                    </View>
+                    <View style={{ paddingBottom: 8 }}>
+                        <Text style={squad_members_styles.user_text}>{data.item.user.name} </Text>
                     </View>
                 </View>
+            </View>
         </SwipeRow>
     );
 
-  return (
-    <View style={squad_members_styles.squads_members_container}>
-        <SwipeListView 
-            data={users} 
-            renderItem={renderUsersItem} 
-        />
-    </View>
-  );
+    return (
+        <View style={squad_members_styles.squads_members_container}>
+            <SwipeListView
+                data={users}
+                renderItem={renderUsersItem}
+            />
+        </View>
+    );
 }
 
 export default SquadMembers;

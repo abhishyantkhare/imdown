@@ -1,11 +1,8 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { View, FlatList, Text, Button, TouchableHighlight, TouchableOpacity } from "react-native";
-import { callBackend } from "../backend/backend"
-import Divider from "../components/divider/divider";
+import { callBackend, getUsersInSquad } from "../backend/backend"
 import { event_styles } from "./events_styles";
 import moment from 'moment';
-import SquadMembers from "../squads/squad_members"
-import { useFocusEffect } from '@react-navigation/native';
 
 const SQUAD_CODE_TITLE_TEXT = "Squad Code: "
 
@@ -22,6 +19,7 @@ const Events = (props) => {
   const [squadName, setSquadName] = useState(props.route.params.squadName)
   const [squadEmoji, setSquadEmoji] = useState(props.route.params.squadEmoji)
   const [userEmail, setUserEmail] = useState(props.route.params.userEmail)
+  const [numUsers, setNumUsers] = useState(0)
 
   type EventLite = {
     id: number,
@@ -70,26 +68,37 @@ const Events = (props) => {
     props.navigation.navigate("EventDetails", {
       eventId: event.id,
       userEmail: userEmail,
-      userId: userId
+      userId: userId,
+      numUsers: numUsers
     })
   }
 
-  useFocusEffect(
-    React.useCallback(() => {
-      const endpoint = 'get_events?squad_id=' + squadId
-      const init: RequestInit = {
-        method: "GET",
-        headers: {
-          'Content-Type': 'application/json'
-        },
-      }
-      callBackend(endpoint, init).then(response => {
-        return response.json();
-      }).then(data => {
-        setEvents(toEventLiteList(data));
-      });
-    }, [])
-  );
+  const getEvents = () => {
+    const endpoint = 'get_events?squad_id=' + squadId
+    const init: RequestInit = {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    }
+    callBackend(endpoint, init).then(response => {
+      return response.json();
+    }).then(data => {
+      setEvents(toEventLiteList(data));
+    });
+  }
+
+  const getNumUsers = () => {
+    getUsersInSquad(squadId).then((data) => {
+      setNumUsers(data.user_info.length)
+    })
+  }
+
+  useEffect(() => {
+    getEvents();
+    getNumUsers();
+  }, [])
+
 
   useLayoutEffect(() => {
     props.navigation.setOptions({
@@ -124,8 +133,7 @@ const Events = (props) => {
 
   const calcDownPercentage = (event: EventLite) => {
     const numDown = event.rsvp_users.length
-    const totalNumPeople = event.rsvp_users.length + event.declined_users.length
-    const percentage = Math.round(numDown * 100 / totalNumPeople)
+    const percentage = Math.round(numDown * 100 / numUsers)
     return percentage
   }
 
