@@ -42,6 +42,5 @@ class User(UserMixin, db.Model):
         return resp['access_token']
 
 
-def GetUserById(id):
+def get_user_by_id(id):
     return User.query.filter_by(id=id).first()
-    

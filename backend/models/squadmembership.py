@@ -1,6 +1,6 @@
 from init import db
 from flask import jsonify
-from models.user import User, GetUserById
+from models.user import User, get_user_by_id
 
 
 class SquadMembership(db.Model):
@@ -21,6 +21,6 @@ def GetUsersBySquadId(squad_id):
     users_lst = []
     for user_squad_membership in user_squad_memberships:
         user_id = user_squad_membership.user_id
-        user = GetUserById(user_id)
+        user = get_user_by_id(user_id)
         users_lst.append(user)
     return [user.userDict() for user in users_lst]

@@ -2,8 +2,8 @@ from flask import request
 from flask import jsonify
 from init import application, SECRETS
 from extensions import db
-from models.user import User, GetUserById
 from errors import HttpError, BadRequest, Unauthorized, Forbidden, NotFound
+from models.user import User, get_user_by_id
 from models.event_response import EventResponse
 from models.event import Event, get_event_by_id
 from models.squad import Squad, get_squad_by_id
@@ -14,13 +14,10 @@ from sqlalchemy.orm import load_only
 import requests
 import json
 import time
-import firebase_admin
-from firebase_admin import messaging
-
+from notifications import notify_squad_members
 
 GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token'
 GOOGLE_CALENDAR_API = 'https://www.googleapis.com/calendar/v3/calendars/primary/events'
-firebase_app = firebase_admin.initialize_app()
 
 
 def validate_request_args(content: dict, *required_args):
@@ -38,7 +35,8 @@ def hello():
 @application.route("/sign_in", methods=['POST'])
 def signIn():
     content = request.get_json()
-    validate_request_args(content, 'email', 'name', 'photo', 'googleServerCode', 'deviceToken')
+    validate_request_args(content, 'email', 'name', 'photo',
+                          'googleServerCode', 'deviceToken')
     email = content["email"]
     photo = content["photo"]
     name = content["name"]
@@ -124,7 +122,8 @@ def createSquad():
     user = User.query.filter_by(email=email).first()
     if not user:
         raise NotFound(f"Could not find User {email}")
-    squad = Squad(name=content['squad_name'], admin_id=user.id, squad_emoji=content['squad_emoji'])
+    squad = Squad(name=content['squad_name'],
+                  admin_id=user.id, squad_emoji=content['squad_emoji'])
     squad.generate_code()
     db.session.add(squad)
     db.session.commit()
@@ -144,6 +143,9 @@ def edit_squad():
         raise NotFound(f"Could not find Squad {squad_id}")
     squad.name = content["squad_name"]
     squad.squad_emoji = content["squad_emoji"]
+    # Send notification
+    notify_squad_members(
+        squad.id, f"{squad.name} was edited!", users_to_exclude={squad.admin_id})
     db.session.add(squad)
     db.session.commit()
     return squad.jsonifySquad()
@@ -173,9 +175,11 @@ def respondToEvent(user_id, event_id, response):
     if not event:
         raise NotFound(f"Could not find Event {event_id}")
     event_squad_id = event.squad_id
-    squad_membership = SquadMembership.query.filter_by(squad_id=event_squad_id, user_id=user_id).first()
+    squad_membership = SquadMembership.query.filter_by(
+        squad_id=event_squad_id, user_id=user_id).first()
     if not squad_membership:
-        raise NotFound(f"User {user_id} is not a member of Squad {event_squad_id}")
+        raise NotFound(
+            f"User {user_id} is not a member of Squad {event_squad_id}")
 
     # Calculate current unix time in ms
     responded_at_time = int(round(time.time() * 1000))
@@ -201,9 +205,18 @@ def respondToEvent(user_id, event_id, response):
             user_id=user_id, event_id=event_id, response=response, response_time=responded_at_time)
         db.session.add(user_event_response)
     db.session.commit()
-    getEventResponsesAndCheckDownThresh(event)
+    threshold_passed = getEventResponsesAndCheckDownThresh(event)
     if not user_event_response.response:
         removeEventFromCalendarIfExists(event, user_id)
+
+    # send notification
+    # we send a notification if the person responding is not the event creator and they are saying they're down
+    if user_id != event.creator_user_id and user_event_response.response:
+        notif_body = ""
+        if threshold_passed:
+            notif_body = "Enough people are down! The event will automatically be scheduled on Google Calendar."
+        notify_squad_members(
+            event_squad_id, f"{user.name} is down for {event.title}!", body=notif_body, users_to_exclude={user_id})
     return user_event_response.jsonify_eventResponse()
 
 
@@ -225,12 +238,14 @@ def getEventResponsesAndCheckDownThresh(event):
     if num_accepted >= event.down_threshold:
         print("Enough people are down to create an event on calender!")
         addEventToCalendars(accepted_responses)
+        return True
+    return False
 
 
 def removeEventFromCalendarIfExists(event, user_id):
     if not event.start_time or not event.end_time:
         return
-    user = GetUserById(user_id)
+    user = get_user_by_id(user_id)
     access_token = user.getToken(SECRETS, GOOGLE_TOKEN_URL)
     headers = {'Authorization': 'Bearer {}'.format(
         access_token)}
@@ -241,7 +256,7 @@ def removeEventFromCalendarIfExists(event, user_id):
 def addEventToCalendars(accepted_responses):
     event = get_event_by_id(accepted_responses[0].event_id)
     gcal_event = event.get_google_calendar_event_body()
-    users = [GetUserById(resp.user_id) for resp in accepted_responses]
+    users = [get_user_by_id(resp.user_id) for resp in accepted_responses]
     attendees = [{'email': user.email} for user in users]
     gcal_event['attendees'] = attendees
     for user in users:
@@ -307,6 +322,9 @@ def addUserToSquad(squad_code, email):
         to_insert = SquadMembership(squad_id=squad_obj.id, user_id=user_obj.id)
         db.session.add(to_insert)
         db.session.commit()
+        # Send notification
+        notify_squad_members(
+            squad_obj.id, f"{user_obj.name} joined {squad_obj.name}", users_to_exclude={user_obj.id})
         response = {
             "status_code": 200,
             "message": "Sucessfully added squad."
@@ -329,7 +347,8 @@ def createEvent():
     squad_id = content['squad_id']
     if not get_squad_by_id(squad_id):
         raise NotFound(f"Could not find Squad {squad_id}")
-    membership = SquadMembership.query.filter_by(user_id=u.id, squad_id=squad_id).first()
+    membership = SquadMembership.query.filter_by(
+        user_id=u.id, squad_id=squad_id).first()
     if membership is None:
         raise NotFound("User is not a member of squad")
     title = content["title"]
@@ -344,44 +363,20 @@ def createEvent():
     if "lat" in content and "lng" in content:
         lat = content["lat"]
         lng = content["lng"]
-    squad_id = content["squad_id"]
     event_url = content["event_url"]
     image_url = content["image_url"]
     down_threshold = content["down_threshold"]
 
     e = Event(title=title, event_emoji=event_emoji, description=desc, start_time=start_time,
-              end_time=end_time, squad_id=squad_id, event_url=event_url, image_url=image_url, down_threshold=down_threshold, creator_user_id=u.id)
+              end_time=end_time, squad_id=event_squad.id, event_url=event_url, image_url=image_url, down_threshold=down_threshold, creator_user_id=u.id)
     db.session.add(e)
     db.session.commit()
     respondToEvent(u.id, e.id, True)
-    # set every other user in squad to false
-    squadMemberships = SquadMembership.query.filter_by(
-        squad_id=squad_id).all()
 
-    for squadMembership in squadMemberships:
-        if (squadMembership.user_id != u.id):
-            respondToEvent(squadMembership.user_id, e.id, False)
-    send_event_notification(squadMemberships, u.id, e.title)
+    # send notification
+    notify_squad_members(
+        event_squad.id, f"New event in {event_squad.name}!", body=e.title, users_to_exclude={u.id})
     return e.jsonify_event()
-
-
-def send_event_notification(squadMemberships, user_id, event_title):
-    device_tokens = []
-    for sqm in squadMemberships:
-        if sqm.user_id != user_id:
-            device_tokens.append(GetUserById(sqm.user_id).device_token)
-    squad = get_squad_by_id(squadMemberships[0].squad_id)
-    title = f"New Event In {squad.name}!"
-    body = f"{event_title}"
-    notification = messaging.Notification(title=title, body=body)
-    android_config = messaging.AndroidConfig(priority="high")
-
-    message = messaging.MulticastMessage(
-        notification=notification,
-        tokens=device_tokens,
-        android=android_config,
-    )
-    response = messaging.send_multicast(message)
 
 
 @application.route("/edit_event", methods=["PUT"])
@@ -412,6 +407,13 @@ def editEvent():
     db.session.add(event)
     db.session.commit()
     getEventResponsesAndCheckDownThresh(event)
+
+    event_squad = get_squad_by_id(content["squad_id"])
+    if not event_squad:
+        return "Squad does not exist!", 400
+    # Send notification
+    notify_squad_members(
+        event_squad.id, f"Event updated in {event_squad.name}!", body=event.title, users_to_exclude={u.id})
     return event.jsonify_event()
 
 
@@ -546,8 +548,15 @@ def delete_user():
         print("User is already deleted from squad.")
         return "User is already deleted from squad."
     else:
+        # Send notification
+        squad = get_squad_by_id(squad_id)
+        user = get_user_by_id(user_id)
+        notify_squad_members(
+            squad_id, f"{user.name} was removed from {squad.name}")
+        # delete user
         db.session.delete(to_delete)
         db.session.commit()
+
     users = GetUsersBySquadId(squad_id)
     return jsonify(user_info=users)
 
@@ -585,6 +594,10 @@ def delete_squad():
     for squad_member in squad_members:
         db.session.delete(squad_member)
         db.session.commit()
+
+    # Send notification
+    notify_squad_members(
+        squad_to_delete.id, f"{squad_to_delete.name} was deleted", users_to_exclude={squad_to_delete.admin_id})
     # get squads
     user_squad_memberships = SquadMembership.query.filter_by(
         user_id=user_id).all()

@@ -20,7 +20,8 @@ export type Event = {
   declined_users: RSVPUser[],
   url?: string,
   down_threshold: number,
-  creator_user_id: number
+  creator_user_id: number,
+  squad_id: number
 }
 
 // Converts response from backend for a single event into an internally used Event object
@@ -38,7 +39,8 @@ export const toEvent = (backendEvent) => {
     declined_users: backendEvent.event_responses.declined,
     url: backendEvent.event_url,
     down_threshold: backendEvent.down_threshold,
-    creator_user_id: backendEvent.creator_user_id
+    creator_user_id: backendEvent.creator_user_id,
+    squad_id: backendEvent.squad_id
   });
 }
 
@@ -89,7 +91,7 @@ const EventDetails = (props) => {
           <Text style={EventDetailsStyles.event_title}>
             {event.name}
           </Text>
-          <Text style={[EventDetailsStyles.event_time, {paddingTop: 10}]}>
+          <Text style={[EventDetailsStyles.event_time, { paddingTop: 10 }]}>
             {event.start_ms ? `🗓 Starts: ${moment(event.start_ms).format('llll').toLocaleString()}` : "Starts: TBD"}
           </Text>
           <Text style={EventDetailsStyles.event_time}>
@@ -102,12 +104,12 @@ const EventDetails = (props) => {
     );
   }
 
-  const renderURLField= () => {
+  const renderURLField = () => {
     return (
-      event.url ? 
-      <Text onPress={() => event.url && Linking.openURL(`https://${event.url}`)} style={EventDetailsStyles.event_url}>
-        {event.url}
-      </Text> : null
+      event.url ?
+        <Text onPress={() => event.url && Linking.openURL(`https://${event.url}`)} style={EventDetailsStyles.event_url}>
+          {event.url}
+        </Text> : null
     );
   };
 
@@ -153,9 +155,9 @@ const EventDetails = (props) => {
   const renderBottomRowButtons = () => {
     return (
       <View style={EventDetailsStyles.button_row_container}>
-        { renderDeleteButton() }
-        { renderRSVPButton() }
-        { renderEditButton() }
+        {renderDeleteButton()}
+        {renderRSVPButton()}
+        {renderEditButton()}
       </View>
     );
   };
@@ -163,8 +165,8 @@ const EventDetails = (props) => {
   const renderDeleteButton = () => {
     if (event.creator_user_id == userId) {
       return (
-        <TouchableOpacity onPress={() => { deleteEvent() }} style ={EventDetailsStyles.delete_event_container}>
-          <Image source = {require('../assets/delete_icon.png')} style = {{ width: ROW_BUTTON_HEIGHT, height: ROW_BUTTON_WIDTH }}/>
+        <TouchableOpacity onPress={() => { deleteEvent() }} style={EventDetailsStyles.delete_event_container}>
+          <Image source={require('../assets/delete_icon.png')} style={{ width: ROW_BUTTON_HEIGHT, height: ROW_BUTTON_WIDTH }} />
           <Text style={EventDetailsStyles.button_row_text}> delete </Text>
         </TouchableOpacity>
       );
@@ -194,11 +196,11 @@ const EventDetails = (props) => {
   const renderEditButton = () => {
     if (event.creator_user_id == userId) {
       return (
-        <TouchableOpacity onPress={() => { goToEditEvent(event) }} style ={EventDetailsStyles.edit_event_container}>
-          <Image source = {require('../assets/edit_event.png')} style = {{ width: ROW_BUTTON_HEIGHT, height: ROW_BUTTON_WIDTH }}/>
+        <TouchableOpacity onPress={() => { goToEditEvent(event) }} style={EventDetailsStyles.edit_event_container}>
+          <Image source={require('../assets/edit_event.png')} style={{ width: ROW_BUTTON_HEIGHT, height: ROW_BUTTON_WIDTH }} />
           <Text style={EventDetailsStyles.button_row_text}> edit </Text>
         </TouchableOpacity>
-        );
+      );
     } else {
       return (<View></View>);
     }
@@ -277,7 +279,7 @@ const EventDetails = (props) => {
         {renderEventDownListBox()}
         {Divider()}
       </ScrollView>
-        {/* Button row */}
+      {/* Button row */}
       {renderBottomRowButtons()}
     </View>
   );
