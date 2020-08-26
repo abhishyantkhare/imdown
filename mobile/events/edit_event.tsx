@@ -159,7 +159,7 @@ const EditEvent = (props) => {
       emoji: event_emoji,
       event_url: event_url || null,
       image_url: eventImage || null,
-      squad_id: event.squadId,
+      squad_id: event.squad_id,
       start_time: eventStartTime ? eventStartTime.getTime() : null,
       end_time: eventEndTime ? eventEndTime.getTime() : null,
     }

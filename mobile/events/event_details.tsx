@@ -19,7 +19,8 @@ export type Event = {
   declined_users: RSVPUser[],
   url?: string,
   down_threshold: number,
-  creator_user_id: number
+  creator_user_id: number,
+  squad_id: number
 }
 
 // Converts response from backend for a single event into an internally used Event object
@@ -37,7 +38,8 @@ export const toEvent = (backendEvent) => {
     declined_users: backendEvent.event_responses.declined,
     url: backendEvent.event_url,
     down_threshold: backendEvent.down_threshold,
-    creator_user_id: backendEvent.creator_user_id
+    creator_user_id: backendEvent.creator_user_id,
+    squad_id: backendEvent.squad_id
   });
 }
 

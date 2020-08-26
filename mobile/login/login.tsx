@@ -58,8 +58,8 @@ const Login = ({ navigation }) => {
     }
 
     const setup = () => {
-        checkIfUserSignedIn()
         notificationsSetup();
+        checkIfUserSignedIn()
         googleSetup()
     }
 
