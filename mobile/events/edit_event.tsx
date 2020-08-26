@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useState } from "react";
-import { Button, Image, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Button, Image, SafeAreaView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { EditEventStyles } from "./edit_event_styles";
 import EmojiPicker from "../components/emojipicker/EmojiPicker";
 import DateTimeInput from "../components/date_time_input/date_time_input";
@@ -8,6 +8,7 @@ import { callBackend } from "../backend/backend"
 import { IMG_URL_BASE_64_PREFIX } from "../constants"
 import ImagePicker from 'react-native-image-picker';
 import Slider from "@react-native-community/slider";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 const EditEvent = (props) => {
   const event = props.route.params.event
@@ -90,7 +91,13 @@ const EditEvent = (props) => {
         {/* {Divider()}
         <TextInput style={[EditEventStyles.event_url, { textDecorationLine: event_url ? 'underline' : 'none' }]} placeholder="Event URL" value={event_url} autoCapitalize={'none'} onChangeText={(value) => setEventURL(value)} /> */}
         {Divider()}
-        <TextInput style={EditEventStyles.event_description} placeholder="Event Description" value={event_description} multiline={true} onChangeText={(value) => setEventDescription(value)} />
+        <TextInput
+          style={EditEventStyles.event_description}
+          placeholder="Event Description"
+          value={event_description}
+          multiline={true}
+          numberOfLines={3}
+          onChangeText={setEventDescription} />
       </View>
     );
   }
@@ -175,7 +182,7 @@ const EditEvent = (props) => {
   }
 
   return (
-    <ScrollView style={EditEventStyles.container} >
+    <KeyboardAwareScrollView style={EditEventStyles.container} >
       {/* Event image */}
       {renderImageCircle()}
       {/* Event title */}
@@ -185,7 +192,7 @@ const EditEvent = (props) => {
       {/* Other additional event fields */}
       {renderAdditionalFieldsBox()}
       {renderSaveButton()}
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 }
 
