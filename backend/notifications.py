@@ -27,7 +27,7 @@ def notify_squad_members(squad_id, title, body="", users_to_exclude={}):
     if not squad_memberships:
         raise HttpError("Could not find squad memberships")
     device_tokens = []
-    for sqm in squadMemberships:
+    for sqm in squad_memberships:
         if sqm.user_id not in users_to_exclude:
             device_tokens.append(get_user_by_id(sqm.user_id).device_token)
     send_notification(device_tokens, title, body=body)
