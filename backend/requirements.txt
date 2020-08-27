@@ -9,3 +9,4 @@ requests
 boto3
 pytest
 firebase-admin
+flake8
