@@ -22,7 +22,7 @@ GOOGLE_CALENDAR_API = 'https://www.googleapis.com/calendar/v3/calendars/primary/
 
 def validate_request_args(content: dict, *required_args):
     """Verify that all required arguments are present in the request."""
-    missing_args = required_args - content.keys()
+    missing_args = set(required_args) - set(content.keys())
     if missing_args:
         raise BadRequest(f"Missing args: {', '.join(missing_args)}")
 
@@ -345,7 +345,8 @@ def createEvent():
     if not u:
         raise NotFound(f"Could not find User {user_email}")
     squad_id = content['squad_id']
-    if not get_squad_by_id(squad_id):
+    event_squad = get_squad_by_id(squad_id)
+    if not event_squad:
         raise NotFound(f"Could not find Squad {squad_id}")
     membership = SquadMembership.query.filter_by(
         user_id=u.id, squad_id=squad_id).first()

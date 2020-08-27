@@ -76,7 +76,20 @@ class Event(db.Model):
             'description': self.description,
             'summary': self.title,
             'status': 'confirmed',
-            'id': self.get_event_UUID()
+            'id': self.get_event_UUID(),
+            'reminders': {
+                'useDefault': False,
+                'overrides': [
+                    {
+                        'method': 'popup',
+                        'minutes': 60  # reminder for an hour before
+                    },
+                    {
+                        'method': 'popup',
+                        'minutes': 1440  # reminder for a day before
+                    }
+                ]
+            }
         }
 
     def get_event_UUID(self):
