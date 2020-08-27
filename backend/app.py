@@ -570,7 +570,7 @@ def get_user_id():
     validate_request_args(args, 'email')
     email = args["email"]
     user = User.query.filter_by(email=email).first()
-    if user:
+    if not user:
         raise NotFound(f"Could not find User {email}")
     user_id = user.id
     return jsonify(user_id=user_id)
