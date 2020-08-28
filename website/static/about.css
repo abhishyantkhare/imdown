@@ -1,0 +1,31 @@
+.about-body {
+    height: 100vh;
+    width: 100vw;
+    background: #84D3FF 0.26%;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.imdown-about-title {
+    margin-top: 20vh;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 48px;
+    color: #FFFFFF;
+    font-family: "SourceSansProBold"
+}
+
+.imdown-about-desc {
+    margin-top: 5vh;
+    font-style: normal;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-family: "SourceSansProRegular";
+    width: 40vw;
+}
+
+.imdown-home-link {
+    margin-top: 10vh
+}
