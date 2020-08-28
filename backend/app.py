@@ -327,7 +327,8 @@ def addUserToSquad(squad_code, email):
             squad_obj.id, f"{user_obj.name} joined {squad_obj.name}", users_to_exclude={user_obj.id})
         response = {
             "status_code": 200,
-            "message": "Sucessfully added squad."
+            "message": "Sucessfully added squad.",
+            "squad_name": squad_obj.name
         }
         return jsonify(response)
 

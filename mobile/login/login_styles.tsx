@@ -3,7 +3,6 @@ export const login_styles = StyleSheet.create({
   login_container: {
     flex: 1,
     flexDirection: "column",
-    alignItems: "center",
   },
   gradient_background: {
     position: 'absolute',
@@ -14,25 +13,24 @@ export const login_styles = StyleSheet.create({
   },
   title_description_container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center"
+    alignItems: "flex-start",
+    justifyContent: "center",
+    marginLeft: "10%",
   },
   imdown_title: {
     color: "#fff",
-    fontFamily: "Ubuntu_700Bold",
-    fontSize: 72,
+    fontFamily: "SourceSansPro_700Bold",
+    fontSize: 70,
+    marginBottom: 30,
   },
   imdown_description: {
-    margin: 10,
     color: "#fff",
-    fontFamily: "Ubuntu_400Regular_Italic",
-    fontSize: 18,
-  },
-  google_sign_in_button_container: {
-    flex: 1,
+    fontFamily: "SourceSansPro_700Bold",
+    fontSize: 24,
   },
   google_sign_in_button: {
     width: 192, 
-    height: 48
+    height: 48,
+    marginTop: 100
   }
 });
