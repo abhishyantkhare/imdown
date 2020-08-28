@@ -57,20 +57,13 @@ const AddNewSquad = (props: AddSquadProps) => {
             setCreateSquadSuccessModal(true);
           });
     }
-    
-    const renderEmoji = () => {
-        return <EmojiPicker
-            onEmojiPicked={(emoji: string) => setEmojiPicked(emoji)}
-            emojiPickerTitle={"Select Squad Emoji"}
-        />
-    }
 
     const renderCreateNewSquad = () => {
         return (
             <View style={AddSquadStyles.add_container}>
                 <SafeAreaView style={AddSquadStyles.emoji_and_squad_name_container}>
                     <View style={AddSquadStyles.emojiBox}>
-                        {renderEmoji()}
+                        <EmojiPicker onEmojiPicked={(emoji: string) => setEmojiPicked(emoji)} emojiPickerTitle={"Select Squad Emoji"}/>
                     </View>
                     <TextInput placeholder={CREATE_NEW_SQUAD_PLACEHOLDER} onChangeText={(name) => setSquadName(name)}
                         multiline={true}
@@ -107,7 +100,7 @@ const AddNewSquad = (props: AddSquadProps) => {
                 {renderCreateNewSquad()}
             </ScrollView>
             { renderCreateSquadSuccessModal() }
-            <StandardButton text="Submit" override_style={{width:200, marginBottom: 70}} onPress={()=> addSquadOnBackend()}/>
+            <StandardButton text="Submit" override_style={{width:200, marginBottom: "15%"}} onPress={()=> addSquadOnBackend()}/>
         </View>
     );
 }
@@ -193,7 +186,7 @@ const AddExistingSquad = (props: AddSquadProps) => {
             <ScrollView keyboardShouldPersistTaps="handled" scrollEnabled={false} >
                 {renderAddSquadByCode()}
             </ScrollView>
-            <StandardButton text="Submit" override_style={{width:200, marginBottom: 70}} onPress={()=> addSquadByCodeOnBackend()}/>
+            <StandardButton text="Submit" override_style={{width:200, marginBottom: "15%"}} onPress={()=> addSquadByCodeOnBackend()}/>
             { renderAddToSquadSuccessModal() }
         </View>
     );

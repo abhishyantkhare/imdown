@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useState, useEffect } from "react";
-import { Image, Modal, View, Text, FlatList, TouchableOpacity, Alert,  } from "react-native";
+import { Image, Modal, View, Text, FlatList, TouchableOpacity, Alert } from "react-native";
 import { squad_styles } from "./squads_styles";
 import { Button } from "react-native";
 import { callBackend } from "../backend/backend"
