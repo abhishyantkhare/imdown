@@ -145,9 +145,8 @@ const Login = ({ navigation }) => {
             />
             <View style={login_styles.title_description_container}>
                 <Text style={login_styles.imdown_title}>imdown</Text>
-                <Text style={login_styles.imdown_description}>A better way to manage group events.</Text>
-            </View>
-            <View style={login_styles.google_sign_in_button_container}>
+                <Text style={login_styles.imdown_description}>a better way to manage</Text>
+                <Text style={login_styles.imdown_description}>group events.</Text>
                 <GoogleSigninButton
                     style={login_styles.google_sign_in_button}
                     size={GoogleSigninButton.Size.Wide}

@@ -8,6 +8,8 @@
   },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.1.0",
+    "@expo-google-fonts/roboto": "^0.1.0",
+    "@expo-google-fonts/source-sans-pro": "^0.1.0",
     "@expo-google-fonts/ubuntu": "^0.1.0",
     "@react-native-community/async-storage": "~1.11.0",
     "@react-native-community/cookies": "^4.0.0",

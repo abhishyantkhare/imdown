@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, SafeAreaView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Image, Modal, SafeAreaView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { AddSquadStyles } from "./add_squad_styles";
 import EmojiPicker from "../components/emojipicker/EmojiPicker";
 import { RouteProp } from "@react-navigation/native";
@@ -8,6 +8,7 @@ import { callBackend } from "../backend/backend";
 import { ScrollView } from "react-native-gesture-handler";
 import { RootStackParamList } from "../App";
 import { showMessage } from "react-native-flash-message";
+import { StandardButton } from "../components/button/Button"
 
 type AddSquadNavigationProp = StackNavigationProp<
     RootStackParamList,
@@ -24,16 +25,14 @@ type AddSquadProps = {
 
 const DEFAULT_EMOJI = "😎"
 const ADD_SQUAD_BY_CODE_TITLE = "Have a Squad Code? Enter It Here"
-const ADD_SQUAD_BY_CODE_PLACEHOLDER = "enter squad code"
-const CREATE_NEW_SQUAD_TITLE = "Create A New Squad"
-const CREATE_NEW_SQUAD_PLACEHOLDER = "add squad name"
-const OR_TEXT = "OR"
+const ADD_SQUAD_BY_CODE_PLACEHOLDER = "Code"
+const CREATE_NEW_SQUAD_PLACEHOLDER = "Enter squad name..."
 
-const AddSquad = (props: AddSquadProps) => {
+const AddNewSquad = (props: AddSquadProps) => {
     const [squadName, setSquadName] = useState("")
     const [emojiPicked, setEmojiPicked] = useState(DEFAULT_EMOJI);
+    const [createSquadSuccessModal, setCreateSquadSuccessModal] = useState(false)
     const [squadCode, setSquadCode] = useState("")
-
     const email = props.route.params.email
 
     const addSquadOnBackend = () => {
@@ -51,8 +50,67 @@ const AddSquad = (props: AddSquadProps) => {
                 'Content-Type': 'application/json'
             },
         }
-        callBackend(endpoint, init).then(() => { props.navigation.pop() })
+        callBackend(endpoint, init).then(response => {
+            return response.json();
+          }).then(data => {
+            setSquadCode(data.code)
+            setCreateSquadSuccessModal(true);
+          });
     }
+
+    const renderCreateNewSquad = () => {
+        return (
+            <View style={AddSquadStyles.add_container}>
+                <SafeAreaView style={AddSquadStyles.emoji_and_squad_name_container}>
+                    <View style={AddSquadStyles.emojiBox}>
+                        <EmojiPicker onEmojiPicked={(emoji: string) => setEmojiPicked(emoji)} emojiPickerTitle={"Select Squad Emoji"}/>
+                    </View>
+                    <TextInput placeholder={CREATE_NEW_SQUAD_PLACEHOLDER} onChangeText={(name) => setSquadName(name)}
+                        multiline={true}
+                        style={AddSquadStyles.squadNameText}
+                        placeholderTextColor="lightgray" />
+                </SafeAreaView>
+            </View>
+        )
+    }
+
+    const renderCreateSquadSuccessModal = () => {
+        return (
+            <Modal visible={createSquadSuccessModal} animationType="fade" transparent>
+                <View style={AddSquadStyles.modalBackgroundBlur}>
+                    <View style={AddSquadStyles.modalVisibleContainer}>
+                        <Image source={require('../assets/success_icon.png')} style={AddSquadStyles.successIcon} />
+                        <Text style={AddSquadStyles.successText}>Success!</Text>
+                        <TextInput editable={false} multiline={true} style={AddSquadStyles.squadCreateModalText}>Your squad <Text style={{fontFamily: "Roboto_700Bold"}}>{`${squadName}`}</Text> has been created.{`\n`}Use your squad code to invite friends!</TextInput>
+                        <View style={AddSquadStyles.squadCodeContainer}>
+                            <Text style={AddSquadStyles.squadCodeValueText} selectable={true}>
+                                {squadCode}
+                            </Text>
+                        </View>
+                        <StandardButton text="Done" override_style={{marginBottom: 35, width: 130}} onPress={()=>{props.navigation.pop(); setCreateSquadSuccessModal(false)}}/>
+                    </View>
+                </View>
+            </Modal>
+        );
+    }
+
+    return (
+        <View style={AddSquadStyles.container}>
+            <ScrollView keyboardShouldPersistTaps="handled" scrollEnabled={false}>
+                {renderCreateNewSquad()}
+            </ScrollView>
+            { renderCreateSquadSuccessModal() }
+            <StandardButton text="Submit" override_style={{width:200, marginBottom: "15%"}} onPress={()=> addSquadOnBackend()}/>
+        </View>
+    );
+}
+
+
+const AddExistingSquad = (props: AddSquadProps) => {
+    const [squadCode, setSquadCode] = useState("")
+    const [squadName, setSquadName] = useState("")
+    const [addToSquadSuccessModal, setAddToSquadSuccessModal] = useState(false)
+    const email = props.route.params.email
 
     const invalidSquadCodeMessage = (message: string, description: string) => {
         return (
@@ -84,16 +142,10 @@ const AddSquad = (props: AddSquadProps) => {
             if (data.status_code == 400){
                 invalidSquadCodeMessage(data.message, data.description);
             } else {
-                props.navigation.pop();
+                setSquadName(data.squad_name)
+                setAddToSquadSuccessModal(true);
             }
         });
-    }
-
-    const renderEmoji = () => {
-        return <EmojiPicker
-            onEmojiPicked={(emoji: string) => setEmojiPicked(emoji)}
-            emojiPickerTitle={"Select Squad Emoji"}
-        />
     }
 
     const renderAddSquadByCode = () => {
@@ -107,59 +159,37 @@ const AddSquad = (props: AddSquadProps) => {
                         placeholder={ADD_SQUAD_BY_CODE_PLACEHOLDER}
                         autoCapitalize={'none'}
                         onChangeText={(code) => setSquadCode(code)}
-                        style={AddSquadStyles.squad_name}
+                        style={AddSquadStyles.squadCodeText}
                         placeholderTextColor="lightgray" />
                 </SafeAreaView>
-                {squadCode.length > 0 ? renderAddSquadByCodeDoneButton() : null}
             </View>
         )
     }
 
-    const renderAddSquadByCodeDoneButton = () => {
+    const renderAddToSquadSuccessModal = () => {
         return (
-            <TouchableOpacity onPress={addSquadByCodeOnBackend} style={AddSquadStyles.add_squad_button}>
-                <Text style={AddSquadStyles.add_squad_text}>Done</Text>
-            </TouchableOpacity>
-        )
-    }
-
-    const renderCreateNewSquad = () => {
-        return (
-            <View style={AddSquadStyles.add_container}>
-                <Text style={AddSquadStyles.add_title}>
-                    {CREATE_NEW_SQUAD_TITLE}
-                </Text>
-                <SafeAreaView style={AddSquadStyles.emoji_and_squad_name_container}>
-                    {renderEmoji()}
-                    <TextInput placeholder={CREATE_NEW_SQUAD_PLACEHOLDER} onChangeText={(name) => setSquadName(name)}
-                        style={AddSquadStyles.squad_name}
-                        placeholderTextColor="lightgray" />
-                </SafeAreaView>
-                {squadName.length > 0 ? renderCreateNewSquadDoneButton() : null}
-            </View>
-        )
-    }
-
-    const renderCreateNewSquadDoneButton = () => {
-        return (
-            <TouchableOpacity onPress={addSquadOnBackend} style={AddSquadStyles.add_squad_button}>
-                <Text style={AddSquadStyles.add_squad_text}>Done</Text>
-            </TouchableOpacity>
-        )
+            <Modal visible={addToSquadSuccessModal} animationType="fade" transparent>
+                 <View style={AddSquadStyles.modalBackgroundBlur}>
+                    <View style={AddSquadStyles.modalVisibleContainer}>
+                        <Image source={require('../assets/success_icon.png')} style={AddSquadStyles.successIcon} />
+                        <Text style={AddSquadStyles.successText}>Success!</Text>
+                        <TextInput editable={false} multiline={true} style={AddSquadStyles.squadCreateModalText}>You've joined squad <Text style={{fontFamily: "Roboto_700Bold"}}>{`${squadName}`}</Text>!</TextInput>
+                        <StandardButton text="Done" override_style={{marginBottom: 35, width: 130}} onPress={()=>{props.navigation.pop(); setAddToSquadSuccessModal(false)}}/>
+                    </View>
+                </View>
+            </Modal>
+        );
     }
 
     return (
         <View style={AddSquadStyles.container}>
             <ScrollView keyboardShouldPersistTaps="handled" scrollEnabled={false} >
                 {renderAddSquadByCode()}
-                <Text style={AddSquadStyles.or_text}>
-                    {OR_TEXT}
-                </Text>
-                {renderCreateNewSquad()}
             </ScrollView>
+            <StandardButton text="Submit" override_style={{width:200, marginBottom: "15%"}} onPress={()=> addSquadByCodeOnBackend()}/>
+            { renderAddToSquadSuccessModal() }
         </View>
     );
 }
 
-
-export default AddSquad;
+export { AddNewSquad, AddExistingSquad };

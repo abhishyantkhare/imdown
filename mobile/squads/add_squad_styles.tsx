@@ -7,14 +7,14 @@ export const AddSquadStyles = StyleSheet.create({
     alignItems: "center",
   },
   add_container: {
+    marginTop: "50%",
     alignItems: "center",
     flexDirection: "column",
-    paddingTop: 20
   },
   add_title: {
-    fontFamily: "Ubuntu_700Bold",
+    fontFamily: "Roboto_400Regular",
     fontSize: 20,
-    paddingBottom: 5
+    paddingBottom: 60
   },
   or_text: {
     paddingVertical: 20,
@@ -22,10 +22,16 @@ export const AddSquadStyles = StyleSheet.create({
     fontSize: 30,
   },
   emoji_and_squad_name_container: {
-    flexDirection: "row",
     flexWrap: "wrap",
-    alignItems: "center",
     justifyContent: "center",
+  },
+  emojiBox: {
+    alignItems:"center", 
+    justifyContent:"center", 
+    backgroundColor:"#E7EAF6", 
+    borderRadius: 5,
+    height:60,
+    width:60, 
   },
   emoji: {
     fontSize: 40,
@@ -49,14 +55,71 @@ export const AddSquadStyles = StyleSheet.create({
   squad_emoji: {
     alignSelf: "center"
   },
-  squad_name: {
+  squadCodeText: {
     margin: 15,
     borderColor: "white",
-    borderBottomColor: "#90BEDE",
+    borderBottomColor: "#BEBEBE",
     borderWidth: 1,
-    color: "#90BEDE",
-    fontFamily: "Ubuntu_700Bold",
-    fontSize: 32
+    color: "#333333",
+    fontFamily: "SourceSansPro_700Bold",
+    fontSize: 60,
+    textAlign: "center",
+    width: 300,
   },
-  
+  squadNameText: {
+    borderColor: "white",
+    color: "#333333",
+    fontFamily: "SourceSansPro_700Bold",
+    fontSize: 30,
+    marginTop: 30,
+    textAlign: "left",
+    width: 300,
+  },
+  modalBackgroundBlur: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: 'rgba(100,100,100, 0.5)',
+    flex:1, 
+  },
+  modalVisibleContainer: {
+    alignItems: "center",
+    justifyContent:"center",
+    backgroundColor: "white",
+    borderRadius: 10, 
+    width: "80%"
+  },
+  successIcon: {
+    height: 60,
+    width: 60,
+    marginBottom: 15,
+    marginTop: 40
+  },
+  successText: {
+    fontFamily: "SourceSansPro_700Bold",
+    fontSize: 25,
+    color: "#84D3FF",
+    marginBottom: 20,
+    textAlign: "center", 
+  },
+  squadCreateModalText: {
+    fontFamily: "Roboto_400Regular",
+    fontSize: 20,
+    marginBottom: 15,
+    textAlign: "center", 
+    width: 250,
+  },
+  squadCodeValueText: {
+    color: "#84D3FF",
+    fontFamily: "SourceSansPro_700Bold",
+    fontSize: 30,
+    margin: 10
+  },
+  squadCodeContainer: {
+    borderRadius: 15,
+    borderColor: "#84D3FF",
+    borderWidth: 2,
+    borderStyle: "solid",
+    marginBottom: 50,
+    marginTop: 20
+  },
 });

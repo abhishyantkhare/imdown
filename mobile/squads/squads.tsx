@@ -1,11 +1,11 @@
 import React, { useLayoutEffect, useState, useEffect } from "react";
-import { View, Text, FlatList, TouchableOpacity, Alert } from "react-native";
+import { Image, Modal, View, Text, FlatList, TouchableOpacity, Alert } from "react-native";
 import { squad_styles } from "./squads_styles";
 import { Button } from "react-native";
-import AddSquadModal from "./add_squad"
 import { callBackend } from "../backend/backend"
 import { SwipeRow, SwipeListView } from "react-native-swipe-list-view"
 import { useFocusEffect } from "@react-navigation/native";
+import { StandardButton } from "../components/button/Button"
 
 
 export type Squad = {
@@ -20,9 +20,19 @@ const Squads = (props) => {
     const [squads, setSquads] = useState([])
     const [email, setEmail] = useState(props.route.params.email)
     const [userId, setUserId] = useState()
+    const [addSquadModal, setAddSquadModal] = useState(false)
 
-    const goToAddSquad = () => {
-        props.navigation.navigate("Add Squad", {
+
+    const goToAddNewSquad = () => {
+        setAddSquadModal(false)
+        props.navigation.navigate("Add New Squad", {
+            email: email,
+        });
+    }
+
+    const goToAddExistingSquad = () => {
+        setAddSquadModal(false)
+        props.navigation.navigate("Add Existing Squad", {
             email: email,
         });
     }
@@ -39,13 +49,6 @@ const Squads = (props) => {
 
     useLayoutEffect(() => {
         props.navigation.setOptions({
-            headerRight: () => (
-                <Button
-                    onPress={() => goToAddSquad()}
-                    title="Add Squad"
-                    color="#000"
-                />
-            ),
             headerLeft: () => (
                 <Button
                     onPress={() => signOutUser()}
@@ -199,6 +202,32 @@ const Squads = (props) => {
         }
     };
 
+    const renderNoSquadsView = () => {
+        return(
+            <View>
+                <Text style={squad_styles.noSquadViewWave}>👋</Text>
+                <Text style={squad_styles.noSquadViewText}>Add a squad to get started planning your next hangout.</Text>
+                <StandardButton text="Add a squad" onPress={()=> setAddSquadModal(true)}/>
+            </View>
+        );
+    }
+
+    const renderSearchButton = () => {
+        return (
+            <TouchableOpacity style={squad_styles.searchButtonContainer} >
+                <Image source={require('../assets/search_button.png')} style={squad_styles.searchButtonIcon} />
+            </TouchableOpacity>
+        );
+    }
+
+    const renderAddSquadButton = () => {
+        return (
+            <TouchableOpacity onPress={() => setAddSquadModal(true)} style={squad_styles.addSquadContainer} >
+                <Image source={require('../assets/add_squad_button.png')} style={squad_styles.addSquadButton} />
+            </TouchableOpacity>
+        );
+    }
+
     const renderSquadItem = (data: any, rowMap: any) => (
         <SwipeRow
             disableLeftSwipe={data.item.squad.admin_id != userId}
@@ -211,21 +240,43 @@ const Squads = (props) => {
             </View>
 
             <View style={squad_styles.rowFront}>
-                <View style={squad_styles.squad_item}>
-                    <TouchableOpacity onPress={() => { goToEvents(data.item.squad.id, data.item.squad.name, data.item.squad.squad_emoji, data.item.squad.code) }}>
+                <TouchableOpacity onPress={() => { goToEvents(data.item.squad.id, data.item.squad.name, data.item.squad.squad_emoji, data.item.squad.code) }}>
+                    <View style={squad_styles.squad_item}>
                         <Text style={squad_styles.squad_text}>{data.item.squad.squad_emoji} {data.item.squad.name}</Text>
-                    </TouchableOpacity>
-                </View>
+                    </View>
+                </TouchableOpacity>
             </View>
         </SwipeRow>
     );
 
+    const renderAddSquadModal = () => {
+        return(
+            <Modal visible={addSquadModal} animationType="fade" transparent>
+                <View style={squad_styles.modalBackgroundBlur}>
+                    <View style={squad_styles.modalVisibleContainer}>
+                        <TouchableOpacity onPress={() => setAddSquadModal(false)} style={squad_styles.exitButtonContainer} >
+                            <Image source={require('../assets/exit_button.png')} style={squad_styles.exitButton} />
+                        </TouchableOpacity>
+                        <StandardButton text="Join an existing squad" onPress={()=> goToAddExistingSquad()}/>
+                        <StandardButton text="Create a new squad" override_style={{marginTop:10, marginBottom: 30}} onPress={()=> goToAddNewSquad()}/>
+                    </View>
+                </View>
+            </Modal>
+        );
+    }
+
     return (
         <View style={squad_styles.squads_container}>
-            <SwipeListView
+            { renderSearchButton() }
+            <View style={squad_styles.squadsTitleContainer}>
+                <Text style={squad_styles.squadsTitleText}>Squads</Text>
+                { renderAddSquadButton() }
+            </View>
+            { squads.length > 0 ? <SwipeListView
                 data={squads}
                 renderItem={renderSquadItem}
-            />
+            /> : renderNoSquadsView() }
+            { renderAddSquadModal() }
         </View>
     );
 }
