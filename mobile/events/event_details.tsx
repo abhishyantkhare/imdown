@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { FlatList, Image, Linking, Text, TouchableOpacity, View, ScrollView } from "react-native";
 import { EventDetailsStyles } from "./event_details_styles";
 import moment from 'moment';
 import Divider from '../components/divider/divider'
-import { callBackend, getUsersInSquad } from "../backend/backend"
+import { callBackend } from "../backend/backend"
 import { RSVPUser } from "./events"
 import { DEFAULT_EVENT, DOWN_EMOJI_HEIGHT, DOWN_EMOJI_WIDTH, EVENT_PIC_HEIGHT, EVENT_PIC_WIDTH, ROW_BUTTON_HEIGHT, ROW_BUTTON_WIDTH } from "../constants"
+import { useFocusEffect } from "@react-navigation/native";
 
 export type Event = {
   id: number,
@@ -72,7 +73,7 @@ const EventDetails = (props) => {
     });
   }
 
-  useEffect(getEventDetails, [])
+  useFocusEffect(useCallback(getEventDetails, []))
 
 
 

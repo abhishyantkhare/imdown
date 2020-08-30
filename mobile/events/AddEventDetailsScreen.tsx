@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { callBackend } from "../backend/backend";
-import { Button, Image, Modal, Text, TextInput, TouchableOpacity, View, ScrollView } from "react-native";
+import { Button, Image, Text, TextInput, TouchableOpacity, View, ScrollView } from "react-native";
 import EmojiPicker from "../components/emojipicker/EmojiPicker"
 import { AddEventStyles } from "./add_event_styles";
 import Slider from "@react-native-community/slider";
@@ -10,6 +10,8 @@ import ImagePicker from 'react-native-image-picker';
 import { IMG_URL_BASE_64_PREFIX } from "../constants"
 import { Tooltip } from 'react-native-elements';
 import Entypo from 'react-native-vector-icons/Entypo';
+import { useFocusEffect } from "@react-navigation/native";
+
 
 const AddEventDetailsScreen = ({ navigation, route }) => {
   const squadId = route.params.squadId;
@@ -54,18 +56,21 @@ const AddEventDetailsScreen = ({ navigation, route }) => {
     });
   }
 
-  useEffect(() => {
-    const endpoint = "get_users?squadId=" + squadId;
-    const init: RequestInit = {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json"
-      }
-    };
-    callBackend(endpoint, init).then(response => response.json()).then(data => {
-      setSquadSize(data.user_info.length);
-    });
-  }, []);
+  useFocusEffect(
+    useCallback(
+      () => {
+        const endpoint = "get_users?squadId=" + squadId;
+        const init: RequestInit = {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        };
+        callBackend(endpoint, init).then(response => response.json()).then(data => {
+          setSquadSize(data.user_info.length);
+        });
+      }, [])
+  );
 
   {/* Event image circle */ }
   const renderImageCircle = () => {

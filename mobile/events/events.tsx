@@ -1,7 +1,8 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useCallback, useLayoutEffect, useState } from "react";
 import { View, FlatList, Text, Button, TouchableHighlight, TouchableOpacity } from "react-native";
 import { callBackend, getUsersInSquad } from "../backend/backend"
 import { event_styles } from "./events_styles";
+import { useFocusEffect } from "@react-navigation/native";
 import moment from 'moment';
 
 const SQUAD_CODE_TITLE_TEXT = "Squad Code: "
@@ -94,10 +95,11 @@ const Events = (props) => {
     })
   }
 
-  useEffect(() => {
-    getEvents();
-    getNumUsers();
-  }, [])
+  useFocusEffect(
+    useCallback(() => {
+      getEvents();
+      getNumUsers();
+    }, []))
 
 
   useLayoutEffect(() => {
