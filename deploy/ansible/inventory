@@ -1,2 +1,2 @@
 [imdown]
-imdown
+imdown ansible_python_interpreter=auto
