@@ -1,5 +1,5 @@
-import React, { useLayoutEffect, useState, useEffect } from "react";
-import { Image, Modal, View, Text, FlatList, TouchableOpacity, Alert } from "react-native";
+import React, { useLayoutEffect, useState } from "react";
+import { Image, Modal, View, Text, TouchableOpacity, Alert } from "react-native";
 import { squad_styles } from "./squads_styles";
 import { Button } from "react-native";
 import { callBackend } from "../backend/backend"
@@ -203,11 +203,11 @@ const Squads = (props) => {
     };
 
     const renderNoSquadsView = () => {
-        return(
+        return (
             <View>
                 <Text style={squad_styles.noSquadViewWave}>👋</Text>
                 <Text style={squad_styles.noSquadViewText}>Add a squad to get started planning your next hangout.</Text>
-                <StandardButton text="Add a squad" onPress={()=> setAddSquadModal(true)}/>
+                <StandardButton text="Add a squad" onPress={() => setAddSquadModal(true)} />
             </View>
         );
     }
@@ -250,15 +250,15 @@ const Squads = (props) => {
     );
 
     const renderAddSquadModal = () => {
-        return(
+        return (
             <Modal visible={addSquadModal} animationType="fade" transparent>
                 <View style={squad_styles.modalBackgroundBlur}>
                     <View style={squad_styles.modalVisibleContainer}>
                         <TouchableOpacity onPress={() => setAddSquadModal(false)} style={squad_styles.exitButtonContainer} >
                             <Image source={require('../assets/exit_button.png')} style={squad_styles.exitButton} />
                         </TouchableOpacity>
-                        <StandardButton text="Join an existing squad" onPress={()=> goToAddExistingSquad()}/>
-                        <StandardButton text="Create a new squad" override_style={{marginTop:10, marginBottom: 30}} onPress={()=> goToAddNewSquad()}/>
+                        <StandardButton text="Join an existing squad" onPress={() => goToAddExistingSquad()} />
+                        <StandardButton text="Create a new squad" override_style={{ marginTop: 10, marginBottom: 30 }} onPress={() => goToAddNewSquad()} />
                     </View>
                 </View>
             </Modal>
@@ -267,16 +267,16 @@ const Squads = (props) => {
 
     return (
         <View style={squad_styles.squads_container}>
-            { renderSearchButton() }
+            {renderSearchButton()}
             <View style={squad_styles.squadsTitleContainer}>
                 <Text style={squad_styles.squadsTitleText}>Squads</Text>
-                { renderAddSquadButton() }
+                {renderAddSquadButton()}
             </View>
-            { squads.length > 0 ? <SwipeListView
+            {squads.length > 0 ? <SwipeListView
                 data={squads}
                 renderItem={renderSquadItem}
-            /> : renderNoSquadsView() }
-            { renderAddSquadModal() }
+            /> : renderNoSquadsView()}
+            {renderAddSquadModal()}
         </View>
     );
 }

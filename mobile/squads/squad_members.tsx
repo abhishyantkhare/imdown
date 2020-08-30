@@ -1,18 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { View, Text, Image, Alert, TouchableOpacity } from "react-native";
 import { squad_members_styles } from "./squad_members_styles";
 import { callBackend, getUsersInSquad } from "../backend/backend"
 import { SwipeListView, SwipeRow } from "react-native-swipe-list-view";
+import { useFocusEffect } from "@react-navigation/native";
+
 
 const SquadMembers = (props) => {
     const [users, setUsers] = useState([])
     const [squadId, setSquadId] = useState(props.route.params.squadId)
 
-    useEffect(() => {
-        getUsersInSquad(squadId).then(data => {
-            setUsers(convertToKeyValDict(data.user_info));
-        });
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            getUsersInSquad(squadId).then(data => {
+                setUsers(convertToKeyValDict(data.user_info));
+            });
+        }, [])
+    );
 
     const convertToKeyValDict = (users: any) => {
         return users.map((_, i) => ({ key: i, user: users[i] }))
