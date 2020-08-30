@@ -6,3 +6,4 @@ backend/env/*
 mobile/.DS_Store
 mobile/imdown.xcodeproj
 imdown_firebase_cert.json
+mobile/android/app/google-services.json
