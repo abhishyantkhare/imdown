@@ -40,10 +40,10 @@
 		<key>NSExceptionDomains</key>
 		<dict/>
 	</dict>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
 	<key>NSCameraUsageDescription</key>
 	<string>imdown would like to use your camera to set and modify event pictures</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string></string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>imdown would like to save photos to your photo gallery to set and modify event pictures</string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -60,8 +60,6 @@
 	</array>
 	<key>UIRequiresFullScreen</key>
 	<true/>
-	<key>UIUserInterfaceStyle</key>
-	<string>Light</string>
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleDefault</string>
 	<key>UISupportedInterfaceOrientations</key>
@@ -69,6 +67,8 @@
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
+	<key>UIUserInterfaceStyle</key>
+	<string>Light</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>
