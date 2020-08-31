@@ -1,11 +1,12 @@
 from models.user import User
+from config import Config
 from models.squadmembership import SquadMembership
 import firebase_admin
 from firebase_admin import messaging
 import os
 from errors import HttpError
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./imdown_firebase_cert.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = Config.FIREBASE_SECRET_FILE
 firebase_app = firebase_admin.initialize_app()
 
 

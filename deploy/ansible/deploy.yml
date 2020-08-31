@@ -5,17 +5,12 @@
         name: imdown
         state: stopped
       become: yes
+
     - name: Deploy Application Files
       synchronize:
         src: ../../backend/
         dest: /home/ubuntu/imdown/backend/
         delete: yes
-    - name: Download FireBase Credentials
-      aws_s3:
-        bucket: imdown-credentials
-        object: /firebase/imdown_firebase_cert.json
-        dest: /home/ubuntu/imdown/backend/imdown_firebase_cert.json
-        mode: get 
     - name: Delete .env file
       file:
         path: /home/ubuntu/imdown/backend/.env
@@ -31,7 +26,8 @@
           state: started
         become: yes
       rescue:
-        - command: journalctl --unit=imdown.service -n 100 --no-pager
+        - name: Capture Output from Failed imdown Startup
+          command: journalctl --unit=imdown.service -n 100 --no-pager
           register: status
           ignore_errors: yes
         - debug:

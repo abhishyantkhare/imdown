@@ -1,6 +1,7 @@
 from flask import request
 from flask import jsonify
-from init import application, SECRETS, scheduler
+from config import Config
+from init import application, scheduler
 from extensions import db
 from errors import HttpError, BadRequest, Unauthorized, Forbidden, NotFound
 from models.user import User
@@ -83,9 +84,13 @@ def update_user_tokens(user, auth_code, device_token):
 
 
 def fetch_google_access_tokens(auth_code):
+    # Load Google client id and secret.
+    with open(Config.GOOGLE_SECRET_FILE, "r") as fp:
+        client_secret = json.load(fp)
+
     data = {'code': auth_code,
-            'client_id': SECRETS["GOOGLE_CLIENT_ID"],
-            'client_secret': SECRETS["GOOGLE_CLIENT_SECRET"],
+            'client_id': client_secret["GOOGLE_CLIENT_ID"],
+            'client_secret': client_secret["GOOGLE_CLIENT_SECRET"],
             'grant_type': 'authorization_code',
             'access_type': 'offline'
             }
@@ -262,7 +267,7 @@ def removeEventFromCalendarIfExists(event, user_id):
     if not event.start_time or not event.end_time:
         return
     user = User.query.get(user_id)
-    access_token = user.getToken(SECRETS, GOOGLE_TOKEN_URL)
+    access_token = user.getToken(GOOGLE_TOKEN_URL)
     headers = {'Authorization': 'Bearer {}'.format(
         access_token)}
     event_url = '{}/{}'.format(GOOGLE_CALENDAR_API, event.get_event_UUID())
@@ -283,7 +288,7 @@ def addEventToCalendars(accepted_responses):
 
 
 def sendGoogleCalendarRequest(gcal_event, user, req_type):
-    access_token = user.getToken(SECRETS, GOOGLE_TOKEN_URL)
+    access_token = user.getToken(GOOGLE_TOKEN_URL)
     headers = {'Authorization': 'Bearer {}'.format(
         access_token), 'content-type': 'application/json'}
     if req_type == 'POST':
@@ -296,7 +301,7 @@ def sendGoogleCalendarRequest(gcal_event, user, req_type):
 
 
 def eventExistsOnCalendar(event, user):
-    access_token = user.getToken(SECRETS, GOOGLE_TOKEN_URL)
+    access_token = user.getToken(GOOGLE_TOKEN_URL)
     headers = {'Authorization': 'Bearer {}'.format(
         access_token)}
     event_url = '{}/{}'.format(GOOGLE_CALENDAR_API, event.get_event_UUID())
