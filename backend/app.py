@@ -3,10 +3,10 @@ from flask import jsonify
 from init import application, SECRETS
 from extensions import db
 from errors import HttpError, BadRequest, Unauthorized, Forbidden, NotFound
-from models.user import User, get_user_by_id
+from models.user import User
 from models.event_response import EventResponse
-from models.event import Event, get_event_by_id
-from models.squad import Squad, get_squad_by_id
+from models.event import Event
+from models.squad import Squad
 from models.squadmembership import SquadMembership, GetUsersBySquadId
 from flask_login import login_user, login_required, logout_user, current_user
 from collections import defaultdict
@@ -138,7 +138,7 @@ def edit_squad():
     content = request.get_json()
     validate_request_args(content, "squad_id", "squad_name", "squad_emoji")
     squad_id = content["squad_id"]
-    squad = get_squad_by_id(squad_id)
+    squad = Squad.query.get(squad_id)
     if not squad:
         raise NotFound(f"Could not find Squad {squad_id}")
     squad.name = content["squad_name"]
@@ -171,7 +171,7 @@ def respondToEvent(user_id, event_id, response):
     user = User.query.filter_by(id=user_id).first()
     if not user:
         raise NotFound(f"Could not find User {user_id}")
-    event = get_event_by_id(event_id)
+    event = Event.query.get(event_id)
     if not event:
         raise NotFound(f"Could not find Event {event_id}")
     event_squad_id = event.squad_id
@@ -245,7 +245,7 @@ def getEventResponsesAndCheckDownThresh(event):
 def removeEventFromCalendarIfExists(event, user_id):
     if not event.start_time or not event.end_time:
         return
-    user = get_user_by_id(user_id)
+    user = User.query.get(user_id)
     access_token = user.getToken(SECRETS, GOOGLE_TOKEN_URL)
     headers = {'Authorization': 'Bearer {}'.format(
         access_token)}
@@ -254,9 +254,9 @@ def removeEventFromCalendarIfExists(event, user_id):
 
 
 def addEventToCalendars(accepted_responses):
-    event = get_event_by_id(accepted_responses[0].event_id)
+    event = Event.query.get(accepted_responses[0].event_id)
     gcal_event = event.get_google_calendar_event_body()
-    users = [get_user_by_id(resp.user_id) for resp in accepted_responses]
+    users = [User.query.get(resp.user_id) for resp in accepted_responses]
     attendees = [{'email': user.email} for user in users]
     gcal_event['attendees'] = attendees
     for user in users:
@@ -346,7 +346,7 @@ def createEvent():
     if not u:
         raise NotFound(f"Could not find User {user_email}")
     squad_id = content['squad_id']
-    event_squad = get_squad_by_id(squad_id)
+    event_squad = Squad.query.get(squad_id)
     if not event_squad:
         raise NotFound(f"Could not find Squad {squad_id}")
     membership = SquadMembership.query.filter_by(
@@ -393,7 +393,7 @@ def editEvent():
     if not u:
         raise NotFound(f"Could not find User {content['email']}")
     event_id = content['event_id']
-    event = get_event_by_id(event_id)
+    event = Event.query.get(event_id)
     if event is None:
         raise NotFound(f"Could not find Event {event_id}")
 
@@ -410,7 +410,7 @@ def editEvent():
     db.session.commit()
     getEventResponsesAndCheckDownThresh(event)
 
-    event_squad = get_squad_by_id(content["squad_id"])
+    event_squad = Squad.query.get(content['squad_id'])
     if not event_squad:
         return "Squad does not exist!", 400
     # Send notification
@@ -445,7 +445,7 @@ def getEvent():
     args = request.args
     validate_request_args(args, 'event_id')
     e_id = args["event_id"]
-    event = get_event_by_id(e_id)
+    event = Event.query.get(e_id)
     if event is None:
         raise NotFound(f"Event {e_id} does not exist")
     event_responses = getEventResponsesBatch([event.id])
@@ -463,7 +463,7 @@ def deleteEvent():
     args = request.args
     validate_request_args(args, 'event_id')
     e_id = args["event_id"]
-    event = get_event_by_id(e_id)
+    event = Event.query.get(e_id)
     if event is None:
         raise NotFound(f"Could not find Event {e_id}")
     EventResponse.query.filter_by(event_id=e_id).delete()
@@ -551,8 +551,8 @@ def delete_user():
         return "User is already deleted from squad."
     else:
         # Send notification
-        squad = get_squad_by_id(squad_id)
-        user = get_user_by_id(user_id)
+        squad = Squad.query.get(squad_id)
+        user = User.query.get(user_id)
         notify_squad_members(
             squad_id, f"{user.name} was removed from {squad.name}")
         # delete user

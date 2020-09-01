@@ -98,7 +98,3 @@ class Event(db.Model):
             self.calendar_event_uuid = shortuuid.uuid()
             db.session.commit()
         return self.calendar_event_uuid
-
-
-def get_event_by_id(id):
-    return Event.query.filter_by(id=id).first()

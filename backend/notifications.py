@@ -1,4 +1,4 @@
-from models.user import get_user_by_id
+from models.user import User
 from models.squadmembership import SquadMembership
 import firebase_admin
 from firebase_admin import messaging
@@ -29,5 +29,5 @@ def notify_squad_members(squad_id, title, body="", users_to_exclude={}):
     device_tokens = []
     for sqm in squad_memberships:
         if sqm.user_id not in users_to_exclude:
-            device_tokens.append(get_user_by_id(sqm.user_id).device_token)
+            device_tokens.append(User.query.get(sqm.user_id).device_token)
     send_notification(device_tokens, title, body=body)

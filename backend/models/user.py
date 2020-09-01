@@ -40,7 +40,3 @@ class User(UserMixin, db.Model):
         r = requests.post(oauth_url, data=refresh_body)
         resp = r.json()
         return resp['access_token']
-
-
-def get_user_by_id(id):
-    return User.query.filter_by(id=id).first()
