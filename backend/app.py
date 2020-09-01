@@ -1,6 +1,6 @@
 from flask import request
 from flask import jsonify
-from init import application, SECRETS
+from init import application, SECRETS, scheduler
 from extensions import db
 from errors import HttpError, BadRequest, Unauthorized, Forbidden, NotFound
 from models.user import User
@@ -16,8 +16,10 @@ import json
 import time
 from notifications import notify_squad_members
 
+
 GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token'
 GOOGLE_CALENDAR_API = 'https://www.googleapis.com/calendar/v3/calendars/primary/events'
+
 
 
 def validate_request_args(content: dict, *required_args):
@@ -378,13 +380,15 @@ def createEvent():
     # send notification
     notify_squad_members(
         event_squad.id, f"New event in {event_squad.name}!", body=e.title, users_to_exclude={u.id})
+    # schedule reminder
+    e.schedule_reminder(scheduler)
     return e.jsonify_event()
 
 
 @application.route("/edit_event", methods=["PUT"])
 # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
 @login_required
-def editEvent():
+def edit_event():
     content = request.get_json()
     validate_request_args(content, 'event_id', 'email', 'title', 'emoji',
                           'description', 'down_threshold', 'start_time',
@@ -416,6 +420,8 @@ def editEvent():
     # Send notification
     notify_squad_members(
         event_squad.id, f"Event updated in {event_squad.name}!", body=event.title, users_to_exclude={u.id})
+    # Schedule reminder
+    event.schedule_reminder(scheduler)
     return event.jsonify_event()
 
 
