@@ -25,6 +25,9 @@ export const event_styles = StyleSheet.create({
     width: 40,
   },
   container: {
+    flex:1
+  },
+  scrollViewContainer: {
     backgroundColor: "#ffff",
     flexDirection: "column",
     flexGrow: 1,
@@ -72,6 +75,7 @@ export const event_styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 10,
     marginTop: 10,
+    elevation: 2, // Android
     shadowColor: 'rgba(0,0,0, .2)', // IOS
     shadowOffset: { height: 3, width: 3 }, // IOS
     shadowOpacity: 1, // IOS

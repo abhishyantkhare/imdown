@@ -142,7 +142,7 @@ const Events = (props) => {
 
   const renderSquadImage = () => {
     return(
-      squadImageUrl && <View style = {{marginTop: "10%"}}>
+      squadImageUrl && <View style = {event_styles.squadImageContainer}>
         { squadImageUrl ? <Image source={{ uri: squadImageUrl }} style = {event_styles.squadImage}/> : <View> </View>}
       </View>
     )
@@ -150,7 +150,7 @@ const Events = (props) => {
 
   const PendingEventsTabContents = () => (
     <FlatList
-      data={events.filter(event => event.end_ms == null || event.end_ms > new Date() ).sort((a, b) => (!a.start_ms  &&  b.start_ms || a.start_ms > b.start_ms) ? 1 : -1)}
+      data={events.filter(event => !event.end_ms || event.end_ms > new Date()).sort((a, b) => (!a.start_ms  &&  b.start_ms || a.start_ms > b.start_ms) ? 1 : -1)}
       renderItem={renderEventItem}
       style={event_styles.eventList}
       keyExtractor={(item, index) => index.toString()}
@@ -159,7 +159,7 @@ const Events = (props) => {
 
   const PastEventsTabContents = () => (
     <FlatList
-      data={events.filter(event => event.end_ms != null && event.end_ms < new Date() ).sort((a, b) => (a.start_ms == undefined && b.start_ms != undefined || a.start_ms < b.start_ms) ? 1 : -1)}
+      data={events.filter(event => event.end_ms && event.end_ms < new Date()).sort((a, b) => (a.end_ms < b.end_ms) ? 1 : -1)}
       renderItem={renderEventItem}
       style={event_styles.eventList}
       keyExtractor={(item, index) => index.toString()}
@@ -170,7 +170,7 @@ const Events = (props) => {
     return (
       <View>
         <Text
-          style={focused ? {color:"black", fontFamily:"Roboto_400Regular"} : {color:"gray", fontFamily:"Roboto_400Regular"}}
+          style={focused ? {color: "black", fontFamily: "Roboto_400Regular"} : {color: "gray", fontFamily:"Roboto_400Regular"}}
         >
           {route.title}
         </Text>
@@ -218,15 +218,15 @@ const Events = (props) => {
     // tabViewIndex = 0 means we are on "Pending" tab, 1 means we are on "Past" tab
     const onPendingEventsTab = tabViewIndex == 0
     const barColor = onPendingEventsTab ? "#84D3FF" : "#BEBEBE"
-    // const barColor = event.rsvp_users.length >= event.down_threshold ? 'white' : 'white'
     const borderRightRadii = downPercentage > 95 ? 5 : 0
     const barWidth = `${downPercentage}%`
+    const barHeight = 5
     const inlineStyleJSON = {
       backgroundColor: barColor,
       borderBottomRightRadius: borderRightRadii,
       borderTopRightRadius: borderRightRadii,
       width: barWidth,
-      height: 5
+      height: barHeight
     }
 
     return(
@@ -252,12 +252,11 @@ const Events = (props) => {
             <View style={event_styles.eventItem}>
               <Text numberOfLines={2} style={event_styles.eventTitle}>{item.name}</Text>
               <Text style={event_styles.eventTimeProximity}>{`${calcEventProximity(item)}`}</Text>
-              {<Image source={ tabViewIndex == 0 ? require('../assets/arrow_forward_blue.png') : require('../assets/arrow_forward_gray.png')}  style={event_styles.forwardArrowIcon}/>}
+              {<Image source={tabViewIndex == 0 ? require('../assets/arrow_forward_blue.png') : require('../assets/arrow_forward_gray.png')}  style={event_styles.forwardArrowIcon} />}
             </View>
           </View>
           {renderDownBarSection(item)}
         </View>
-
       </TouchableOpacity>
     );
   };
@@ -265,7 +264,7 @@ const Events = (props) => {
   return (
     <View style={event_styles.container}>
       <ScrollView style={[event_styles.scrollViewContainer]} contentContainerStyle={{alignItems:"center"}}>
-        { renderSquadImage() }
+        {renderSquadImage()}
         <View style={event_styles.squadNameEmojiContainer}>
           <Text style={event_styles.squadTitleEmoji}>
             {squadEmoji}
@@ -276,18 +275,18 @@ const Events = (props) => {
         </View>
         <View style={event_styles.eventListContainer}>
         <TabView
-            navigationState={{ index: tabViewIndex, routes: tabViewRoutes }}
-            renderScene={() => null}
-            renderTabBar={renderTabBar}
-            onIndexChange={setTabViewIndex}
-            initialLayout={tabViewInitialLayout}
-            swipeEnabled={false} />
-            {tabViewIndex === 0 && <PendingEventsTabContents />}
-            {tabViewIndex === 1 && <PastEventsTabContents />}
+          initialLayout={tabViewInitialLayout}
+          navigationState={{ index: tabViewIndex, routes: tabViewRoutes }}
+          onIndexChange={setTabViewIndex}
+          renderScene={() => null}
+          renderTabBar={renderTabBar}
+          swipeEnabled={false} />
+          {tabViewIndex === 0 && <PendingEventsTabContents />}
+          {tabViewIndex === 1 && <PastEventsTabContents />}
         </View>
       </ScrollView>
       <View style={event_styles.addEventButtonContainer}>
-        <StandardButton text="Add event" onPress={()=> goToAddEvent()}/>
+        <StandardButton text="Add event" onPress={() => goToAddEvent()} />
       </View>
     </View>
   );
