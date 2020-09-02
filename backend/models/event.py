@@ -1,9 +1,10 @@
-from init import db
+from init import db, application
 from flask import jsonify
 import json
 from datetime import datetime
 import shortuuid
-
+from models.event_response import EventResponse
+from notifications import notify_squad_members
 
 EVENT_UUID_ALPHABET = 'abcdefghijklmnopqrstuv0123456789'
 
@@ -98,3 +99,33 @@ class Event(db.Model):
             self.calendar_event_uuid = shortuuid.uuid()
             db.session.commit()
         return self.calendar_event_uuid
+
+    def get_responses_for_event(self):
+        return EventResponse.query.filter_by(
+        event_id=self.id).all()
+
+    def send_respond_reminder(self):
+        with application.app_context():
+            responses = self.get_responses_for_event()
+            accepted_users = set([r.user_id for r in responses if r.response])
+            notify_squad_members(
+                self.squad_id, 
+                f"Reminder: RSVP For {self.title}", 
+                body="Starts in 24 hours!",
+                users_to_exclude=accepted_users
+            )
+        
+    def schedule_reminder(self, scheduler):
+        if not self.start_time:
+            return
+        job_id = f'reminder_event_{self.id}_squad_{self.squad_id}'
+        job_ms = self.start_time - 24*60*60*1000 # Set to 24 hours before start time
+        job_date = datetime.utcfromtimestamp(job_ms / 1000)
+        scheduler.add_job(
+            self.send_respond_reminder, 
+            trigger='date', 
+            run_date=job_date, 
+            timezone="UTC",
+            id=job_id,
+            replace_existing=True
+            )

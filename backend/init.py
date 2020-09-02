@@ -6,6 +6,8 @@ from extensions import db, migrate
 import os
 import json
 import boto3
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 
 
 login_manager = LoginManager()
@@ -49,3 +51,10 @@ def read_secrets():
 
 
 SECRETS = read_secrets()
+
+# Scheduler
+
+scheduler = BackgroundScheduler(jobstores={
+        'default': SQLAlchemyJobStore(url=Config.SQLALCHEMY_DATABASE_URI)
+        })
+scheduler.start()
