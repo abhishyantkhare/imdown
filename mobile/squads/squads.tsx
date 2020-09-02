@@ -258,7 +258,7 @@ const Squads = (props) => {
                             <Image source={require('../assets/exit_button.png')} style={squad_styles.exitButton} />
                         </TouchableOpacity>
                         <StandardButton text="Join an existing squad" onPress={() => goToAddExistingSquad()} />
-                        <StandardButton text="Create a new squad" override_style={{ marginTop: 10, marginBottom: 30 }} onPress={() => goToAddNewSquad()} />
+                        <StandardButton text="Create a new squad" override_style={{ marginTop:10, marginBottom: "10%" }} onPress={()=> goToAddNewSquad()} />
                     </View>
                 </View>
             </Modal>

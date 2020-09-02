@@ -1,113 +1,155 @@
 import { StyleSheet } from "react-native";
 export const event_styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: "column",
-    backgroundColor: "#fff",
+  // All styles associated with header and header buttons
+  headerRight: {
     alignItems: "center",
+    flexDirection: "row", 
+    marginRight: 20, 
+    marginTop:20,
   },
-  event_item_outer_box: {
-    alignItems: 'center',
-    backgroundColor: "white",
-    borderRadius: 15,
-    flexDirection: 'row',
-    flexGrow: 1,
-    justifyContent: 'center',
-    marginBottom: 10,
-    marginTop: 10
-  },
-  down_bar: {
-    position: "absolute", 
-    left: 0, 
-    top: 0, 
-    bottom: 0, 
-    borderBottomLeftRadius: 15,
-    borderTopLeftRadius: 15,
-    opacity: .6, 
-    paddingVertical: 20,
-  },
-  event_emoji_box: {
-    alignItems: 'center',
-    flexGrow: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 20,
-  },
-  event_emoji: {
-    fontSize: 45,
-  },
-  event_item: {
-    flexGrow: 4,
-    paddingHorizontal: 10,
-    paddingVertical: 20,
-    width: '70%',
-  },
-  event_list_container: {
-    alignSelf: 'stretch',
-    backgroundColor: "rgba(52, 52, 52, 0.15)",
-    borderRadius: 15,
-    marginLeft: 10,
-    marginRight: 10,
-    marginTop: 30,
-    marginBottom: 150,
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    flexGrow: 1
-  },
-  event_list: {
-    flexGrow: 1
-  },
-  event_time: {
-    fontFamily: "Inter_400Regular",
-    fontSize: 10
-  },
-  event_time_proximity: {
-    alignItems: 'center',
-    fontFamily: "Inter_400Regular",
-    fontSize: 10,
-    textAlign: "right",
-  },
-  group_title: {
-    fontFamily: "Ubuntu_400Regular",
-    fontSize: 35,
-    paddingTop: 10
-  },
-  event_title: {
-    fontFamily: "Inter_400Regular",
-    fontSize: 20,
-    marginBottom: 3
-  },
-  squad_code_container: {
-    borderRadius: 15,
-    borderColor: "#EEEEEE",
+  squadCodeContainer: {
+    borderColor: "#84D3FF",
+    borderRadius: 7.5,
     borderWidth: 2,
     borderStyle: "solid",
+  },
+  squadCodeValueText: {
+    color: "#84D3FF",
+    fontFamily: "Roboto_400Regular",
+    fontSize: 15,
+    margin: 5
+  },
+  squadSettingsButtonImage: {
+    marginHorizontal: 10,
+    height: 40,
+    width: 40,
+  },
+  container: {
+    backgroundColor: "#ffff",
+    flexDirection: "column",
+    flexGrow: 1,
+  },
+  squadImage: {
+    height: 200,
+    width: 350,
+  },
+  squadNameEmojiContainer: {
+    alignSelf: "flex-start",
+    flexDirection: 'row', 
+    marginHorizontal: "10%",
     marginTop: 20
   },
-  squad_code: {
-    paddingHorizontal: 25,
-    paddingVertical: 15,
-    display: "flex",
-    flexDirection: "row"
+  squadTitleName: {
+    fontFamily: "SourceSansPro_700Bold",
+    fontSize: 30,
+    marginLeft: 20
   },
-  squad_code_title_text: {
-    color: "#CCCCCC",
-    fontFamily: "Ubuntu_400Regular",
-    fontSize: 20
+  squadTitleEmoji: {
+    fontFamily: "SourceSansPro_700Bold",
+    fontSize: 30
   },
-  squad_name_emoji_container: {
-    flexDirection: 'column', 
-    justifyContent: "center", 
-    alignItems: "center"
+  eventListContainer: {
+    alignSelf: 'stretch',
+    borderRadius: 15,
+    marginBottom: 20,
+    marginTop: 15,
+    marginLeft: 10,
+    marginRight: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    flexGrow: 0
   },
-  squad_code_value_text: {
-    fontFamily: "Ubuntu_400Regular",
-    fontSize: 20
+  eventList: {
+    paddingHorizontal: 20,
+    flex:1,
   },
-  tap_for_details_text: {
-    fontFamily: "Ubuntu_400Regular",
-    fontSize: 15,
-    color: "darkgray",
-    alignContent:"center"
+  // All styles for event item in events list
+  eventItemOuterBox: {
+    backgroundColor: "white",
+    borderRadius: 5,
+    flexGrow: 1,
+    height: 140,
+    justifyContent: 'space-between',
+    marginBottom: 10,
+    marginTop: 10,
+    shadowColor: 'rgba(0,0,0, .2)', // IOS
+    shadowOffset: { height: 3, width: 3 }, // IOS
+    shadowOpacity: 1, // IOS
+    shadowRadius: 5, //IOS
+  },
+  eventEmojiBox: {
+    alignItems: 'center',
+    flexGrow: 1,
+    paddingHorizontal: 10,
+    paddingTop: 20,
+  },
+  eventEmoji: {
+    fontSize: 45,
+  },
+  eventItem: {
+    flexGrow: 4,
+    paddingHorizontal: 10,
+    paddingTop: 20,
+    width: '70%',
+  },
+  eventTitle: {
+    fontFamily: "Roboto_400Regular",
+    fontSize: 20,
+    marginBottom: 3,
+    width: "80%"
+  },
+  eventTimeProximity: {
+    alignItems: 'center',
+    color: "#BEBEBE",
+    fontFamily: "Roboto_400Regular",
+    fontSize: 15
+  },
+  forwardArrowIcon: {
+    alignSelf:"flex-end",
+    height: 25, 
+    width: 25, 
+    position:"absolute",
+    right: 20, 
+    top: 30, 
+  },
+  downBarSectionContainer: {
+    alignItems: "center", 
+    justifyContent:"space-evenly", 
+    flexDirection:"row", 
+    height:"40%"
+  },
+  downBarContainer: { 
+    height:30, 
+    width: "80%", 
+    justifyContent:'center'
+  },
+  downBarEmpty: {
+    backgroundColor: "#E7EAF6",
+    borderRadius: 5,
+    height: 5,
+    width: "100%",
+    opacity: .6, 
+    position: "absolute",
+  },
+  downBarFilled: {
+    borderBottomLeftRadius: 5,
+    borderTopLeftRadius: 5,
+    position: "absolute",
+    zIndex: 1
+  },
+  downThresholdReachedContainer: {
+    height:25, 
+    width: 25
+  },
+  downThresholdReachedIcon: {
+    height:25, 
+    width: 25
+  },
+  addEventButtonContainer: {
+    backgroundColor: "white", 
+    borderColor: "#BEBEBE", 
+    borderTopWidth:2, 
+    height:"15%",
+    justifyContent: "center"
   }
 });

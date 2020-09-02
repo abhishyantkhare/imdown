@@ -47,6 +47,7 @@ export const squad_styles = StyleSheet.create({
     borderRadius: 10, 
     justifyContent:"center",
     width:"80%", 
+    paddingHorizontal: "5%"
   },
   exitButtonContainer: {
     marginBottom: 25,
