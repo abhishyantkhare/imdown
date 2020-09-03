@@ -12,14 +12,7 @@ export const AddSquadStyles = StyleSheet.create({
     flexDirection: "column",
   },
   add_title: {
-    fontFamily: "Roboto_400Regular",
-    fontSize: 20,
     paddingBottom: 60
-  },
-  or_text: {
-    paddingVertical: 20,
-    fontFamily: "Ubuntu_700Bold",
-    fontSize: 30,
   },
   emoji_and_squad_name_container: {
     flexWrap: "wrap",
@@ -47,11 +40,6 @@ export const AddSquadStyles = StyleSheet.create({
     padding: 5,
     justifyContent: "center"
   },
-  add_squad_text: {
-    fontFamily: "Ubuntu_700Bold",
-    color: "white",
-    fontSize: 18
-  },
   squad_emoji: {
     alignSelf: "center"
   },
@@ -69,8 +57,6 @@ export const AddSquadStyles = StyleSheet.create({
   squadNameText: {
     borderColor: "white",
     color: "#333333",
-    fontFamily: "SourceSansPro_700Bold",
-    fontSize: 30,
     marginTop: 30,
     textAlign: "left",
     width: 300,
@@ -95,23 +81,17 @@ export const AddSquadStyles = StyleSheet.create({
     marginTop: 40
   },
   successText: {
-    fontFamily: "SourceSansPro_700Bold",
-    fontSize: 25,
     color: "#84D3FF",
     marginBottom: 20,
     textAlign: "center", 
   },
   squadCreateModalText: {
-    fontFamily: "Roboto_400Regular",
-    fontSize: 20,
     marginBottom: 15,
     textAlign: "center", 
     width: 250,
   },
   squadCodeValueText: {
     color: "#84D3FF",
-    fontFamily: "SourceSansPro_700Bold",
-    fontSize: 30,
     margin: 10
   },
   squadCodeContainer: {

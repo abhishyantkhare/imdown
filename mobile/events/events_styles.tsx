@@ -15,8 +15,6 @@ export const event_styles = StyleSheet.create({
   },
   squadCodeValueText: {
     color: "#84D3FF",
-    fontFamily: "Roboto_400Regular",
-    fontSize: 15,
     margin: 5
   },
   squadSettingsButtonImage: {
@@ -32,6 +30,9 @@ export const event_styles = StyleSheet.create({
     flexDirection: "column",
     flexGrow: 1,
   },
+  squadImageContainer: {
+    marginTop: "10%"
+  },
   squadImage: {
     height: 200,
     width: 350,
@@ -43,13 +44,7 @@ export const event_styles = StyleSheet.create({
     marginTop: 20
   },
   squadTitleName: {
-    fontFamily: "SourceSansPro_700Bold",
-    fontSize: 30,
     marginLeft: 20
-  },
-  squadTitleEmoji: {
-    fontFamily: "SourceSansPro_700Bold",
-    fontSize: 30
   },
   eventListContainer: {
     alignSelf: 'stretch',
@@ -85,7 +80,7 @@ export const event_styles = StyleSheet.create({
     alignItems: 'center',
     flexGrow: 1,
     paddingHorizontal: 10,
-    paddingTop: 20,
+    paddingTop: 15,
   },
   eventEmoji: {
     fontSize: 45,
@@ -97,16 +92,12 @@ export const event_styles = StyleSheet.create({
     width: '70%',
   },
   eventTitle: {
-    fontFamily: "Roboto_400Regular",
-    fontSize: 20,
     marginBottom: 3,
     width: "80%"
   },
   eventTimeProximity: {
     alignItems: 'center',
-    color: "#BEBEBE",
-    fontFamily: "Roboto_400Regular",
-    fontSize: 15
+    color: "#BEBEBE"
   },
   forwardArrowIcon: {
     alignSelf:"flex-end",

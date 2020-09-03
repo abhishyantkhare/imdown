@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Image, Modal, SafeAreaView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { AddSquadStyles } from "./add_squad_styles";
+import { TextStyles } from "../TextStyles";
 import EmojiPicker from "../components/emojipicker/EmojiPicker";
 import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -67,7 +68,7 @@ const AddNewSquad = (props: AddSquadProps) => {
                     </View>
                     <TextInput placeholder={CREATE_NEW_SQUAD_PLACEHOLDER} onChangeText={(name) => setSquadName(name)}
                         multiline={true}
-                        style={AddSquadStyles.squadNameText}
+                        style={[TextStyles.headerLarge, AddSquadStyles.squadNameText]}
                         placeholderTextColor="lightgray" />
                 </SafeAreaView>
             </View>
@@ -80,10 +81,10 @@ const AddNewSquad = (props: AddSquadProps) => {
                 <View style={AddSquadStyles.modalBackgroundBlur}>
                     <View style={AddSquadStyles.modalVisibleContainer}>
                         <Image source={require('../assets/success_icon.png')} style={AddSquadStyles.successIcon} />
-                        <Text style={AddSquadStyles.successText}>Success!</Text>
-                        <TextInput editable={false} multiline={true} style={AddSquadStyles.squadCreateModalText}>Your squad <Text style={{fontFamily: "Roboto_700Bold"}}>{`${squadName}`}</Text> has been created.{`\n`}Use your squad code to invite friends!</TextInput>
+                        <Text style={[TextStyles.headerLarge, AddSquadStyles.successText]}>Success!</Text>
+                        <TextInput editable={false} multiline={true} style={[TextStyles.paragraph, AddSquadStyles.squadCreateModalText]}>Your squad <Text style={{fontFamily: "Roboto_700Bold"}}>{`${squadName}`}</Text> has been created.{`\n`}Use your squad code to invite friends!</TextInput>
                         <View style={AddSquadStyles.squadCodeContainer}>
-                            <Text style={AddSquadStyles.squadCodeValueText} selectable={true}>
+                            <Text style={[TextStyles.headerLarge, AddSquadStyles.squadCodeValueText]} selectable={true}>
                                 {squadCode}
                             </Text>
                         </View>
@@ -151,7 +152,7 @@ const AddExistingSquad = (props: AddSquadProps) => {
     const renderAddSquadByCode = () => {
         return (
             <View style={AddSquadStyles.add_container}>
-                <Text style={AddSquadStyles.add_title}>
+                <Text style={[TextStyles.paragraph, AddSquadStyles.add_title]}>
                     {ADD_SQUAD_BY_CODE_TITLE}
                 </Text>
                 <SafeAreaView >
@@ -172,8 +173,8 @@ const AddExistingSquad = (props: AddSquadProps) => {
                  <View style={AddSquadStyles.modalBackgroundBlur}>
                     <View style={AddSquadStyles.modalVisibleContainer}>
                         <Image source={require('../assets/success_icon.png')} style={AddSquadStyles.successIcon} />
-                        <Text style={AddSquadStyles.successText}>Success!</Text>
-                        <TextInput editable={false} multiline={true} style={AddSquadStyles.squadCreateModalText}>You've joined squad <Text style={{fontFamily: "Roboto_700Bold"}}>{`${squadName}`}</Text>!</TextInput>
+                        <Text style={[TextStyles.headerLarge, AddSquadStyles.successText]}>Success!</Text>
+                        <TextInput editable={false} multiline={true} style={[TextStyles.paragraph, AddSquadStyles.squadCreateModalText]}>You've joined squad <Text style={{fontFamily: "Roboto_700Bold"}}>{`${squadName}`}</Text>!</TextInput>
                         <StandardButton text="Done" override_style={{marginBottom: 35, width: 130}} onPress={()=>{props.navigation.pop(); setAddToSquadSuccessModal(false)}}/>
                     </View>
                 </View>

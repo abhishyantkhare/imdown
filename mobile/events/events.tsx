@@ -2,10 +2,12 @@ import React, { useCallback, useLayoutEffect, useState } from "react";
 import { Dimensions, Image, View, FlatList, Text, ScrollView, TouchableOpacity } from "react-native";
 import { callBackend, getUsersInSquad } from "../backend/backend"
 import { event_styles } from "./events_styles";
+import { TextStyles } from "../TextStyles";
 import { useFocusEffect } from "@react-navigation/native";
-import moment from 'moment';
 import { TabBar, TabView, SceneMap } from 'react-native-tab-view';
 import { StandardButton } from "../components/button/Button"
+import moment from 'moment';
+
 
 export type RSVPUser = {
   user_id: String,
@@ -113,7 +115,7 @@ const Events = (props) => {
   const renderSquadCode = () => {
     return (
       <View style={event_styles.squadCodeContainer}>
-        <Text style={event_styles.squadCodeValueText} selectable={true}>
+        <Text style={[TextStyles.secondary, event_styles.squadCodeValueText]} selectable={true}>
             {squadCode}
         </Text>
       </View>
@@ -121,11 +123,11 @@ const Events = (props) => {
   }
 
   const renderSquadSettingsButton = () => {
-      return (
-          <TouchableOpacity onPress={() => goToEditSquad(squadId, squadName, squadEmoji)} style={event_styles.squadSettingsButtonImage} >
-              <Image source={require('../assets/settings_button.png')} style={event_styles.squadSettingsButtonImage} />
-          </TouchableOpacity>
-      );
+    return (
+        <TouchableOpacity onPress={() => goToEditSquad(squadId, squadName, squadEmoji)} style={event_styles.squadSettingsButtonImage} >
+            <Image source={require('../assets/settings_button.png')} style={event_styles.squadSettingsButtonImage} />
+        </TouchableOpacity>
+    );
   }
 
 
@@ -143,7 +145,7 @@ const Events = (props) => {
   const renderSquadImage = () => {
     return(
       squadImageUrl && <View style = {event_styles.squadImageContainer}>
-        { squadImageUrl ? <Image source={{ uri: squadImageUrl }} style = {event_styles.squadImage}/> : <View> </View>}
+        {squadImageUrl ? <Image source={{ uri: squadImageUrl }} style = {event_styles.squadImage} /> : <View> </View>}
       </View>
     )
   };
@@ -169,9 +171,7 @@ const Events = (props) => {
   const renderTabViewLabel = ({ route, focused, color }) => {
     return (
       <View>
-        <Text
-          style={focused ? {color: "black", fontFamily: "Roboto_400Regular"} : {color: "gray", fontFamily:"Roboto_400Regular"}}
-        >
+        <Text style={{ color: focused ? "#333333": "#BEBEBE", fontFamily: "Roboto_400Regular" }}>
           {route.title}
         </Text>
       </View>
@@ -181,8 +181,8 @@ const Events = (props) => {
   const renderTabBar = props => (
     <TabBar
       {...props}
-      indicatorStyle={{ backgroundColor: 'white' }}
-      style={{ backgroundColor: 'white' }}
+      indicatorStyle={{ backgroundColor: '#FFFFFF' }}
+      style={{ backgroundColor: '#FFFFFF' }}
       renderLabel={renderTabViewLabel}
     />
   );
@@ -250,8 +250,8 @@ const Events = (props) => {
               <Text style={event_styles.eventEmoji}>{item.emoji || ""}</Text>
             </View>
             <View style={event_styles.eventItem}>
-              <Text numberOfLines={2} style={event_styles.eventTitle}>{item.name}</Text>
-              <Text style={event_styles.eventTimeProximity}>{`${calcEventProximity(item)}`}</Text>
+              <Text numberOfLines={2} style={[TextStyles.paragraph, event_styles.eventTitle]}>{item.name}</Text>
+              <Text style={[TextStyles.secondary, event_styles.eventTimeProximity]}>{`${calcEventProximity(item)}`}</Text>
               {<Image source={tabViewIndex == 0 ? require('../assets/arrow_forward_blue.png') : require('../assets/arrow_forward_gray.png')}  style={event_styles.forwardArrowIcon} />}
             </View>
           </View>
@@ -266,10 +266,10 @@ const Events = (props) => {
       <ScrollView style={[event_styles.scrollViewContainer]} contentContainerStyle={{alignItems:"center"}}>
         {renderSquadImage()}
         <View style={event_styles.squadNameEmojiContainer}>
-          <Text style={event_styles.squadTitleEmoji}>
+          <Text style={TextStyles.headerLarge}>
             {squadEmoji}
           </Text>
-          <Text style={event_styles.squadTitleName}>
+          <Text style={[TextStyles.headerLarge, event_styles.squadTitleName]}>
             {squadName}
           </Text>
         </View>

@@ -24,9 +24,7 @@ export const squad_styles = StyleSheet.create({
     marginTop: 40,
   },
   squadsTitleText: {
-    color: "#84D3FF",
-    fontFamily: "SourceSansPro_700Bold",
-    fontSize: 40,
+    color: "#84D3FF"
   },
   addSquadContainer: {
     justifyContent: 'flex-end'
@@ -121,8 +119,6 @@ export const squad_styles = StyleSheet.create({
     marginLeft: "10%"
   },
   noSquadViewText: {
-    fontFamily: "Roboto_400Regular",
-    fontSize: 20,
     marginBottom: 50,
     marginHorizontal: "10%"
   },
