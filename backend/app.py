@@ -56,7 +56,7 @@ def signIn():
     update_user_tokens(u, auth_code, device_token)
     return u.jsonifyUser()
 
-@application.route("/device_token", ["POST", "GET"])
+@application.route("/device_token", methods=["POST", "GET"])
 @login_required
 def device_token():
     if request.method == "GET":
@@ -65,6 +65,7 @@ def device_token():
     validate_request_args(content, 'deviceToken')
     current_user.device_token = content['deviceToken']
     db.session.commit()
+    return "Successfully set device token!", 200
 
 
 def update_user_tokens(user, auth_code, device_token):
