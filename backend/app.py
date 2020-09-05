@@ -1,5 +1,9 @@
-from flask import request
+import apiclient
+from flask import request, make_response
 from flask import jsonify
+import google.oauth2.credentials
+import google_auth_oauthlib.flow
+
 from config import Config
 from init import application, scheduler
 from extensions import db
@@ -19,9 +23,15 @@ import time
 from notifications import notify_squad_members
 
 
+# This must match the scope we request in login.tsx.
+GOOGLE_API_SCOPE = [
+    "https://www.googleapis.com/auth/userinfo.profile",
+    "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/calendar.events",
+    "openid"
+]
 GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token'
 GOOGLE_CALENDAR_API = 'https://www.googleapis.com/calendar/v3/calendars/primary/events'
-
 
 
 def validate_request_args(content: dict, *required_args):
@@ -36,27 +46,45 @@ def hello():
     return "Hello, World!"
 
 
-@application.route("/sign_in", methods=['POST'])
-def signIn():
+@application.route("/login", methods=['POST'])
+def login():
+    """Sign in using Google, and create a session with Flask."""
     content = request.get_json()
-    validate_request_args(content, 'email', 'name', 'photo',
-                          'googleServerCode', 'deviceToken')
-    email = content["email"]
-    photo = content["photo"]
-    name = content["name"]
-    device_token = content["deviceToken"]
-    auth_code = content["googleServerCode"]
-    u = User.query.filter_by(email=email).first()
-    if u is None:
-        u = User(email=email, name=name, photo=photo)
-        db.session.add(u)
-    elif u.name != name or u.photo != photo:
-        u.name = name
-        u.photo = photo
+    validate_request_args(content, 'googleServerCode', 'deviceToken')
+    google_server_code = content['googleServerCode']
+    device_token = content['deviceToken']
+
+    # Obtain credentials from Google.
+    credentials = fetch_google_credentials(google_server_code)
+    # Use credentials to fetch user information.
+    user_info_service = apiclient.discovery.build(
+        serviceName="oauth2", version="v2", credentials=credentials
+    )
+    user_info = user_info_service.userinfo().get().execute()
+
+    # Find or create a user with a matching email.
+    email = user_info['email']
+    name = user_info['name']
+    photo = user_info['picture']
+    user = User.query.filter_by(email=email).first()
+    if user is None:
+        user = User(email=email, name=name, photo=photo)
+    else:
+        user.name = name
+        user.photo = photo
+
+    # Ensure the user is up-to-date.
+    user.google_access_token = credentials.token
+    user.device_token = device_token
+    # The refresh token will be provided only upon initial authentication.
+    if credentials.refresh_token:
+        user.google_refresh_token = credentials.refresh_token
+
+    # Persist this update and sign in the user.
+    login_user(user)
     db.session.commit()
-    login_user(u)
-    update_user_tokens(u, auth_code, device_token)
-    return u.jsonifyUser()
+    return make_response()
+
 
 @application.route("/device_token", methods=["POST", "GET"])
 @login_required
@@ -72,37 +100,18 @@ def device_token():
     return "Successfully set device token!", 200
 
 
-def update_user_tokens(user, auth_code, device_token):
-    access_token, refresh_token = fetch_google_access_tokens(auth_code)
-    if access_token:
-        user.google_access_token = access_token
-    if refresh_token:
-        user.google_refresh_token = refresh_token
-    if device_token:
-        user.device_token = device_token
-    db.session.commit()
+def fetch_google_credentials(auth_code) -> google.oauth2.credentials.Credentials:
+    """Use the client's authorization code to obtain access tokens from Google.
 
-
-def fetch_google_access_tokens(auth_code):
-    # Load Google client id and secret.
-    with open(Config.GOOGLE_SECRET_FILE, "r") as fp:
-        client_secret = json.load(fp)
-
-    data = {'code': auth_code,
-            'client_id': client_secret["GOOGLE_CLIENT_ID"],
-            'client_secret': client_secret["GOOGLE_CLIENT_SECRET"],
-            'grant_type': 'authorization_code',
-            'access_type': 'offline'
-            }
-    r = requests.post('https://oauth2.googleapis.com/token', data=data)
-    resp = r.json()
-    refresh_token = ""
-    if 'refresh_token' in resp:
-        refresh_token = resp['refresh_token']
-    access_token = ""
-    if 'access_token' in resp:
-        access_token = resp['access_token']
-    return access_token, refresh_token
+    https://developers.google.com/identity/protocols/oauth2/web-server#exchange-authorization-code
+    """
+    # Create the OAuth2 authentication flow.
+    flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
+        Config.GOOGLE_SECRET_FILE, GOOGLE_API_SCOPE
+    )
+    # Complete the authentication flow to obtain access tokens.
+    flow.fetch_token(code=auth_code)
+    return flow.credentials
 
 
 @application.route("/sign_out", methods=['POST'])
