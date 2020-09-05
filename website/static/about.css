@@ -9,7 +9,7 @@
 }
 
 .imdown-about-title {
-    margin-top: 20vh;
+    margin-top: 2vh;
     font-style: normal;
     font-weight: bold;
     font-size: 48px;
@@ -27,7 +27,12 @@
 }
 
 .imdown-home-link {
-    margin-top: 10vh;
+    margin-top: 8vh;
     display: flex;
     flex-direction: row;
+}
+
+.imdown-about-logo {
+    margin-top: 15vh;
+    width: 50px;
 }
