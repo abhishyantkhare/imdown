@@ -69,7 +69,7 @@ const Login = ({ navigation }: LoginProps) => {
   const checkIfUserSignedIn = async () => {
     const userEmail = await AsyncStorage.getItem('email');
     if (userEmail) {
-      const endpoint = `is_signed_in?email=${userEmail}`;
+      const endpoint = 'is_signed_in';
       const resp = await callBackend(endpoint);
       if (resp.ok) {
         goToSquads(userEmail);

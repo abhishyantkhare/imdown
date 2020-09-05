@@ -124,10 +124,6 @@ def signout():
 @application.route("/is_signed_in", methods=["GET"])
 @login_required
 def is_logged_in():
-    args = request.args
-    validate_request_args(args, "email")
-    if current_user.email != args['email']:
-        raise Unauthorized("Incorrect email")
     return "Signed in!", 200
 
 
@@ -145,19 +141,15 @@ def add_to_squad():
 @application.route("/create_squad", methods=["POST"])
 # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
 @login_required
-def createSquad():
+def create_squad():
     content = request.get_json()
-    validate_request_args(content, 'email', 'squad_name', 'squad_emoji')
-    email = content["email"]
-    user = User.query.filter_by(email=email).first()
-    if not user:
-        raise NotFound(f"Could not find User {email}")
-    squad = Squad(name=content['squad_name'],
-                  admin_id=user.id, squad_emoji=content['squad_emoji'])
+    validate_request_args(content, 'name', 'emoji')
+    squad = Squad(name=content['name'], admin_id=current_user.id,
+                  squad_emoji=content['emoji'])
     squad.generate_code()
     db.session.add(squad)
     db.session.commit()
-    addUserToSquad(squad.code, email)
+    addUserToSquad(squad.code, current_user.email)
     return squad.jsonifySquad()
 
 
@@ -186,14 +178,10 @@ def edit_squad():
 @login_required
 def respond_to_event():
     content = request.get_json()
-    validate_request_args(content, "email", "event_id", "response")
-    email = content["email"]
-    event_id = content["event_id"]
-    response = content["response"]
-    user = User.query.filter_by(email=email).first()
-    if not user:
-        raise NotFound(f"Could not find User {email}")
-    return respondToEvent(user.id, event_id, response)
+    validate_request_args(content, 'eventId', 'response')
+    event_id = content['eventId']
+    response = content['response']
+    return respondToEvent(current_user.id, event_id, response)
 
 
 def respondToEvent(user_id, event_id, response):
@@ -366,28 +354,25 @@ def addUserToSquad(squad_code, email):
 @application.route("/create_event", methods=["POST"])
 # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
 @login_required
-def createEvent():
+def create_event():
     content = request.get_json()
-    validate_request_args(content, 'email', 'title', 'emoji', 'description',
-                          'start_time', 'end_time', 'squad_id', 'event_url',
-                          'image_url', 'down_threshold')
-    user_email = content['email']
-    u = User.query.filter_by(email=user_email).first()
-    if not u:
-        raise NotFound(f"Could not find User {user_email}")
-    squad_id = content['squad_id']
+    validate_request_args(content, 'title', 'emoji', 'description',
+                          'startTime', 'endTime', 'squadId', 'eventUrl',
+                          'imageUrl', 'downThreshold')
+    squad_id = content['squadId']
     event_squad = Squad.query.get(squad_id)
     if not event_squad:
         raise NotFound(f"Could not find Squad {squad_id}")
     membership = SquadMembership.query.filter_by(
-        user_id=u.id, squad_id=squad_id).first()
+        user_id=current_user.id, squad_id=squad_id
+    ).first()
     if membership is None:
         raise NotFound("User is not a member of squad")
     title = content["title"]
     desc = content["description"]
     event_emoji = content["emoji"]
-    start_time = content["start_time"]
-    end_time = content["end_time"]
+    start_time = content['startTime']
+    end_time = content['endTime']
     # TODO: When address + lat/lng is implemented in mobile, uncomment
     # address = content["address"]
     lat = 0.0
@@ -395,12 +380,15 @@ def createEvent():
     if "lat" in content and "lng" in content:
         lat = content["lat"]
         lng = content["lng"]
-    event_url = content["event_url"]
-    image_url = content["image_url"]
-    down_threshold = content["down_threshold"]
+    event_url = content['eventUrl']
+    image_url = content['imageUrl']
+    down_threshold = content['downThreshold']
 
-    e = Event(title=title, event_emoji=event_emoji, description=desc, start_time=start_time,
-              end_time=end_time, squad_id=event_squad.id, event_url=event_url, image_url=image_url, down_threshold=down_threshold, creator_user_id=u.id)
+    e = Event(title=title, event_emoji=event_emoji, description=desc,
+              start_time=start_time, end_time=end_time,
+              squad_id=event_squad.id, event_url=event_url,
+              image_url=image_url, down_threshold=down_threshold,
+              creator_user_id=current_user.id)
     db.session.add(e)
     db.session.commit()
     # Also add to event time table
@@ -412,11 +400,11 @@ def createEvent():
         )
     )
     db.session.commit()
-    respondToEvent(u.id, e.id, True)
+    respondToEvent(current_user.id, e.id, True)
 
     # send notification
-    notify_squad_members(
-        event_squad.id, event_squad.name, body="New event!", users_to_exclude={u.id})
+    notify_squad_members(event_squad.id, event_squad.name, body="New event!",
+                         users_to_exclude={current_user.id})
     # schedule reminder
     e.schedule_reminder(scheduler)
     return e.jsonify_event()
@@ -427,45 +415,42 @@ def createEvent():
 @login_required
 def edit_event():
     content = request.get_json()
-    validate_request_args(content, 'event_id', 'email', 'title', 'emoji',
-                          'description', 'down_threshold', 'start_time',
-                          'end_time', 'event_url', 'image_url')
-    u = User.query.filter_by(email=content['email']).first()
-    if not u:
-        raise NotFound(f"Could not find User {content['email']}")
-    event_id = content['event_id']
+    validate_request_args(content, 'eventId', 'title', 'emoji', 'description',
+                          'downThreshold', 'startTime', 'endTime', 'eventUrl',
+                          'imageUrl', 'squadId')
+    event_id = content['eventId']
     event = Event.query.get(event_id)
     if event is None:
         raise NotFound(f"Could not find Event {event_id}")
 
-    event.title = content["title"]
-    event.description = content["description"]
-    event.down_threshold = content["down_threshold"]
-    event.event_emoji = content["emoji"]
-    event.event_url = content["event_url"]
-    event.image_url = content["image_url"]
-    event.start_time = content["start_time"]
-    event.end_time = content["end_time"]
-
+    event.title = content['title']
+    event.description = content['description']
+    event.down_threshold = content['downThreshold']
+    event.event_emoji = content['emoji']
+    event.event_url = content['eventUrl']
+    event.image_url = content['imageUrl']
+    event.start_time = content['startTime']
+    event.end_time = content['endTime']
     db.session.add(event)
     db.session.commit()
     # Also update event time
     event_time = EventTime.query.filter_by(event_id=event.id).first()
     if not event_time:
         raise NotFound(f"Could not find event time for event {event_id}")
-    event_time.start_time = content["start_time"]
-    event_time.end_time = content["end_time"]
+    event_time.start_time = event.start_time
+    event_time.end_time = event.end_time
     db.session.add(event_time)
 
     db.session.commit()
     getEventResponsesAndCheckDownThresh(event)
 
-    event_squad = Squad.query.get(content['squad_id'])
+    event_squad = Squad.query.get(content['squadId'])
     if not event_squad:
         return "Squad does not exist!", 400
     # Send notification
-    notify_squad_members(
-        event_squad.id, event.title, body="Event details were updated.", users_to_exclude={u.id})
+    notify_squad_members(event_squad.id, event.title,
+                         body="Event details were updated.",
+                         users_to_exclude={current_user.id})
     # Schedule reminder
     event.schedule_reminder(scheduler)
     return event.jsonify_event()
@@ -560,13 +545,7 @@ def getEventResponsesBatch(event_id_list):
 # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
 @login_required
 def get_squads():
-    args = request.args
-    validate_request_args(args, 'email')
-    email = args["email"]
-    user = User.query.filter_by(email=email).first()
-    if not user:
-        raise NotFound(f"Could not find User {email}")
-    user_id = user.id
+    user_id = current_user.id
     user_squad_memberships = SquadMembership.query.filter_by(
         user_id=user_id).all()
     squads_lst = []
@@ -636,12 +615,11 @@ def get_user_id():
 @login_required
 def delete_squad():
     content = request.get_json()
-    validate_request_args(content, 'squad_id', 'user_id')
-    squad_id = content["squad_id"]
-    user_id = content["user_id"]
-    squad_to_delete = Squad.query.filter_by(id=squad_id).first()
-    if squad_to_delete == None:
-        print("Squad is already deleted.")
+    validate_request_args(content, 'squadId')
+    squad_id = content['squadId']
+    user_id = current_user.id
+    squad_to_delete = Squad.query.get(squad_id)
+    if squad_to_delete is None:
         return "Squad is already deleted."
     else:
         db.session.delete(squad_to_delete)

@@ -29,7 +29,7 @@ const downStatic = require('../assets/down_static.png');
 const uploadPhoto = require('../assets/upload_photo.png');
 
 const EditEvent = ({ route, navigation }: EditEventProps) => {
-  const { event, userEmail, numUsers } = route.params;
+  const { event, numUsers } = route.params;
   const [eventDescription, setEventDescription] = useState(event.description);
   const [eventDownThreshold, setEventDownThreshold] = useState(event.downThreshold);
   const [eventEmoji, setEventEmoji] = useState(event.emoji); // eslint-disable-line no-unused-vars
@@ -180,17 +180,16 @@ const EditEvent = ({ route, navigation }: EditEventProps) => {
   const saveEvent = () => {
     const endpoint = 'edit_event';
     const data = {
-      event_id: event.id, // eslint-disable-line camelcase
-      email: userEmail,
+      eventId: event.id,
       title: eventName || null,
       description: eventDescription || null,
-      down_threshold: eventDownThreshold, // eslint-disable-line camelcase
+      downThreshold: eventDownThreshold,
       emoji: eventEmoji,
-      event_url: eventUrl || null, // eslint-disable-line camelcase
-      image_url: eventImage || null, // eslint-disable-line camelcase
-      squad_id: event.squadId, // eslint-disable-line camelcase
-      start_time: eventStartTime ? eventStartTime.getTime() : null, // eslint-disable-line camelcase
-      end_time: eventEndTime ? eventEndTime.getTime() : null, // eslint-disable-line camelcase
+      eventUrl: eventUrl || null,
+      imageUrl: eventImage || null,
+      squadId: event.squadId,
+      startTime: eventStartTime ? eventStartTime.getTime() : null,
+      endTime: eventEndTime ? eventEndTime.getTime() : null,
     };
     const init: RequestInit = { // eslint-disable-line no-undef
       method: 'PUT',

@@ -92,7 +92,7 @@ const Squads = ({ route, navigation }: SquadsProps) => {
   );
 
   const getSquads = () => {
-    const endpoint = `get_squads?email=${email}`;
+    const endpoint = 'get_squads';
     const init: RequestInit = { // eslint-disable-line no-undef
       method: 'GET',
       headers: {
@@ -123,14 +123,10 @@ const Squads = ({ route, navigation }: SquadsProps) => {
 
   const deleteSquad = (squadId: number) => {
     const endpoint = 'delete_squad';
-    const data = {
-      squad_id: squadId, // eslint-disable-line camelcase
-      user_id: userId, // eslint-disable-line camelcase
-    };
     const init: RequestInit = { // eslint-disable-line no-undef
       method: 'DELETE',
       mode: 'no-cors',
-      body: JSON.stringify(data),
+      body: JSON.stringify({ squadId }),
       headers: {
         'Content-Type': 'application/json',
       },
