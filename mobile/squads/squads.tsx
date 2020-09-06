@@ -1,6 +1,7 @@
 import React, { useLayoutEffect, useState } from "react";
 import { Image, Modal, View, Text, TouchableOpacity, Alert } from "react-native";
 import { squad_styles } from "./squads_styles";
+import { TextStyles } from "../TextStyles";
 import { Button } from "react-native";
 import { callBackend } from "../backend/backend"
 import { SwipeRow, SwipeListView } from "react-native-swipe-list-view"
@@ -206,7 +207,7 @@ const Squads = (props) => {
         return (
             <View>
                 <Text style={squad_styles.noSquadViewWave}>👋</Text>
-                <Text style={squad_styles.noSquadViewText}>Add a squad to get started planning your next hangout.</Text>
+                <Text style={[TextStyles.paragraph, squad_styles.noSquadViewText]}>Add a squad to get started planning your next hangout.</Text>
                 <StandardButton text="Add a squad" onPress={() => setAddSquadModal(true)} />
             </View>
         );
@@ -258,7 +259,7 @@ const Squads = (props) => {
                             <Image source={require('../assets/exit_button.png')} style={squad_styles.exitButton} />
                         </TouchableOpacity>
                         <StandardButton text="Join an existing squad" onPress={() => goToAddExistingSquad()} />
-                        <StandardButton text="Create a new squad" override_style={{ marginTop: 10, marginBottom: 30 }} onPress={() => goToAddNewSquad()} />
+                        <StandardButton text="Create a new squad" override_style={{ marginTop: 10, marginBottom: "10%" }} onPress={() => goToAddNewSquad()} />
                     </View>
                 </View>
             </Modal>
@@ -269,7 +270,7 @@ const Squads = (props) => {
         <View style={squad_styles.squads_container}>
             {renderSearchButton()}
             <View style={squad_styles.squadsTitleContainer}>
-                <Text style={squad_styles.squadsTitleText}>Squads</Text>
+                <Text style={[TextStyles.title, squad_styles.squadsTitleText]}>Squads</Text>
                 {renderAddSquadButton()}
             </View>
             {squads.length > 0 ? <SwipeListView

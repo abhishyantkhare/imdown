@@ -67,7 +67,7 @@ export default function App() {
             <Stack.Screen name="Edit Squad" component={EditSquad} options={{ headerBackImage: backButton }} />
             <Stack.Screen name="Add New Squad" component={AddNewSquad} options={hiddenHeaderOptions} />
             <Stack.Screen name="Add Existing Squad" component={AddExistingSquad} options={hiddenHeaderOptions} />
-            <Stack.Screen name="Events" component={Events} />
+            <Stack.Screen name="Events" component={Events} options={hiddenHeaderOptions} />
             <Stack.Screen name="Add Event" component={AddEventNavigator} />
             <Stack.Screen name="EventDetails" component={EventDetails} />
             <Stack.Screen name="Edit Event" component={EditEvent} />
