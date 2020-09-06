@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, Platform } from "react-native";
+import { Text, View } from "react-native";
 import { login_styles } from "./login_styles";
 import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-community/google-signin';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -19,19 +19,18 @@ const Login = ({ navigation }) => {
     const [isSignedIn, setIsSignedIn] = useState<boolean>(undefined)
 
 
-    const requestNotificationPermission = () => {
-        messaging().requestPermission();
+    const requestNotificationPermission = async () => {
+        await messaging().requestPermission();
     }
 
-    const getDeviceToken = () => {
-        messaging()
-            .getToken()
-            .then(setDeviceToken);
+    const getDeviceToken = async () => {
+        const token = await messaging().getToken()
+        await setDeviceToken(token)
     }
 
-    const notificationsSetup = () => {
-        requestNotificationPermission();
-        getDeviceToken();
+    const notificationsSetup = async () => {
+        await requestNotificationPermission();
+        await getDeviceToken();
     }
 
 
@@ -43,6 +42,22 @@ const Login = ({ navigation }) => {
             offlineAccess: true,
             scopes: ['https://www.googleapis.com/auth/calendar.events']
         });
+    }
+
+    const setBackendDeviceToken = () => {
+        const endpoint = `device_token`
+        const data = {
+            deviceToken: deviceToken
+        }
+        const init: RequestInit = {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        }
+        return callBackend(endpoint, init)
     }
 
     const checkIfUserSignedIn = async () => {
@@ -57,9 +72,9 @@ const Login = ({ navigation }) => {
         setIsSignedIn(false)
     }
 
-    const setup = () => {
-        notificationsSetup();
-        checkIfUserSignedIn()
+    const setup = async () => {
+        await notificationsSetup();
+        await checkIfUserSignedIn()
         googleSetup()
     }
 
@@ -71,8 +86,10 @@ const Login = ({ navigation }) => {
 
 
     const goToSquads = (email: string) => {
-        navigation.navigate("Squads", {
-            email: email
+        setBackendDeviceToken().then(() => {
+            navigation.navigate("Squads", {
+                email: email
+            });
         });
     };
 
