@@ -115,8 +115,9 @@ const Events = (props) => {
   const renderSquadCode = () => {
     return (
       <View style={event_styles.squadCodeContainer}>
+        <Text style={[TextStyles.secondary, event_styles.squadCodeDescriptionText]} selectable={false}>Code: </Text>
         <Text style={[TextStyles.secondary, event_styles.squadCodeValueText]} selectable={true}>
-            {squadCode}
+          {squadCode}
         </Text>
       </View>
     )
@@ -152,7 +153,8 @@ const Events = (props) => {
 
   const PendingEventsTabContents = () => (
     <FlatList
-      data={events.filter(event => !event.end_ms || event.end_ms > new Date()).sort((a, b) => (!a.start_ms  &&  b.start_ms || a.start_ms > b.start_ms) ? 1 : -1)}
+      data={events.filter(event => !event.end_ms || event.end_ms > new Date()).sort((a, b) => 
+        (!a.start_ms  &&  b.start_ms || a.start_ms > b.start_ms) ? 1 : -1)}
       renderItem={renderEventItem}
       style={event_styles.eventList}
       keyExtractor={(item, index) => index.toString()}
@@ -161,7 +163,8 @@ const Events = (props) => {
 
   const PastEventsTabContents = () => (
     <FlatList
-      data={events.filter(event => event.end_ms && event.end_ms < new Date()).sort((a, b) => (a.end_ms < b.end_ms) ? 1 : -1)}
+      data={events.filter(event => event.end_ms && event.end_ms < new Date()).sort((a, b) => 
+        (a.end_ms < b.end_ms) ? 1 : -1)}
       renderItem={renderEventItem}
       style={event_styles.eventList}
       keyExtractor={(item, index) => index.toString()}
@@ -220,13 +223,11 @@ const Events = (props) => {
     const barColor = onPendingEventsTab ? "#84D3FF" : "#BEBEBE"
     const borderRightRadii = downPercentage > 95 ? 5 : 0
     const barWidth = `${downPercentage}%`
-    const barHeight = 5
     const inlineStyleJSON = {
       backgroundColor: barColor,
       borderBottomRightRadius: borderRightRadii,
       borderTopRightRadius: borderRightRadii,
-      width: barWidth,
-      height: barHeight
+      width: barWidth
     }
 
     return(
@@ -281,8 +282,7 @@ const Events = (props) => {
           renderScene={() => null}
           renderTabBar={renderTabBar}
           swipeEnabled={false} />
-          {tabViewIndex === 0 && <PendingEventsTabContents />}
-          {tabViewIndex === 1 && <PastEventsTabContents />}
+          {tabViewIndex === 0 ? <PendingEventsTabContents /> : <PastEventsTabContents />}
         </View>
       </ScrollView>
       <View style={event_styles.addEventButtonContainer}>

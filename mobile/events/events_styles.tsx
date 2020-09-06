@@ -12,10 +12,17 @@ export const event_styles = StyleSheet.create({
     borderRadius: 7.5,
     borderWidth: 2,
     borderStyle: "solid",
+    flexDirection: "row"
+  },
+  squadCodeDescriptionText: {
+    color: "#84D3FF",
+    marginVertical: 5,
+    marginLeft: 5
   },
   squadCodeValueText: {
     color: "#84D3FF",
-    margin: 5
+    marginVertical: 5,
+    marginRight: 5
   },
   squadSettingsButtonImage: {
     marginHorizontal: 10,
@@ -129,6 +136,7 @@ export const event_styles = StyleSheet.create({
   downBarFilled: {
     borderBottomLeftRadius: 5,
     borderTopLeftRadius: 5,
+    height: 5,
     position: "absolute",
     zIndex: 1
   },
