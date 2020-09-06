@@ -29,5 +29,7 @@ def notify_squad_members(squad_id, title, body="", users_to_exclude={}):
     device_tokens = []
     for sqm in squad_memberships:
         if sqm.user_id not in users_to_exclude:
-            device_tokens.append(User.query.get(sqm.user_id).device_token)
+            token = User.query.get(sqm.user_id).device_token
+            if token:
+                device_tokens.append(token)
     send_notification(device_tokens, title, body=body)
