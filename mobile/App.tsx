@@ -26,6 +26,10 @@ export type RootStackParamList = {
   AddSquad: {
     email: string;
   };
+  AddEvent: {
+    squadId: number,
+    userEmail: string
+  }
 };
 
 const Stack = createStackNavigator<RootStackParamList>();

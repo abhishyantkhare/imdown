@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { ScrollView, View, useWindowDimensions } from "react-native";
 import EmojiPicker from "../components/emojipicker/EmojiPicker"
 import { AddEventStyles } from "./AddEventStyles"
@@ -11,9 +11,14 @@ import SmallLabel from "../components/smalllabel/SmallLabel";
 import ImageUploader from "../components/imageuploader/ImageUploader"
 import Divider from "../components/divider/divider"
 import { StandardButton } from "../components/button/Button";
+import AppNavRouteProp from "../types/navigation";
+import { useFocusEffect } from "@react-navigation/native";
+import { getUsersInSquad } from "../backend/backend"
 
 
-const AddEvent = () => {
+type AddEventProps = AppNavRouteProp<'AddEvent'>
+
+const AddEvent = (props: AddEventProps) => {
     const [emoji, setEmojiPicked] = useState<string>();
     const [startDate, setStartDate] = useState<Date>(new Date);
     const [startTime, setStartTime] = useState<Date>(new Date);
@@ -21,7 +26,15 @@ const AddEvent = () => {
     const [endDate, setEndDate] = useState<Date | undefined>();
     const [endTime, setEndTime] = useState<Date | undefined>();
     const [downThreshold, setDownThreshold] = useState(1)
+    const [numUsers, setNumUsers] = useState(1)
     const windowWidth = useWindowDimensions().width;
+    const squadId = props.route.params.squadId
+
+    useFocusEffect(useCallback(() => {
+        getUsersInSquad(squadId).then((data) => {
+            setNumUsers(data.user_info.length)
+        })
+    }, []))
 
     const renderEventEmoji = () => {
         return (
@@ -91,12 +104,12 @@ const AddEvent = () => {
                     <View style={{ width: "80%" }}>
                         <Slider
                             minimumValue={1}
-                            maximumValue={Math.max(0, 2)}
+                            maximumValue={Math.max(numUsers, 2)}
                             step={1}
                             value={downThreshold}
                             onValueChange={setDownThreshold}
                             style={{ marginTop: "5%" }}
-                            thumbImage={require("../assets/down_static.png")}
+                            thumbImage={require("../assets/down_border_filled.png")}
                             minimumTrackTintColor="#90BEDE" />
                     </View>
                 </View>

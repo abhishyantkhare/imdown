@@ -3,27 +3,16 @@ import { Image, SafeAreaView, Text, TextInput, TouchableOpacity, View } from "re
 import { AddSquadStyles } from "./add_squad_styles";
 import { TextStyles } from "../TextStyles";
 import EmojiPicker from "../components/emojipicker/EmojiPicker";
-import { RouteProp } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
 import { callBackend } from "../backend/backend";
 import { ScrollView } from "react-native-gesture-handler";
-import { RootStackParamList } from "../App";
+import AppNavRouteProp from "../types/navigation";
 import { showMessage } from "react-native-flash-message";
 import { StandardButton } from "../components/button/Button"
 import BlurModal from "../components/blurmodal/BlurModal"
 
-type AddSquadNavigationProp = StackNavigationProp<
-    RootStackParamList,
-    'AddSquad'
->;
 
-type AddSquadRouteProp = RouteProp<RootStackParamList, 'AddSquad'>;
 
-type AddSquadProps = {
-    navigation: AddSquadNavigationProp;
-    route: AddSquadRouteProp
-};
-
+type AddSquadProps = AppNavRouteProp<'AddSquad'>
 
 const DEFAULT_EMOJI = "😎"
 const ADD_SQUAD_BY_CODE_TITLE = "Have a Squad Code? Enter It Here"
