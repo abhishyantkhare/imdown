@@ -38,14 +38,13 @@ export const squad_styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: 'rgba(100,100,100, 0.5)',
-    flex:1, 
+    flex: 1,
   },
   modalVisibleContainer: {
     backgroundColor: "white",
-    borderRadius: 10, 
-    justifyContent:"center",
-    width:"80%", 
-    paddingHorizontal: "5%"
+    borderRadius: 10,
+    justifyContent: "center",
+    width: "80%",
   },
   exitButtonContainer: {
     marginBottom: 25,
@@ -121,5 +120,5 @@ export const squad_styles = StyleSheet.create({
   noSquadViewText: {
     marginBottom: 50,
     marginHorizontal: "10%"
-  },
+  }
 });

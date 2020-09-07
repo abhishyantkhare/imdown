@@ -108,7 +108,7 @@ const EditEvent = (props) => {
     return (
       <View style={EditEventStyles.additional_fields_container}>
         {renderEmojiField()}
-        {Divider()}
+        {<Divider />}
         {renderDownThresholdSlider()}
       </View>
     );

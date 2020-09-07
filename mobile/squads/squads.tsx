@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useState } from "react";
-import { Image, Modal, View, Text, TouchableOpacity, Alert } from "react-native";
+import { Image, View, Text, TouchableOpacity, Alert } from "react-native";
 import { squad_styles } from "./squads_styles";
 import { TextStyles } from "../TextStyles";
 import { Button } from "react-native";
@@ -7,6 +7,7 @@ import { callBackend } from "../backend/backend"
 import { SwipeRow, SwipeListView } from "react-native-swipe-list-view"
 import { useFocusEffect } from "@react-navigation/native";
 import { StandardButton } from "../components/button/Button"
+import BlurModal from "../components/blurmodal/BlurModal"
 
 
 export type Squad = {
@@ -252,17 +253,10 @@ const Squads = (props) => {
 
     const renderAddSquadModal = () => {
         return (
-            <Modal visible={addSquadModal} animationType="fade" transparent>
-                <View style={squad_styles.modalBackgroundBlur}>
-                    <View style={squad_styles.modalVisibleContainer}>
-                        <TouchableOpacity onPress={() => setAddSquadModal(false)} style={squad_styles.exitButtonContainer} >
-                            <Image source={require('../assets/exit_button.png')} style={squad_styles.exitButton} />
-                        </TouchableOpacity>
-                        <StandardButton text="Join an existing squad" onPress={() => goToAddExistingSquad()} />
-                        <StandardButton text="Create a new squad" override_style={{ marginTop: 10, marginBottom: "10%" }} onPress={() => goToAddNewSquad()} />
-                    </View>
-                </View>
-            </Modal>
+            <BlurModal visible={addSquadModal} cancel={() => setAddSquadModal(false)}>
+                <StandardButton text="Join an existing squad" onPress={() => goToAddExistingSquad()} />
+                <StandardButton text="Create a new squad" override_style={{ marginTop: 10, marginBottom: 30 }} onPress={() => goToAddNewSquad()} />
+            </BlurModal>
         );
     }
 

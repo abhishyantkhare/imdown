@@ -15,12 +15,12 @@ export const AddEventStyles = StyleSheet.create({
     justifyContent: 'center',
     flexGrow: 1,
   },
-  event_picture: { 
-    borderColor: "#aaaaaa", 
-    borderWidth: 1, 
-    width: EVENT_PIC_WIDTH, 
-    height: EVENT_PIC_HEIGHT, 
-    borderRadius: EVENT_PIC_WIDTH / 2 
+  event_picture: {
+    borderColor: "#aaaaaa",
+    borderWidth: 1,
+    width: EVENT_PIC_WIDTH,
+    height: EVENT_PIC_HEIGHT,
+    borderRadius: EVENT_PIC_WIDTH / 2
   },
   textInput: {
     margin: 15,
@@ -61,21 +61,21 @@ export const AddEventStyles = StyleSheet.create({
     fontSize: 40,
   },
   dateView: {
-    flexDirection: "column", 
+    flexDirection: "column",
   },
   startDatePickerView: {
-    flexDirection: "row", 
+    flexDirection: "row",
     alignItems: "center",
     marginLeft: 15
   },
   endDatePickerView: {
-    flexDirection: "row", 
+    flexDirection: "row",
     alignItems: "center",
     marginLeft: 15,
     marginTop: -15
   },
   emojiAndNameView: {
-    flexDirection: "row", 
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -95,11 +95,16 @@ export const AddEventStyles = StyleSheet.create({
     justifyContent: "center",
   },
   toolTipText: {
-    fontSize: 16, 
+    fontSize: 16,
     color: "white"
   },
   infoIcon: {
-    fontSize: 18, 
+    fontSize: 18,
     color: "#90BEDE"
+  },
+  addEndTimeBtn: {
+    width: "100%",
+    height: "40px",
+    marginTop: "5%"
   }
 });
