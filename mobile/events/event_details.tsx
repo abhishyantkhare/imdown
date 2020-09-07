@@ -273,14 +273,14 @@ const EventDetails = (props) => {
       <ScrollView keyboardShouldPersistTaps="handled" >
         {/* Event title + pic + details box */}
         {renderTitlePicDetailsBox()}
-        {Divider()}
+        <Divider />
         {/* Event description box */}
         {renderEventDescriptionBox()}
-        {Divider()}
+        <Divider />
         {/* Event "down list" box */}
         <Text style={EventDetailsStyles.down_threshold_text}> {`A calendar invite will be created once ${event.down_threshold} ${event.down_threshold > 1 ? "people are" : "person is"} down!`} </Text>
         {renderEventDownListBox()}
-        {Divider()}
+        <Divider />
       </ScrollView>
       {/* Button row */}
       {renderBottomRowButtons()}

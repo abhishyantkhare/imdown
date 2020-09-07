@@ -36,3 +36,15 @@ export const getUsersInSquad = (squadId: number) => {
         return response.json();
     })
 }
+
+export const postRequest = (endpoint: string, data: object) => {
+    const init: RequestInit = {
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify(data),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    };
+    return callBackend(endpoint, init)
+}

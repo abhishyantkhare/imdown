@@ -4,9 +4,10 @@ import { callBackend, getUsersInSquad } from "../backend/backend"
 import { event_styles } from "./events_styles";
 import { TextStyles } from "../TextStyles";
 import { useFocusEffect } from "@react-navigation/native";
-import { TabBar, TabView, SceneMap } from 'react-native-tab-view';
+import { TabBar, TabView } from 'react-native-tab-view';
 import { StandardButton } from "../components/button/Button"
 import moment from 'moment';
+import AppNavRouteProp from "../types/navigation";
 
 
 export type RSVPUser = {
@@ -14,7 +15,9 @@ export type RSVPUser = {
   email: String
 }
 
-const Events = (props) => {
+type EventsProps = AppNavRouteProp<"Events">
+
+const Events = (props: EventsProps) => {
   const userId = props.route.params.userId
   const tabViewInitialLayout = { width: Dimensions.get('window').width };
   const [tabViewRoutes] = React.useState([
@@ -62,19 +65,16 @@ const Events = (props) => {
   }
 
   const goToAddEvent = () => {
-    props.navigation.navigate("Add Event", {
-      squadId: squadId,
-      userEmail: userEmail
-    });
+    props.navigation.navigate("Add Event", props.route.params);
   }
 
   const goToEditSquad = (squadId: number, squadName: string, squadEmoji: string) => {
     props.navigation.navigate("Edit Squad", {
-        squadId: squadId,
-        squadName: squadName,
-        squadEmoji: squadEmoji
+      squadId: squadId,
+      squadName: squadName,
+      squadEmoji: squadEmoji
     });
-}
+  }
 
   const goToEventDetailsPage = (event: EventLite) => {
     props.navigation.navigate("EventDetails", {
@@ -125,9 +125,9 @@ const Events = (props) => {
 
   const renderSquadSettingsButton = () => {
     return (
-        <TouchableOpacity onPress={() => goToEditSquad(squadId, squadName, squadEmoji)} style={event_styles.squadSettingsButtonImage} >
-            <Image source={require('../assets/settings_button.png')} style={event_styles.squadSettingsButtonImage} />
-        </TouchableOpacity>
+      <TouchableOpacity onPress={() => goToEditSquad(squadId, squadName, squadEmoji)} style={event_styles.squadSettingsButtonImage} >
+        <Image source={require('../assets/settings_button.png')} style={event_styles.squadSettingsButtonImage} />
+      </TouchableOpacity>
     );
   }
 
@@ -144,17 +144,17 @@ const Events = (props) => {
   }, [props.navigation]);
 
   const renderSquadImage = () => {
-    return(
-      squadImageUrl && <View style = {event_styles.squadImageContainer}>
-        {squadImageUrl ? <Image source={{ uri: squadImageUrl }} style = {event_styles.squadImage} /> : <View> </View>}
+    return (
+      squadImageUrl && <View style={event_styles.squadImageContainer}>
+        {squadImageUrl ? <Image source={{ uri: squadImageUrl }} style={event_styles.squadImage} /> : <View> </View>}
       </View>
     )
   };
 
   const PendingEventsTabContents = () => (
     <FlatList
-      data={events.filter(event => !event.end_ms || event.end_ms > new Date()).sort((a, b) => 
-        (!a.start_ms  &&  b.start_ms || a.start_ms > b.start_ms) ? 1 : -1)}
+      data={events.filter(event => !event.end_ms || event.end_ms > new Date()).sort((a, b) =>
+        (!a.start_ms && b.start_ms || a.start_ms > b.start_ms) ? 1 : -1)}
       renderItem={renderEventItem}
       style={event_styles.eventList}
       keyExtractor={(item, index) => index.toString()}
@@ -163,7 +163,7 @@ const Events = (props) => {
 
   const PastEventsTabContents = () => (
     <FlatList
-      data={events.filter(event => event.end_ms && event.end_ms < new Date()).sort((a, b) => 
+      data={events.filter(event => event.end_ms && event.end_ms < new Date()).sort((a, b) =>
         (a.end_ms < b.end_ms) ? 1 : -1)}
       renderItem={renderEventItem}
       style={event_styles.eventList}
@@ -174,7 +174,7 @@ const Events = (props) => {
   const renderTabViewLabel = ({ route, focused, color }) => {
     return (
       <View>
-        <Text style={{ color: focused ? "#333333": "#BEBEBE", fontFamily: "Roboto_400Regular" }}>
+        <Text style={{ color: focused ? "#333333" : "#BEBEBE", fontFamily: "Roboto_400Regular" }}>
           {route.title}
         </Text>
       </View>
@@ -230,30 +230,30 @@ const Events = (props) => {
       width: barWidth
     }
 
-    return(
-    <View style={event_styles.downBarSectionContainer}>
-      <View style={event_styles.downBarContainer}>
-        <View style={[event_styles.downBarFilled, inlineStyleJSON]}></View>
-        <View style={[event_styles.downBarEmpty]}></View>
-      </View>
-      <View style={event_styles.downThresholdReachedContainer}>
-        {isOverThreshold && <Image source={ onPendingEventsTab ? require('../assets/blue_check_icon.png') : require('../assets/gray_check_icon.png')}  style={event_styles.downThresholdReachedIcon}/>}
-      </View>
-    </View>);
+    return (
+      <View style={event_styles.downBarSectionContainer}>
+        <View style={event_styles.downBarContainer}>
+          <View style={[event_styles.downBarFilled, inlineStyleJSON]}></View>
+          <View style={[event_styles.downBarEmpty]}></View>
+        </View>
+        <View style={event_styles.downThresholdReachedContainer}>
+          {isOverThreshold && <Image source={onPendingEventsTab ? require('../assets/blue_check_icon.png') : require('../assets/gray_check_icon.png')} style={event_styles.downThresholdReachedIcon} />}
+        </View>
+      </View>);
   }
 
-  const renderEventItem = ({ item }: { item: EventLite}) => {
+  const renderEventItem = ({ item }: { item: EventLite }) => {
     return (
       <TouchableOpacity activeOpacity={.7} onPress={() => { goToEventDetailsPage(item) }}>
         <View style={event_styles.eventItemOuterBox}>
-          <View style={{ flexDirection: 'row'}}>
+          <View style={{ flexDirection: 'row' }}>
             <View style={event_styles.eventEmojiBox}>
               <Text style={event_styles.eventEmoji}>{item.emoji || ""}</Text>
             </View>
             <View style={event_styles.eventItem}>
               <Text numberOfLines={2} style={[TextStyles.paragraph, event_styles.eventTitle]}>{item.name}</Text>
               <Text style={[TextStyles.secondary, event_styles.eventTimeProximity]}>{`${calcEventProximity(item)}`}</Text>
-              {<Image source={tabViewIndex == 0 ? require('../assets/arrow_forward_blue.png') : require('../assets/arrow_forward_gray.png')}  style={event_styles.forwardArrowIcon} />}
+              {<Image source={tabViewIndex == 0 ? require('../assets/arrow_forward_blue.png') : require('../assets/arrow_forward_gray.png')} style={event_styles.forwardArrowIcon} />}
             </View>
           </View>
           {renderDownBarSection(item)}
@@ -264,7 +264,7 @@ const Events = (props) => {
 
   return (
     <View style={event_styles.container}>
-      <ScrollView style={[event_styles.scrollViewContainer]} contentContainerStyle={{alignItems:"center"}}>
+      <ScrollView style={[event_styles.scrollViewContainer]} contentContainerStyle={{ alignItems: "center" }}>
         {renderSquadImage()}
         <View style={event_styles.squadNameEmojiContainer}>
           <Text style={TextStyles.headerLarge}>
@@ -275,13 +275,13 @@ const Events = (props) => {
           </Text>
         </View>
         <View style={event_styles.eventListContainer}>
-        <TabView
-          initialLayout={tabViewInitialLayout}
-          navigationState={{ index: tabViewIndex, routes: tabViewRoutes }}
-          onIndexChange={setTabViewIndex}
-          renderScene={() => null}
-          renderTabBar={renderTabBar}
-          swipeEnabled={false} />
+          <TabView
+            initialLayout={tabViewInitialLayout}
+            navigationState={{ index: tabViewIndex, routes: tabViewRoutes }}
+            onIndexChange={setTabViewIndex}
+            renderScene={() => null}
+            renderTabBar={renderTabBar}
+            swipeEnabled={false} />
           {tabViewIndex === 0 ? <PendingEventsTabContents /> : <PastEventsTabContents />}
         </View>
       </ScrollView>

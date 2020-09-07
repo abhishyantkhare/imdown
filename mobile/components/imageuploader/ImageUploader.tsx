@@ -9,7 +9,8 @@ import AuthLoadingScreen from "../../login/AuthLoadingScreen"
 
 
 type ImageUploaderProps = {
-    style?: object
+    style?: object,
+    onSetImage: (imageUrl: string) => void
 }
 
 const ImageUploader = (props: ImageUploaderProps) => {
@@ -38,8 +39,10 @@ const ImageUploader = (props: ImageUploaderProps) => {
                 setImageUrl("")
                 setUploaderText("Upload an image")
             } else {
-                setImageUrl(IMG_URL_BASE_64_PREFIX + response.data);
-                setUploaderText("Replace/Remove image")
+                const imageUrl = IMG_URL_BASE_64_PREFIX + response.data
+                setImageUrl(imageUrl);
+                setUploaderText("Replace/Remove image");
+                props.onSetImage(imageUrl)
             }
         });
     }

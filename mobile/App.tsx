@@ -7,7 +7,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Squads from "./squads/squads";
 import Events from "./events/events";
-import AddEventNavigator from "./events/AddEventNavigator";
 import AddEvent from "./events/AddEvent"
 import EventDetails from "./events/event_details";
 import EditEvent from "./events/edit_event";
@@ -20,16 +19,15 @@ import { Roboto_400Regular, Roboto_700Bold } from '@expo-google-fonts/roboto';
 import { Image, View } from "react-native";
 import FlashMessage from "react-native-flash-message";
 import AuthLoadingScreen from './login/AuthLoadingScreen';
+import { SquadRouteParams } from "./types/squad"
 
 
 export type RootStackParamList = {
   AddSquad: {
     email: string;
   };
-  AddEvent: {
-    squadId: number,
-    userEmail: string
-  }
+  AddEvent: SquadRouteParams;
+  Events: SquadRouteParams
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -79,7 +77,7 @@ export default function App() {
             <Stack.Screen name="SquadMembers" component={SquadMembers} />
           </Stack.Navigator>
         </NavigationContainer>
-        <FlashMessage position="top" hideStatusBar={true} />
+        <FlashMessage position="top" hideStatusBar={true} autoHide={true} />
       </View>
     );
   }

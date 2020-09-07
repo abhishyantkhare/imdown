@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { Modal, TouchableOpacity, Button, Text, View, SafeAreaView } from "react-native";
 import EmojiSelector from "react-native-emoji-selector";
 import { EmojiPickerStyles } from "./EmojiPickerStyles"
+import { DEFAULT_EMOJI } from "../../constants"
 
 type EmojiPickerProps = {
     defaultEmoji?: string
     onEmojiPicked: (emoji: string) => void
     emojiPickerTitle: string
 }
-const DEFAULT_EMOJI = "😎"
 
 const EmojiPicker = (props: EmojiPickerProps) => {
     const [showEmojiPicker, setShowEmojiPicker] = useState(false)

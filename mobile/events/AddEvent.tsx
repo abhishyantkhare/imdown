@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { ScrollView, View, useWindowDimensions } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 import EmojiPicker from "../components/emojipicker/EmojiPicker"
 import { AddEventStyles } from "./AddEventStyles"
 import RobotoTextInput from "../components/robototextinput/RobotoTextInput"
@@ -13,22 +13,29 @@ import Divider from "../components/divider/divider"
 import { StandardButton } from "../components/button/Button";
 import AppNavRouteProp from "../types/navigation";
 import { useFocusEffect } from "@react-navigation/native";
-import { getUsersInSquad } from "../backend/backend"
+import { getUsersInSquad, postRequest } from "../backend/backend"
+import moment from "moment"
+import { showMessage } from "react-native-flash-message";
+import { DEFAULT_EMOJI } from "../constants"
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+
 
 
 type AddEventProps = AppNavRouteProp<'AddEvent'>
 
 const AddEvent = (props: AddEventProps) => {
-    const [emoji, setEmojiPicked] = useState<string>();
-    const [startDate, setStartDate] = useState<Date>(new Date);
-    const [startTime, setStartTime] = useState<Date>(new Date);
+    const [emoji, setEmojiPicked] = useState<string>(DEFAULT_EMOJI);
+    const [eventTitle, setEventTitle] = useState("")
+    const [startDateTime, setStartDateTime] = useState<Date>(new Date());
     const [showEndTime, setShowEndTime] = useState(false)
-    const [endDate, setEndDate] = useState<Date | undefined>();
-    const [endTime, setEndTime] = useState<Date | undefined>();
+    const [endDateTime, setEndDateTime] = useState<Date | undefined>();
+    const [eventDescription, setEventDescription] = useState("")
     const [downThreshold, setDownThreshold] = useState(1)
     const [numUsers, setNumUsers] = useState(1)
+    const [imageUrl, setImageUrl] = useState("")
     const windowWidth = useWindowDimensions().width;
     const squadId = props.route.params.squadId
+    const userEmail = props.route.params.userEmail
 
     useFocusEffect(useCallback(() => {
         getUsersInSquad(squadId).then((data) => {
@@ -45,38 +52,82 @@ const AddEvent = (props: AddEventProps) => {
         )
     }
 
-    const renderEventNameSection = () => {
+    const generateEventForBackend = () => {
+        return {
+            email: userEmail,
+            title: eventTitle,
+            description: eventDescription || null,
+            emoji: emoji,
+            start_time: moment(startDateTime).valueOf(),
+            end_time: showEndTime ? moment(endDateTime).valueOf() : null,
+            // TODO: Add address + lat/lng to add event page
+            // address,
+            // lat,
+            // lng,
+            squad_id: squadId,
+            event_url: null,
+            image_url: imageUrl || null,
+            down_threshold: downThreshold
+        };
+    }
+
+    const validateEvent = () => {
+        if (!eventTitle) {
+            showMessage({
+                message: "Please enter an event name",
+                type: "danger"
+            })
+            return false
+        }
+        return true
+    }
+
+    const validateAndSaveEvent = () => {
+        if (validateEvent()) {
+            const endpoint = "create_event"
+            const data = generateEventForBackend()
+            postRequest(endpoint, data).then(() => {
+                props.navigation.navigate("Events", props.route.params)
+            })
+        }
+    }
+
+    const renderEventTitleSection = () => {
         return (
-            <Section label={"Event Name"}>
+            <Section label={"Event Title"}>
                 <RobotoTextInput
                     placeholder={"Awesome New Hangout!"}
+                    onChangeText={setEventTitle}
                 />
             </Section>
         )
     }
+
+    const switchEndDateTime = () => {
+        if (!showEndTime) {
+            setEndDateTime(moment(startDateTime).add(1, 'hour').toDate())
+        }
+        setShowEndTime(!showEndTime)
+    }
+
     const renderEventTimes = () => {
         return (
             <Section label={"Start and end times"}>
                 <DateTimeInput
-                    initialDate={startDate}
-                    onSetDate={setStartDate}
-                    initialTime={startTime}
-                    onSetTime={setStartTime}
+                    onSetDateTime={setStartDateTime}
                 />
                 {showEndTime ?
                     <DateTimeInput
-                        initialDate={endDate}
-                        onSetDate={setEndDate}
-                        initialTime={endTime}
-                        onSetTime={setEndTime}
+                        onSetDateTime={setEndDateTime}
                         style={{ marginTop: "5%" }}
+                        initialDateTime={endDateTime}
                     />
                     :
                     null
                 }
                 <SwitchButton
                     label={"Add End Time"}
-                    onChange={() => { setShowEndTime(!showEndTime) }}
+                    onChange={switchEndDateTime}
                     style={{ marginTop: "5%" }}
                 />
             </Section>
@@ -89,6 +140,7 @@ const AddEvent = (props: AddEventProps) => {
                     placeholder={"Tell everyone about your event!"}
                     multiline={true}
                     style={{ height: 100 }}
+                    onChangeText={setEventDescription}
                 />
             </Section>
         )
@@ -127,7 +179,10 @@ const AddEvent = (props: AddEventProps) => {
 
     const renderEventImage = () => {
         return (
-            <ImageUploader style={{ marginTop: "10%", marginBottom: "10%" }} />
+            <ImageUploader
+                style={{ marginTop: "10%", marginBottom: "10%" }}
+                onSetImage={setImageUrl}
+            />
         )
     }
 
@@ -138,23 +193,24 @@ const AddEvent = (props: AddEventProps) => {
                 <StandardButton
                     text={"Save"}
                     override_style={AddEventStyles.saveButton}
+                    onPress={validateAndSaveEvent}
                 />
             </View>
         )
     }
 
     return (
-        <ScrollView style={AddEventStyles.container}>
+        <KeyboardAwareScrollView style={AddEventStyles.container}>
             <View style={AddEventStyles.childContainer}>
                 {renderEventEmoji()}
-                {renderEventNameSection()}
+                {renderEventTitleSection()}
                 {renderEventTimes()}
                 {renderEventDescription()}
                 {renderEventDownThreshold()}
                 {renderEventImage()}
             </View>
             {renderSaveButton()}
-        </ScrollView>
+        </KeyboardAwareScrollView>
     )
 }
 

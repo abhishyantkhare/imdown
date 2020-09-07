@@ -39,7 +39,10 @@ const DateTimeModalDisplay = (props: DateTimeModalDisplayProps) => {
         return (
             <DateTimeModal
                 visible={showDatePicker}
-                onSetPress={setDateTime}
+                onSetPress={(newDateTime: Date) => {
+                    setDateTime(newDateTime);
+                    props.onSet(newDateTime)
+                }}
                 initialDateTime={dateTime}
                 mode={props.mode}
                 hideDatePicker={() => { setShowDatePicker(false) }}

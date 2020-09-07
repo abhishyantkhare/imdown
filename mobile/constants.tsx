@@ -1,4 +1,4 @@
-import { Event } from  "./events/events"
+import { Event } from "./events/events"
 
 // Constants for event details page
 export const DOWN_EMOJI_HEIGHT = 82
@@ -23,3 +23,5 @@ export const DEFAULT_EVENT = {
   down_threshold: 0,
   creator_user_id: 0
 } as Event
+
+export const DEFAULT_EMOJI = "😎"

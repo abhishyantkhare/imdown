@@ -85,12 +85,12 @@ const EditEvent = (props) => {
     return (
       <View style={EditEventStyles.event_details_edit_container}>
         <DateTimeInput onChange={setEventStartTime} initialValue={eventStartTime} />
-        {Divider()}
+        <Divider />
         <DateTimeInput onChange={setEventEndTime} initialValue={eventEndTime} />
         {/* Commenting out URL for FMVP */}
         {/* {Divider()}
         <TextInput style={[EditEventStyles.event_url, { textDecorationLine: event_url ? 'underline' : 'none' }]} placeholder="Event URL" value={event_url} autoCapitalize={'none'} onChangeText={(value) => setEventURL(value)} /> */}
-        {Divider()}
+        <Divider />
         <TextInput
           style={EditEventStyles.event_description}
           placeholder="Event Description"

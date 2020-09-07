@@ -4,6 +4,7 @@ import { TextInput } from "react-native"
 type RobotoTextInputProps = {
     placeholder: string,
     multiline?: boolean,
+    onChangeText: (newText: string) => void
     style?: object
 }
 
@@ -12,6 +13,7 @@ const RobotoTextInput = (props: RobotoTextInputProps) => {
         <TextInput
             placeholder={props.placeholder}
             multiline={props.multiline}
+            onChangeText={props.onChangeText}
             style={[
                 {
                     fontFamily: "Roboto_400Regular",
