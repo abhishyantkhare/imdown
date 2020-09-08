@@ -158,7 +158,7 @@ def edit_squad():
     squad.squad_emoji = content["squad_emoji"]
     # Send notification
     notify_squad_members(
-        squad.id, f"{squad.name} was edited!", users_to_exclude={squad.admin_id})
+        squad.id, squad.name, body="Squad details were updated.", users_to_exclude={squad.admin_id})
     db.session.add(squad)
     db.session.commit()
     return squad.jsonifySquad()
@@ -225,11 +225,11 @@ def respondToEvent(user_id, event_id, response):
     # send notification
     # we send a notification if the person responding is not the event creator and they are saying they're down
     if user_id != event.creator_user_id and user_event_response.response:
-        notif_body = ""
+        notif_body = f"{user.name} accepted the event."
         if threshold_passed:
-            notif_body = "Enough people are down! The event will automatically be scheduled on Google Calendar."
+            notif_body = notif_body + " " + "Enough people are down! The event will automatically be scheduled on Google Calendar."
         notify_squad_members(
-            event_squad_id, f"{user.name} is down for {event.title}!", body=notif_body, users_to_exclude={user_id})
+            event_squad_id, event.title, body=notif_body, users_to_exclude={user_id})
     return user_event_response.jsonify_eventResponse()
 
 
@@ -337,7 +337,7 @@ def addUserToSquad(squad_code, email):
         db.session.commit()
         # Send notification
         notify_squad_members(
-            squad_obj.id, f"{user_obj.name} joined {squad_obj.name}", users_to_exclude={user_obj.id})
+            squad_obj.id, squad_obj.name,body=f"{user_obj.name} joined the squad!", users_to_exclude={user_obj.id})
         response = {
             "status_code": 200,
             "message": "Sucessfully added squad.",
@@ -390,7 +390,7 @@ def createEvent():
 
     # send notification
     notify_squad_members(
-        event_squad.id, f"New event in {event_squad.name}!", body=e.title, users_to_exclude={u.id})
+        event_squad.id, event_squad.name, body="New event!", users_to_exclude={u.id})
     # schedule reminder
     e.schedule_reminder(scheduler)
     return e.jsonify_event()
@@ -430,7 +430,7 @@ def edit_event():
         return "Squad does not exist!", 400
     # Send notification
     notify_squad_members(
-        event_squad.id, f"Event updated in {event_squad.name}!", body=event.title, users_to_exclude={u.id})
+        event_squad.id, event.title, body="Event details were updated.", users_to_exclude={u.id})
     # Schedule reminder
     event.schedule_reminder(scheduler)
     return event.jsonify_event()
@@ -571,7 +571,7 @@ def delete_user():
         squad = Squad.query.get(squad_id)
         user = User.query.get(user_id)
         notify_squad_members(
-            squad_id, f"{user.name} was removed from {squad.name}")
+            squad_id, squad.name, body=f"{user.name} was removed.")
         # delete user
         db.session.delete(to_delete)
         db.session.commit()
@@ -616,7 +616,7 @@ def delete_squad():
 
     # Send notification
     notify_squad_members(
-        squad_to_delete.id, f"{squad_to_delete.name} was deleted", users_to_exclude={squad_to_delete.admin_id})
+        squad_to_delete.id, squad_to_delete.name,body="The squad was deleted." , users_to_exclude={squad_to_delete.admin_id})
     # get squads
     user_squad_memberships = SquadMembership.query.filter_by(
         user_id=user_id).all()
