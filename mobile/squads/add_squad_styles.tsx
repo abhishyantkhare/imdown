@@ -19,12 +19,12 @@ export const AddSquadStyles = StyleSheet.create({
     justifyContent: "center",
   },
   emojiBox: {
-    alignItems:"center", 
-    justifyContent:"center", 
-    backgroundColor:"#E7EAF6", 
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#E7EAF6",
     borderRadius: 5,
-    height:60,
-    width:60, 
+    height: 60,
+    width: 60,
   },
   emoji: {
     fontSize: 40,
@@ -61,19 +61,6 @@ export const AddSquadStyles = StyleSheet.create({
     textAlign: "left",
     width: 300,
   },
-  modalBackgroundBlur: {
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: 'rgba(100,100,100, 0.5)',
-    flex:1, 
-  },
-  modalVisibleContainer: {
-    alignItems: "center",
-    justifyContent:"center",
-    backgroundColor: "white",
-    borderRadius: 10, 
-    width: "80%"
-  },
   successIcon: {
     height: 60,
     width: 60,
@@ -83,11 +70,11 @@ export const AddSquadStyles = StyleSheet.create({
   successText: {
     color: "#84D3FF",
     marginBottom: 20,
-    textAlign: "center", 
+    textAlign: "center",
   },
   squadCreateModalText: {
     marginBottom: 15,
-    textAlign: "center", 
+    textAlign: "center",
     width: 250,
   },
   squadCodeValueText: {

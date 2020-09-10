@@ -31,5 +31,13 @@ export const EmojiPickerStyles = StyleSheet.create({
     emojiPicker: {
         flex: .95,
         marginTop: "5%"
+    },
+    emojiContainer: {
+        height: 55,
+        width: 55,
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 5,
+        backgroundColor: "#E7EAF6"
     }
 })

@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { Modal, TouchableOpacity, Button, Text, View, SafeAreaView } from "react-native";
 import EmojiSelector from "react-native-emoji-selector";
 import { EmojiPickerStyles } from "./EmojiPickerStyles"
+import { DEFAULT_EMOJI } from "../../constants"
 
 type EmojiPickerProps = {
     defaultEmoji?: string
     onEmojiPicked: (emoji: string) => void
     emojiPickerTitle: string
 }
-const DEFAULT_EMOJI = "😎"
 
 const EmojiPicker = (props: EmojiPickerProps) => {
     const [showEmojiPicker, setShowEmojiPicker] = useState(false)
@@ -44,9 +44,11 @@ const EmojiPicker = (props: EmojiPickerProps) => {
             </SafeAreaView>
         </Modal >
     ) : (
-            <TouchableOpacity onPress={() => setShowEmojiPicker(true)}>
-                <Text style={EmojiPickerStyles.emoji}>{emojiPicked}</Text>
-            </TouchableOpacity>
+            <View style={EmojiPickerStyles.emojiContainer}>
+                <TouchableOpacity onPress={() => setShowEmojiPicker(true)}>
+                    <Text style={EmojiPickerStyles.emoji}>{emojiPicked}</Text>
+                </TouchableOpacity>
+            </View>
         );
 }
 

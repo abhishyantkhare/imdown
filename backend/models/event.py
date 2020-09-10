@@ -103,29 +103,33 @@ class Event(db.Model):
     def get_responses_for_event(self):
         return EventResponse.query.filter_by(
         event_id=self.id).all()
-
-    def send_respond_reminder(self):
-        with application.app_context():
-            responses = self.get_responses_for_event()
-            accepted_users = set([r.user_id for r in responses if r.response])
-            notify_squad_members(
-                self.squad_id, 
-                f"Reminder: RSVP For {self.title}", 
-                body="Starts in 24 hours!",
-                users_to_exclude=accepted_users
-            )
         
+
     def schedule_reminder(self, scheduler):
         if not self.start_time:
             return
         job_id = f'reminder_event_{self.id}_squad_{self.squad_id}'
         job_ms = self.start_time - 24*60*60*1000 # Set to 24 hours before start time
         job_date = datetime.utcfromtimestamp(job_ms / 1000)
+
         scheduler.add_job(
-            self.send_respond_reminder, 
+            send_respond_reminder, 
+            args=[self.id, self.squad_id, self.title],
             trigger='date', 
             run_date=job_date, 
             timezone="UTC",
             id=job_id,
             replace_existing=True
             )
+
+def send_respond_reminder(event_id, squad_id, event_title):
+    with application.app_context():
+        responses = EventResponse.query.filter_by(
+        event_id=event_id).all()
+        accepted_users = set([r.user_id for r in responses if r.response])
+        notify_squad_members(
+            squad_id, 
+            f"Reminder: RSVP For {event_title}", 
+            body="Starts in 24 hours!",
+            users_to_exclude=accepted_users
+        )
