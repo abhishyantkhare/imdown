@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { View, Switch } from "react-native"
-import SmallLabel from "../smalllabel/SmallLabel"
+import Label from "../label/Label"
 import SwitchButtonStyles from "./SwitchButtonStyles"
 
 type SwitchButtonProps = {
@@ -14,7 +14,7 @@ const SwitchButton = (props: SwitchButtonProps) => {
     const [value, setValue] = useState(props.initialValue || false)
     return (
         <View style={[SwitchButtonStyles.switchButtonContainer, props.style]}>
-            <SmallLabel labelText={props.label} />
+            <Label labelText={props.label} size={"small"} />
             <Switch
                 style={{ right: 0, position: "absolute" }}
                 onValueChange={(val) => {

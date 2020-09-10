@@ -4,7 +4,7 @@ const SectionStyles = StyleSheet.create({
     labelHeader: {
         display: "flex",
         flexDirection: "row",
-        marginTop: "5%",
+        marginTop: "7.5%",
         marginBottom: "5%",
         alignItems: "baseline"
     }

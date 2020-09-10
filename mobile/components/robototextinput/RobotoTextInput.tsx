@@ -1,5 +1,6 @@
 import React from "react"
 import { TextInput } from "react-native"
+import { TextStyles } from "../../TextStyles"
 
 type RobotoTextInputProps = {
     placeholder: string,
@@ -15,9 +16,8 @@ const RobotoTextInput = (props: RobotoTextInputProps) => {
             multiline={props.multiline}
             onChangeText={props.onChangeText}
             style={[
+                TextStyles.paragraph,
                 {
-                    fontFamily: "Roboto_400Regular",
-                    fontSize: 20,
                     textAlign: "left",
                     paddingLeft: 15,
                     width: "100%",

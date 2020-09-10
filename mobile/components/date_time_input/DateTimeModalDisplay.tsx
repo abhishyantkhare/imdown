@@ -1,9 +1,9 @@
 import React, { useState } from "react"
-import { View, Text, TouchableOpacity } from "react-native"
+import { View, TouchableOpacity } from "react-native"
 import moment from "moment";
 import DateTimeModalDisplayStyles from "./DateTimeModalDisplayStyles"
 import DateTimeModal from "./DateTimeModal"
-import SmallLabel from "../smalllabel/SmallLabel"
+import Label from "../label/Label"
 
 
 
@@ -29,7 +29,7 @@ const DateTimeModalDisplay = (props: DateTimeModalDisplayProps) => {
         return (
             <View style={DateTimeModalDisplayStyles.displayContainer}>
                 <TouchableOpacity onPress={() => { setShowDatePicker(true) }}>
-                    <SmallLabel labelText={formatDateTime()} />
+                    <Label labelText={formatDateTime()} size="small" />
                 </TouchableOpacity>
             </View>
         )

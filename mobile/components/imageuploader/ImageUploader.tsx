@@ -1,11 +1,10 @@
 import React, { useState } from "react"
 import { View, Image, TouchableOpacity } from "react-native"
-import SmallLabel from "../smalllabel/SmallLabel"
+import Label from "../label/Label"
 import OptionalLabel from "../optionallabel/OptionalLabel"
 import ImageUploaderStyles from "./ImageUploaderStyles"
 import ImagePicker from 'react-native-image-picker';
 import { IMG_URL_BASE_64_PREFIX } from "../../constants"
-import AuthLoadingScreen from "../../login/AuthLoadingScreen"
 
 
 type ImageUploaderProps = {
@@ -62,8 +61,9 @@ const ImageUploader = (props: ImageUploaderProps) => {
                             source={require("../../assets/add_photo.png")}
                         />
                         <View style={{ marginLeft: "5%" }}>
-                            <SmallLabel
+                            <Label
                                 labelText={uploaderText}
+                                size={"small"}
                             />
                             {!imageUrl ?
                                 <OptionalLabel style={{ marginTop: "5%" }} />

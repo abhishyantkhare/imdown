@@ -7,7 +7,6 @@ import DateTimeInput from "../components/date_time_input/DateTimeInput"
 import Section from "../components/section/Section"
 import SwitchButton from "../components/switchbutton/SwitchButton"
 import Slider from "@react-native-community/slider";
-import SmallLabel from "../components/smalllabel/SmallLabel";
 import ImageUploader from "../components/imageuploader/ImageUploader"
 import Divider from "../components/divider/divider"
 import { StandardButton } from "../components/button/Button";
@@ -18,6 +17,7 @@ import moment from "moment"
 import { showMessage } from "react-native-flash-message";
 import { DEFAULT_EMOJI } from "../constants"
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import Label from "../components/label/Label";
 
 
 
@@ -79,6 +79,15 @@ const AddEvent = (props: AddEventProps) => {
             })
             return false
         }
+        if (showEndTime && endDateTime) {
+            if (endDateTime <= startDateTime) {
+                showMessage({
+                    message: "End time cannot be before start time",
+                    type: "danger"
+                })
+                return false
+            }
+        }
         return true
     }
 
@@ -94,7 +103,7 @@ const AddEvent = (props: AddEventProps) => {
 
     const renderEventTitleSection = () => {
         return (
-            <Section label={"Event Title"}>
+            <Section label={"Event Title"} style={{ marginTop: "10%" }}>
                 <RobotoTextInput
                     placeholder={"Awesome New Hangout!"}
                     onChangeText={setEventTitle}
@@ -149,7 +158,8 @@ const AddEvent = (props: AddEventProps) => {
     const renderEventDownThreshold = () => {
         return (
             <Section label={"Minimum Attendees"}>
-                <SmallLabel
+                <Label
+                    size={"small"}
                     labelText={"Once the minimum number of attendees accepts the invitation, the event will be scheduled and a calendar invite will be sent to all participants."}
                 />
                 <View style={{ alignItems: "center" }}>
@@ -165,11 +175,12 @@ const AddEvent = (props: AddEventProps) => {
                             minimumTrackTintColor="#90BEDE" />
                     </View>
                 </View>
-                <SmallLabel
+                <Label
+                    size="small"
                     labelText={downThreshold.toString()}
                     style={{
-                        left: (downThreshold - 1) * (windowWidth / 2),
-                        marginLeft: "15%",
+                        left: (downThreshold - 1) * windowWidth * .6 / (Math.max(numUsers, 2) * 1.03 - 1),
+                        marginLeft: "12.5%",
                         marginTop: "5%"
                     }}
                 />

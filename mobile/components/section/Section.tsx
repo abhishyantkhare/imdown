@@ -8,12 +8,13 @@ import SectionStyles from "./SectionStyles"
 type SectionProps = {
     label: string,
     children: React.ReactNode,
-    optional?: boolean
+    optional?: boolean,
+    style?: object
 }
 
 const Section = (props: SectionProps) => {
     return (
-        <View>
+        <View style={[props.style]}>
             <View style={SectionStyles.labelHeader}>
                 <Label
                     labelText={props.label}
@@ -27,7 +28,7 @@ const Section = (props: SectionProps) => {
                 }
             </View>
             {props.children}
-            <Divider style={{ marginTop: "10%" }} />
+            <Divider style={{ marginTop: "12.5%" }} />
         </View>
     )
 }

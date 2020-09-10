@@ -36,13 +36,12 @@ const DateTimeInput = (props: DateTimeInputProps) => {
             newTime.getMinutes(),
             newTime.getSeconds()
         )
-        console.log(`new time ${newDateTime}`)
         props.onSetDateTime(newDateTime)
     }
 
     return (
         <View style={[props.style, DateTimeInputStyles.dateTimeContainer]}>
-            <View style={{ flex: .6 }}>
+            <View style={{ flex: .65 }}>
                 <DateTimeModalDisplay
                     mode={"date"}
                     onSet={setDateForDateTime}

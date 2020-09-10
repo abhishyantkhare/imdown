@@ -5,7 +5,8 @@ const DateTimeModalDisplayStyles = StyleSheet.create({
         backgroundColor: "#E7EAF6",
         padding: 15,
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+        borderRadius: 5
     },
     dateTimeModalStyle: {
         marginTop: "auto",
