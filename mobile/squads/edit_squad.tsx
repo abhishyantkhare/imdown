@@ -53,7 +53,7 @@ const EditSquad = (props) => {
         return (
             <View style={EditSquadStyles.additional_fields_container}>
                 {renderEmojiField()}
-                {Divider()}
+                <Divider />
             </View>
         );
     }
