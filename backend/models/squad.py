@@ -2,7 +2,7 @@ from init import db
 from flask import jsonify
 import time
 import shortuuid
-
+from sqlalchemy.dialects import mysql
 
 
 class Squad(db.Model):
@@ -11,10 +11,11 @@ class Squad(db.Model):
     squad_emoji = db.Column(db.String(64), index=False, unique=False)
     invite_link = db.Column(db.String(64), index=False, unique=True)
     code = db.Column(db.String(64), index=False, unique=True)
+    image = db.Column(mysql.MEDIUMTEXT(), index=False, unique=False)
     admin_id = db.Column(db.Integer, index=False, unique=False)
 
-    def squadDict(self):
-        return {
+    def squadDict(self, include_image=False):
+        squad_dict = {
             'id': self.id,
             'name': self.name,
             'squad_emoji': self.squad_emoji,
@@ -22,6 +23,9 @@ class Squad(db.Model):
             'code': self.code,
             'admin_id': self.admin_id
         }
+        if include_image:
+            squad_dict['image'] = self.image
+        return squad_dict
 
     def __repr__(self):
         return 'Squad {}'.format(self.name)

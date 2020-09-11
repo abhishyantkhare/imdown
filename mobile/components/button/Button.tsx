@@ -7,6 +7,7 @@ import StandardButtonStyles from './ButtonStyles';
 type StandardButtonProps = {
   text: string;
   overrideStyle?: object;
+  textOverrideStyle?: object;
   onPress: () => void;
 };
 
@@ -17,7 +18,7 @@ function StandardButton(props: StandardButtonProps) {
       style={[StandardButtonStyles.button, overrideStyle]}
       onPress={() => onPress()}
     >
-      <Text style={StandardButtonStyles.buttonText}>{`${text}`}</Text>
+      <Text style={[StandardButtonStyles.buttonText, props.textOverrideStyle]}>{`${text}`}</Text>
     </TouchableOpacity>
   );
 }
