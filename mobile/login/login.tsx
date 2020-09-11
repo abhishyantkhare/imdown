@@ -15,7 +15,7 @@ const Login = ({ navigation }) => {
     const IOS_CLIENT_ID = "1097983281822-8qr8vltrud1hj3rfme2khn1lmbj2s522.apps.googleusercontent.com";
     const WEB_ID = "1097983281822-8k2kede3hrgrqi15r869mf3u5at6q6ib.apps.googleusercontent.com"
 
-    const [deviceToken, setDeviceToken] = useState("")
+    let deviceToken: string;
     const [isSignedIn, setIsSignedIn] = useState<boolean>(undefined)
 
 
@@ -24,8 +24,7 @@ const Login = ({ navigation }) => {
     }
 
     const getDeviceToken = async () => {
-        const token = await messaging().getToken()
-        await setDeviceToken(token)
+        deviceToken = await messaging().getToken()
     }
 
     const notificationsSetup = async () => {
@@ -74,7 +73,7 @@ const Login = ({ navigation }) => {
 
     const setup = async () => {
         await notificationsSetup();
-        await checkIfUserSignedIn()
+        await checkIfUserSignedIn();
         googleSetup()
     }
 
@@ -85,11 +84,10 @@ const Login = ({ navigation }) => {
 
 
 
-    const goToSquads = (email: string) => {
-        setBackendDeviceToken().then(() => {
-            navigation.navigate("Squads", {
-                email: email
-            });
+    const goToSquads = async (email: string) => {
+        await setBackendDeviceToken()
+        navigation.navigate("Squads", {
+            email: email
         });
     };
 
