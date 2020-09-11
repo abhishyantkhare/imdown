@@ -29,7 +29,7 @@ const Events = (props: EventsProps) => {
   const [squadCode, setSquadCode] = useState(props.route.params.squadCode)
   const [squadName, setSquadName] = useState(props.route.params.squadName)
   const [squadEmoji, setSquadEmoji] = useState(props.route.params.squadEmoji)
-  const [squadImageUrl, setSquadImageUrl] = useState(props.route.params.squadImageUrl)
+  const [squadImage, setSquadImage] = useState(props.route.params.squadImage)
   const [userEmail, setUserEmail] = useState(props.route.params.userEmail)
   const [numUsers, setNumUsers] = useState(0)
   const [tabViewIndex, setTabViewIndex] = React.useState(0);
@@ -68,11 +68,13 @@ const Events = (props: EventsProps) => {
     props.navigation.navigate("Add Event", props.route.params);
   }
 
-  const goToEditSquad = (squadId: number, squadName: string, squadEmoji: string) => {
-    props.navigation.navigate("Edit Squad", {
+  const goToViewSquad = (squadId: number, squadName: string, squadEmoji: string) => {
+    props.navigation.navigate("View Squad", {
       squadId: squadId,
       squadName: squadName,
-      squadEmoji: squadEmoji
+      squadEmoji: squadEmoji,
+      squadCode: squadCode,
+      squadImage: squadImage
     });
   }
 
@@ -100,15 +102,34 @@ const Events = (props: EventsProps) => {
     });
   }
 
+  const getSquadDetails = () => {
+    const endpoint = 'get_squad?squad_id=' + squadId
+    const init: RequestInit = {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    }
+    callBackend(endpoint, init).then(response => {
+      return response.json();
+    }).then(data => {
+        setSquadName(data.name)
+        setSquadEmoji(data.squad_emoji)
+        setSquadImage(data.image)
+    });
+  }
+
   const getNumUsers = () => {
     getUsersInSquad(squadId).then((data) => {
       setNumUsers(data.user_info.length)
     })
   }
 
+
   useFocusEffect(
     useCallback(() => {
       getEvents();
+      getSquadDetails()
       getNumUsers();
     }, []))
 
@@ -125,8 +146,8 @@ const Events = (props: EventsProps) => {
 
   const renderSquadSettingsButton = () => {
     return (
-      <TouchableOpacity onPress={() => goToEditSquad(squadId, squadName, squadEmoji)} style={event_styles.squadSettingsButtonImage} >
-        <Image source={require('../assets/settings_button.png')} style={event_styles.squadSettingsButtonImage} />
+      <TouchableOpacity onPress={() => goToViewSquad(squadId, squadName, squadEmoji)} style={event_styles.squadSettingsButtonImage} >
+          <Image source={require('../assets/settings_button.png')} style={event_styles.squadSettingsButtonImage} />
       </TouchableOpacity>
     );
   }
@@ -143,10 +164,11 @@ const Events = (props: EventsProps) => {
     });
   }, [props.navigation]);
 
+
   const renderSquadImage = () => {
     return (
-      squadImageUrl && <View style={event_styles.squadImageContainer}>
-        {squadImageUrl ? <Image source={{ uri: squadImageUrl }} style={event_styles.squadImage} /> : <View> </View>}
+      <View style={event_styles.squadImageContainer}>
+      { squadImage &&  <Image source={{ uri: squadImage }} style={event_styles.squadImage} /> }
       </View>
     )
   };

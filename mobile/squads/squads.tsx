@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useState } from "react";
-import { Image, View, Text, TouchableOpacity, Alert } from "react-native";
+import { Image, View, Text, TouchableOpacity, TouchableWithoutFeedback, Alert } from "react-native";
 import { squad_styles } from "./squads_styles";
 import { TextStyles } from "../TextStyles";
 import { Button } from "react-native";
@@ -8,6 +8,7 @@ import { SwipeRow, SwipeListView } from "react-native-swipe-list-view"
 import { useFocusEffect } from "@react-navigation/native";
 import { StandardButton } from "../components/button/Button"
 import BlurModal from "../components/blurmodal/BlurModal"
+import BottomSheet from 'reanimated-bottom-sheet';
 
 
 export type Squad = {
@@ -23,17 +24,28 @@ const Squads = (props) => {
     const [email, setEmail] = useState(props.route.params.email)
     const [userId, setUserId] = useState()
     const [addSquadModal, setAddSquadModal] = useState(false)
+    const sheetRef = React.useRef(null);
+    const [bottomSheetRefIndex, setBottomSheetRefIndex] = useState(0)
 
+    const hideBottomSheet = () => {
+        setBottomSheetRefIndex(0)
+        sheetRef.current.snapTo(0)
+    }
+
+    const showBottomSheet = () => {
+        setBottomSheetRefIndex(1)
+        sheetRef.current.snapTo(1)
+    }
 
     const goToAddNewSquad = () => {
-        setAddSquadModal(false)
+        hideBottomSheet()
         props.navigation.navigate("Add New Squad", {
             email: email,
         });
     }
 
     const goToAddExistingSquad = () => {
-        setAddSquadModal(false)
+        hideBottomSheet()
         props.navigation.navigate("Add Existing Squad", {
             email: email,
         });
@@ -106,6 +118,7 @@ const Squads = (props) => {
 
 
     const goToEvents = (id: number, name: string, squad_emoji: string, squad_code: string) => {
+        sheetRef.current.snapTo(0)
         props.navigation.navigate("Events", {
             squadId: id,
             squadName: name,
@@ -222,9 +235,38 @@ const Squads = (props) => {
         );
     }
 
+    const renderHeader = () => (
+        <View style={{ overflow: 'hidden', paddingTop: 5 }}>
+            <View style={{height: 40, backgroundColor:"white", justifyContent: "center", shadowColor: '#000', shadowOffset: { width: 1, height: -1 }, shadowOpacity:  0.4, shadowRadius: 3, elevation: 5,}}>
+            <View
+                style={{
+                alignSelf: "center",
+                width: 100,
+                height: 5,
+                borderRadius: 2,
+                backgroundColor: "#C4C4C4"}}>
+            </View>
+        </View>
+        </View>
+
+    );
+
+    const renderContent = () => (
+        <View
+            style={{
+            backgroundColor: 'white',
+            padding: 16,
+            height: 450,
+        }}>
+            <StandardButton text="Join an existing squad" onPress={() => goToAddExistingSquad()} />
+            <StandardButton text="Create a new squad" override_style={{ marginTop: 10, marginBottom: "10%" }} onPress={() => {console.log("ADDING NEW2"); goToAddNewSquad()}} />
+        </View>
+    );
+
+
     const renderAddSquadButton = () => {
         return (
-            <TouchableOpacity onPress={() => setAddSquadModal(true)} style={squad_styles.addSquadContainer} >
+            <TouchableOpacity onPress={() => bottomSheetRefIndex ? hideBottomSheet() : showBottomSheet()} style={squad_styles.addSquadContainer} >
                 <Image source={require('../assets/add_squad_button.png')} style={squad_styles.addSquadButton} />
             </TouchableOpacity>
         );
@@ -272,6 +314,16 @@ const Squads = (props) => {
                 renderItem={renderSquadItem}
             /> : renderNoSquadsView()}
             {renderAddSquadModal()}
+            <BottomSheet
+                enabledContentTapInteraction={false}
+                initialSnap={0}
+                ref={sheetRef}
+                snapPoints={[0, 250, 300]}
+                borderRadius={10}
+                onCloseEnd={() => hideBottomSheet()}
+                renderHeader={renderHeader}
+                renderContent={renderContent}
+            />
         </View>
     );
 }

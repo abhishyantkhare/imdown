@@ -158,6 +158,10 @@ def edit_squad():
         raise NotFound(f"Could not find Squad {squad_id}")
     squad.name = content["squad_name"]
     squad.squad_emoji = content["squad_emoji"]
+    if "squad_image" in content:
+        squad.image = content["squad_image"]
+    else:
+        squad.image = None
     # Send notification
     notify_squad_members(
         squad.id, squad.name, body="Squad details were updated.", users_to_exclude={squad.admin_id})
@@ -542,6 +546,20 @@ def get_squads():
             raise NotFound(f"Could not find Squad {squad_id}")
         squads_lst.append(squad)
     return jsonify(squads=[squad.squadDict() for squad in squads_lst])
+
+@application.route("/get_squad", methods=["GET"])
+# If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
+@login_required
+def getSquad():
+    args = request.args
+    validate_request_args(args, 'squad_id')
+    squad_id = args["squad_id"]
+    squad = Squad.query.get(squad_id)
+    if squad is None:
+        raise NotFound(f"Squad {squad_id} does not exist")
+    ret = jsonify(squad.squadDict(include_image=True))
+    print("getting squad. ret is " + str(ret))
+    return ret
 
 
 @application.route("/get_users", methods=["GET"])

@@ -461,10 +461,20 @@ PODS:
   - RNGoogleSignin (4.0.3):
     - GoogleSignIn (~> 5.0.0)
     - React
+  - RNImageCropPicker (0.34.1):
+    - React-Core
+    - React-RCTImage
+    - RNImageCropPicker/QBImagePickerController (= 0.34.1)
+    - TOCropViewController
+  - RNImageCropPicker/QBImagePickerController (0.34.1):
+    - React-Core
+    - React-RCTImage
+    - TOCropViewController
   - RNReanimated (1.9.0):
     - React
   - RNScreens (2.9.0):
     - React
+  - TOCropViewController (2.5.4)
   - UMAppLoader (1.2.0)
   - UMBarCodeScannerInterface (5.2.1)
   - UMCameraInterface (5.2.1)
@@ -560,6 +570,7 @@ DEPENDENCIES:
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - "RNGoogleSignin (from `../node_modules/@react-native-community/google-signin`)"
+  - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - UMAppLoader (from `../node_modules/unimodules-app-loader/ios`)
@@ -607,6 +618,7 @@ SPEC REPOS:
     - OpenSSL-Universal
     - PromisesObjC
     - Protobuf
+    - TOCropViewController
     - YogaKit
 
 EXTERNAL SOURCES:
@@ -712,6 +724,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-gesture-handler"
   RNGoogleSignin:
     :path: "../node_modules/@react-native-community/google-signin"
+  RNImageCropPicker:
+    :path: "../node_modules/react-native-image-crop-picker"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
@@ -825,8 +839,10 @@ SPEC CHECKSUMS:
   RNFBMessaging: 8656a64ae9d18319a152d35c17852c90e35a037c
   RNGestureHandler: 8f09cd560f8d533eb36da5a6c5a843af9f056b38
   RNGoogleSignin: ccf71ee4b6cfd324fd788a41e457e2043838c0d9
+  RNImageCropPicker: 39ec170dc53c227ea352b706c76f7960070309a8
   RNReanimated: b5ccb50650ba06f6e749c7c329a1bc3ae0c88b43
   RNScreens: c526239bbe0e957b988dacc8d75ac94ec9cb19da
+  TOCropViewController: 2a1ae1242600b1f2d996fd91a5268b2309a33b5c
   UMAppLoader: 61049c8d55590b74e9ae1d5429bf68d96b4a2528
   UMBarCodeScannerInterface: e5e4c87797d3d01214e25cd1618866caf5d4f17f
   UMCameraInterface: 415ac060034edecacdbbaa739c223e3f276e0056
