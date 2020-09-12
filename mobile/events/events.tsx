@@ -151,6 +151,12 @@ const Events = (props: EventsProps) => {
     )
   };
 
+  const goToSquadMembers = () => {
+    props.navigation.navigate("SquadMembers", { squadId: squadId })
+  }
+
+
+
   const PendingEventsTabContents = () => (
     <FlatList
       data={events.filter(event => !event.end_ms || event.end_ms > new Date()).sort((a, b) =>
@@ -270,9 +276,11 @@ const Events = (props: EventsProps) => {
           <Text style={TextStyles.headerLarge}>
             {squadEmoji}
           </Text>
-          <Text style={[TextStyles.headerLarge, event_styles.squadTitleName]}>
-            {squadName}
-          </Text>
+          <TouchableOpacity onPress={goToSquadMembers}>
+            <Text style={[TextStyles.headerLarge, event_styles.squadTitleName]}>
+              {squadName}
+            </Text>
+          </TouchableOpacity>
         </View>
         <View style={event_styles.eventListContainer}>
           <TabView

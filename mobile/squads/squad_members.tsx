@@ -4,9 +4,11 @@ import { squad_members_styles } from "./squad_members_styles";
 import { callBackend, getUsersInSquad } from "../backend/backend"
 import { SwipeListView, SwipeRow } from "react-native-swipe-list-view";
 import { useFocusEffect } from "@react-navigation/native";
+import AppNavRouteProp from "../types/navigation";
 
+type SquadMembersProps = AppNavRouteProp<"SquadMembers">
 
-const SquadMembers = (props) => {
+const SquadMembers = (props: SquadMembersProps) => {
     const [users, setUsers] = useState([])
     const [squadId, setSquadId] = useState(props.route.params.squadId)
 

@@ -27,7 +27,10 @@ export type RootStackParamList = {
     email: string;
   };
   AddEvent: SquadRouteParams;
-  Events: SquadRouteParams
+  Events: SquadRouteParams;
+  SquadMembers: {
+    squadId: number
+  }
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -74,7 +77,7 @@ export default function App() {
             <Stack.Screen name="Add Event" component={AddEvent} options={hiddenHeaderOptions} />
             <Stack.Screen name="EventDetails" component={EventDetails} />
             <Stack.Screen name="Edit Event" component={EditEvent} />
-            <Stack.Screen name="SquadMembers" component={SquadMembers} />
+            <Stack.Screen name="SquadMembers" component={SquadMembers} options={{ headerTitle: "Squad Members" }} />
           </Stack.Navigator>
         </NavigationContainer>
         <FlashMessage position="top" hideStatusBar={true} autoHide={true} />
