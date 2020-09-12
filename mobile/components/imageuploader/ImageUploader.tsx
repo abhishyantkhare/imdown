@@ -1,81 +1,73 @@
 import React, { useState } from "react"
-import { View, Image, TouchableOpacity } from "react-native"
-import Label from "../label/Label"
-import OptionalLabel from "../optionallabel/OptionalLabel"
-import ImageUploaderStyles from "./ImageUploaderStyles"
-import ImagePicker from 'react-native-image-picker';
+import { View, TouchableOpacity } from "react-native"
 import { IMG_URL_BASE_64_PREFIX } from "../../constants"
-
+import { StandardButton } from "../button/Button";
+import ImagePicker from 'react-native-image-crop-picker';
+import BlurModal from "../blurmodal/BlurModal"
+import ImageUploaderStyles from "./ImageUploaderStyles";
 
 type ImageUploaderProps = {
-    style?: object,
-    onSetImage: (imageUrl: string) => void
+    children: React.ReactNode
+    image: string
+    imageHeight: number
+    imageWidth: number,
+    touchableStyle: object,
+    onImagePicked: (image: string) => void
 }
 
 const ImageUploader = (props: ImageUploaderProps) => {
+    const [uploadImageModal, setUploadImageModal] = useState(false)
+    const [image, setImage] = useState(props.image)
 
-    const [imageUrl, setImageUrl] = useState("");
-    const [uploaderText, setUploaderText] = useState("Upload an image")
+    const onImageUploaderToggled = () => {
+        setUploadImageModal(!uploadImageModal)
+    }
 
-    const image_picker_options = {
-        title: 'Select photo',
-        customButtons: imageUrl ? [{ name: 'remove', title: 'Remove photo' }] : [],
-        maxWidth: 200,
-        maxHeight: 200,
-        storageOptions: {
-            skipBackup: true,
-            path: 'images',
-        },
-    };
-
-    const showImagePicker = () => {
-        ImagePicker.showImagePicker(image_picker_options, (response) => {
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-            } else if (response.customButton) {
-                setImageUrl("")
-                setUploaderText("Upload an image")
-            } else {
-                const imageUrl = IMG_URL_BASE_64_PREFIX + response.data
-                setImageUrl(imageUrl);
-                setUploaderText("Replace/Remove image");
-                props.onSetImage(imageUrl)
-            }
+    const pickImageFromGallery = () => {
+        ImagePicker.openPicker({ 
+            width: props.imageWidth,
+            height: props.imageHeight,
+            cropping: true,
+            includeBase64: true
+        }).then(image => {
+            const imageEncoded = IMG_URL_BASE_64_PREFIX + image.data
+            props.onImagePicked(imageEncoded);
+            setImage(imageEncoded);
+            setUploadImageModal(false)
+        });
+      }
+    
+    const pickImageFromCamera = () => {
+        ImagePicker.openCamera({
+            width: props.imageWidth,
+            height: props.imageHeight,
+            cropping: true,
+            includeBase64: true
+        }).then(image => {
+            const imageEncoded = IMG_URL_BASE_64_PREFIX + image.data
+            props.onImagePicked(imageEncoded);
+            setImage(imageEncoded);
+            setUploadImageModal(false)
         });
     }
+
+    const deleteImage = () => {
+        setImage("");
+        props.onImagePicked("");
+        setUploadImageModal(false);
+    }
     return (
-        <View style={props.style}>
-            {imageUrl ?
-                <Image source={{ uri: imageUrl }}
-                    style={{ height: 300 }}
-                />
-                :
-                null
-            }
-            <View style={[ImageUploaderStyles.imageUploadBox, props.style]}>
-                <TouchableOpacity onPress={showImagePicker}>
-                    <View style={ImageUploaderStyles.uploadLabelRow}>
-                        <Image
-                            source={require("../../assets/add_photo.png")}
-                        />
-                        <View style={{ marginLeft: "5%" }}>
-                            <Label
-                                labelText={uploaderText}
-                                size={"small"}
-                            />
-                            {!imageUrl ?
-                                <OptionalLabel style={{ marginTop: "5%" }} />
-                                :
-                                null
-                            }
-                        </View>
-                    </View>
-                </TouchableOpacity>
-            </View>
+        <View>
+            <TouchableOpacity style={props.touchableStyle} onPress={()=> onImageUploaderToggled()}>
+                {props.children}
+            </TouchableOpacity>
+            <BlurModal visible={uploadImageModal} cancel={() => setUploadImageModal(false)}>
+                <StandardButton text="Take photo from camera" onPress={() => pickImageFromCamera()} />
+                <StandardButton text="Choose photo from gallery" override_style={ImageUploaderStyles.chooseFromGalleryButton} onPress={() => pickImageFromGallery()} />
+                {image ? <StandardButton text="Delete image" override_style={ImageUploaderStyles.deleteImageButton} onPress={() => deleteImage()} /> : <View></View> }
+            </BlurModal>
         </View>
-    )
+    );
 }
 
 export default ImageUploader

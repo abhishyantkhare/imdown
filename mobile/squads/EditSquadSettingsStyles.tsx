@@ -1,11 +1,21 @@
 import { StyleSheet } from "react-native";
 export const EditSquadSettingsStyles = StyleSheet.create({
+  headerRight: {
+    alignItems: "center",
+    flexDirection: "row", 
+    marginRight: 20 
+  },
   container: {
     flex: 1
   },
   viewableContainer: {
     backgroundColor: "#ffffff",
-    flex: 1
+    flex: 1,
+    paddingBottom: "10%"
+  },
+  squadImageContainer: {
+    alignSelf: "center",
+    marginTop: "10%",
   },
   squadImage: {
     height: 200,
@@ -43,6 +53,14 @@ export const EditSquadSettingsStyles = StyleSheet.create({
     marginHorizontal: "10%",
     marginVertical: "5%",
   },
+  emojiBox: {
+    alignItems:"center", 
+    justifyContent:"center", 
+    backgroundColor:"#E7EAF6", 
+    borderRadius: 5,
+    height:60,
+    width:60, 
+  },
   squadCodeContainer: {
     backgroundColor: "#ffff",
     marginLeft: "10%",
@@ -59,27 +77,10 @@ export const EditSquadSettingsStyles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#ffff",
   },
-  headerRight: {
-    alignItems: "center",
-    flexDirection: "row", 
-    marginRight: 20 
-  },
   editSquadButtonImage: {
     marginHorizontal: 10,
     height: 40,
     width: 40,
-  },
-  emojiBox: {
-    alignItems:"center", 
-    justifyContent:"center", 
-    backgroundColor:"#E7EAF6", 
-    borderRadius: 5,
-    height:60,
-    width:60, 
-  },
-  squadImageContainer: {
-    alignSelf: "center",
-    marginTop: "10%",
   },
   actionSectionImage: {
     height: 30, 
@@ -94,5 +95,33 @@ export const EditSquadSettingsStyles = StyleSheet.create({
   editMembersText: {
     marginLeft: "3%"
   },
+  deleteSquadButton: {
+    alignSelf: "flex-start",
+    backgroundColor: "#FC6E5E", 
+    marginLeft: 0, 
+    marginTop: "15%",
+    width: 150
+  },
+  deleteSquadIcon: {
+    height: 60,
+    width: 60,
+    marginBottom: "10%",
+    marginTop: "20%"
+  },
+  deleteSquadModalButtonRow: {
+    flexDirection: 'row',
+    justifyContent:'space-around',
+    marginVertical: "15%"
+  },
+  deleteSquadModalCancelButton: {
+    backgroundColor: "#ffffff", 
+    borderColor: "#84D3FF", 
+    borderWidth: 2,
+    width: 125
+  },
+  deleteSquadModalDeleteButton: {
+    backgroundColor: "#FC6E5E",
+    width: 125
+  }
 });
 

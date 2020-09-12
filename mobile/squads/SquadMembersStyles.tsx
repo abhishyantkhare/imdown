@@ -17,14 +17,13 @@ export const SquadMembersStyles = StyleSheet.create({
     alignItems: "center",
     height: 50,
   },
+  deleteIcon: {
+    height: 25,
+    width: 25
+  },
   userImage: {
     width: 30, 
     height: 30,
     borderRadius: 24/2
-  },
-  deleteIcon: {
-    height: 25,
-    width: 25
   }
-
 });

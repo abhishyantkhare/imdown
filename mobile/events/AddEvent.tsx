@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { View, useWindowDimensions } from "react-native";
+import { Image, View, useWindowDimensions } from "react-native";
 import EmojiPicker from "../components/emojipicker/EmojiPicker"
 import { AddEventStyles } from "./AddEventStyles"
 import RobotoTextInput from "../components/robototextinput/RobotoTextInput"
@@ -18,6 +18,7 @@ import { showMessage } from "react-native-flash-message";
 import { DEFAULT_EMOJI } from "../constants"
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Label from "../components/label/Label";
+import OptionalLabel from "../components/optionallabel/OptionalLabel"
 
 
 
@@ -190,10 +191,35 @@ const AddEvent = (props: AddEventProps) => {
 
     const renderEventImage = () => {
         return (
-            <ImageUploader
-                style={{ marginTop: "10%", marginBottom: "10%" }}
-                onSetImage={setImageUrl}
-            />
+            <View style={{ marginTop: "10%", marginBottom: "10%" }}>
+                {imageUrl ?
+                    <Image source={{ uri: imageUrl }}
+                        style={{ height: 300 }}
+                    />
+                    :
+                    null
+                }
+                <View style={[AddEventStyles.imageUploadBox, { marginTop: "10%", marginBottom: "10%" }]}>
+                    <ImageUploader touchableStyle={{}} onImagePicked={setImageUrl} image={imageUrl} imageHeight={200} imageWidth={200} >
+                        <View style={AddEventStyles.uploadLabelRow}>
+                            <Image
+                                source={require("../assets/add_photo.png")}
+                            />
+                            <View style={{ marginLeft: "5%" }}>
+                                <Label
+                                    labelText={imageUrl ? "Replace/Remove image" : "Upload an image"}
+                                    size={"small"}
+                                />
+                                {!imageUrl ?
+                                    <OptionalLabel style={{ marginTop: "5%" }} />
+                                    :
+                                    null
+                                }
+                            </View>
+                        </View>
+                    </ImageUploader>
+                </View>
+            </View>
         )
     }
 

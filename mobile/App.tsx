@@ -12,7 +12,7 @@ import EventDetails from "./events/event_details";
 import EditEvent from "./events/edit_event";
 import ViewSquad from "./squads/ViewSquadSettings";
 import EditSquad from "./squads/EditSquadSettings";
-import { EditSquadMembers } from "./squads/SquadMembers";
+import SquadMembers from "./squads/SquadMembers";
 import { Ubuntu_400Regular, Ubuntu_400Regular_Italic, Ubuntu_700Bold, useFonts } from '@expo-google-fonts/ubuntu';
 import { Inter_400Regular } from '@expo-google-fonts/inter';
 import { SourceSansPro_400Regular, SourceSansPro_700Bold, SourceSansPro_400Regular_Italic } from '@expo-google-fonts/source-sans-pro';
@@ -68,15 +68,15 @@ export default function App() {
           <Stack.Navigator>
             <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
             <Stack.Screen name="Squads" component={Squads} options={{ gestureEnabled: false, headerStyle:{ shadowColor: 'transparent' }, headerTitle: "" }} />
-            <Stack.Screen name="View Squad" component={ViewSquad} options={hiddenHeaderOptions} />
-            <Stack.Screen name="Edit Squad" component={EditSquad} options={hiddenHeaderOptions} />
+            <Stack.Screen name="View Squad Settings" component={ViewSquad} options={hiddenHeaderOptions} />
+            <Stack.Screen name="Edit Squad Settings" component={EditSquad} options={hiddenHeaderOptions} />
             <Stack.Screen name="Add New Squad" component={AddNewSquad} options={hiddenHeaderOptions} />
             <Stack.Screen name="Add Existing Squad" component={AddExistingSquad} options={hiddenHeaderOptions} />
             <Stack.Screen name="Events" component={Events} options={hiddenHeaderOptions} />
-            <Stack.Screen name="Add Event" component={AddEventNavigator} options={hiddenHeaderOptions}/>
+            <Stack.Screen name="Add Event" component={AddEvent} options={hiddenHeaderOptions} />
             <Stack.Screen name="EventDetails" component={EventDetails} />
             <Stack.Screen name="Edit Event" component={EditEvent} />
-            <Stack.Screen name="Edit Squad Members" component={EditSquadMembers} options={hiddenHeaderOptions} />
+            <Stack.Screen name="Squad Members" component={SquadMembers} options={hiddenHeaderOptions} />
           </Stack.Navigator>
         </NavigationContainer>
         <FlashMessage position="top" hideStatusBar={true} autoHide={true} />

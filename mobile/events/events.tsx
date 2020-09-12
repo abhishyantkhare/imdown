@@ -68,13 +68,14 @@ const Events = (props: EventsProps) => {
     props.navigation.navigate("Add Event", props.route.params);
   }
 
-  const goToViewSquad = (squadId: number, squadName: string, squadEmoji: string) => {
-    props.navigation.navigate("View Squad", {
+  const goToViewSquadSettings = (squadId: number, squadName: string, squadEmoji: string) => {
+    props.navigation.navigate("View Squad Settings", {
       squadId: squadId,
       squadName: squadName,
       squadEmoji: squadEmoji,
       squadCode: squadCode,
-      squadImage: squadImage
+      squadImage: squadImage,
+      userId: userId
     });
   }
 
@@ -125,7 +126,6 @@ const Events = (props: EventsProps) => {
     })
   }
 
-
   useFocusEffect(
     useCallback(() => {
       getEvents();
@@ -146,8 +146,8 @@ const Events = (props: EventsProps) => {
 
   const renderSquadSettingsButton = () => {
     return (
-      <TouchableOpacity onPress={() => goToViewSquad(squadId, squadName, squadEmoji)} style={event_styles.squadSettingsButtonImage} >
-          <Image source={require('../assets/settings_button.png')} style={event_styles.squadSettingsButtonImage} />
+      <TouchableOpacity onPress={() => goToViewSquadSettings(squadId, squadName, squadEmoji)} style={event_styles.squadSettingsButtonImage} >
+        <Image source={require('../assets/settings_button.png')} style={event_styles.squadSettingsButtonImage} />
       </TouchableOpacity>
     );
   }
@@ -168,7 +168,7 @@ const Events = (props: EventsProps) => {
   const renderSquadImage = () => {
     return (
       <View style={event_styles.squadImageContainer}>
-      { squadImage &&  <Image source={{ uri: squadImage }} style={event_styles.squadImage} /> }
+      {squadImage ? <Image source={{ uri: squadImage }} style={event_styles.squadImage} /> : <View></View>}
       </View>
     )
   };

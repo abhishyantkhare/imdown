@@ -2,12 +2,12 @@ import React, { useState, useCallback, useLayoutEffect } from "react";
 import { FlatList, View, Text, Image, Alert, TouchableOpacity } from "react-native";
 import { TextStyles } from "../TextStyles";
 import { SquadMembersStyles } from "./SquadMembersStyles";
-import { callBackend, getUsersInSquad } from "../backend/backend"
+import { callBackend, getUsersInSquad, deleteUser } from "../backend/backend"
 import { useFocusEffect } from "@react-navigation/native";
 import { StandardButton } from "../components/button/Button";
 
-
-const EditSquadMembers = (props) => {
+const SquadMembers = (props) => {
+    const userId = props.route.params.userId
     const squadId = props.route.params.squadId
     const [users, setUsers] = useState([])
     const [isInEditView, setIsInEditView] = useState(props.route.params.isInEditView)
@@ -58,27 +58,6 @@ const EditSquadMembers = (props) => {
         });
     }, [props.navigation]);
 
-    const deleteUser = (userId: number) => {
-        const endpoint = 'delete_user'
-        const data = {
-            user_id: userId,
-            squad_id: squadId
-        }
-        const init: RequestInit = {
-            method: 'DELETE',
-            mode: 'no-cors',
-            body: JSON.stringify(data),
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        }
-        callBackend(endpoint, init).then(response => {
-            return response.json();
-        }).then(data => {
-            setUsers(data.user_info);
-        });
-    }
-
     const alertPopUp = (id: number, name: string) => {
         return (
             Alert.alert(
@@ -88,7 +67,12 @@ const EditSquadMembers = (props) => {
                     {
                         text: 'Yes',
                         onPress: () => {
-                            deleteUser(id)
+                            deleteUser(id, squadId).then(data => {
+                                setUsers(data.user_info);
+                                if (id == userId) {
+                                    props.navigation.navigate("Squads");
+                                }
+                            });
                         },
                     },
                     {
@@ -123,5 +107,5 @@ const EditSquadMembers = (props) => {
     );
 }
 
-export {EditSquadMembers};
+export default SquadMembers;
 

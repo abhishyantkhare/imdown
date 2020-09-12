@@ -3,12 +3,12 @@ import { Image, View, Text, TouchableOpacity, TouchableWithoutFeedback, Alert } 
 import { squad_styles } from "./squads_styles";
 import { TextStyles } from "../TextStyles";
 import { Button } from "react-native";
-import { callBackend } from "../backend/backend"
+import { callBackend, deleteSquad } from "../backend/backend"
 import { SwipeRow, SwipeListView } from "react-native-swipe-list-view"
 import { useFocusEffect } from "@react-navigation/native";
 import { StandardButton } from "../components/button/Button"
 import BlurModal from "../components/blurmodal/BlurModal"
-import BottomSheet from 'reanimated-bottom-sheet';
+import ButtonBottomSheet from "../components/bottomsheet/ButtonBottomSheet"
 
 
 export type Squad = {
@@ -115,8 +115,6 @@ const Squads = (props) => {
         }, [])
     );
 
-
-
     const goToEvents = (id: number, name: string, squad_emoji: string, squad_code: string) => {
         sheetRef.current.snapTo(0)
         props.navigation.navigate("Events", {
@@ -129,27 +127,6 @@ const Squads = (props) => {
         })
     }
 
-    const deleteSquad = (squadId: number) => {
-        const endpoint = 'delete_squad'
-        const data = {
-            squad_id: squadId,
-            user_id: userId
-        }
-        const init: RequestInit = {
-            method: 'DELETE',
-            mode: 'no-cors',
-            body: JSON.stringify(data),
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        }
-        callBackend(endpoint, init).then(response => {
-            return response.json();
-        }).then(data => {
-            setSquads(convertToKeyValDict(data.squads));
-        });
-    }
-
     const alertPopUp = (squadId: number, squadName: string) => {
         return (
             Alert.alert(
@@ -159,7 +136,9 @@ const Squads = (props) => {
                     {
                         text: 'Yes',
                         onPress: () => {
-                            deleteSquad(squadId)
+                            deleteSquad(squadId, userId).then(data => {
+                                setSquads(convertToKeyValDict(data.squads));
+                            });
                         },
                     },
                     {
@@ -189,7 +168,7 @@ const Squads = (props) => {
     }
 
     const goToEditSquad = (squadId: number, squadName: string, squadEmoji: string) => {
-        props.navigation.navigate("Edit Squad", {
+        props.navigation.navigate("View Squad Settings", {
             squadId: squadId,
             squadName: squadName,
             squadEmoji: squadEmoji
@@ -234,35 +213,6 @@ const Squads = (props) => {
             </TouchableOpacity>
         );
     }
-
-    const renderHeader = () => (
-        <View style={{ overflow: 'hidden', paddingTop: 5 }}>
-            <View style={{height: 40, backgroundColor:"white", justifyContent: "center", shadowColor: '#000', shadowOffset: { width: 1, height: -1 }, shadowOpacity:  0.4, shadowRadius: 3, elevation: 5,}}>
-            <View
-                style={{
-                alignSelf: "center",
-                width: 100,
-                height: 5,
-                borderRadius: 2,
-                backgroundColor: "#C4C4C4"}}>
-            </View>
-        </View>
-        </View>
-
-    );
-
-    const renderContent = () => (
-        <View
-            style={{
-            backgroundColor: 'white',
-            padding: 16,
-            height: 450,
-        }}>
-            <StandardButton text="Join an existing squad" onPress={() => goToAddExistingSquad()} />
-            <StandardButton text="Create a new squad" override_style={{ marginTop: 10, marginBottom: "10%" }} onPress={() => {console.log("ADDING NEW2"); goToAddNewSquad()}} />
-        </View>
-    );
-
 
     const renderAddSquadButton = () => {
         return (
@@ -314,16 +264,13 @@ const Squads = (props) => {
                 renderItem={renderSquadItem}
             /> : renderNoSquadsView()}
             {renderAddSquadModal()}
-            <BottomSheet
-                enabledContentTapInteraction={false}
-                initialSnap={0}
-                ref={sheetRef}
-                snapPoints={[0, 250, 300]}
-                borderRadius={10}
-                onCloseEnd={() => hideBottomSheet()}
-                renderHeader={renderHeader}
-                renderContent={renderContent}
-            />
+            <ButtonBottomSheet
+                sheetRef={sheetRef}
+                hideBottomSheet={hideBottomSheet}
+            >
+                <StandardButton text="Join an existing squad" onPress={() => goToAddExistingSquad()} />
+                <StandardButton text="Create a new squad" override_style={{ marginTop: 10, marginBottom: "10%" }} onPress={() => {console.log("ADDING NEW2"); goToAddNewSquad()}} />
+            </ButtonBottomSheet>
         </View>
     );
 }

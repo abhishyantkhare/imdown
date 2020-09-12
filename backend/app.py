@@ -558,7 +558,6 @@ def getSquad():
     if squad is None:
         raise NotFound(f"Squad {squad_id} does not exist")
     ret = jsonify(squad.squadDict(include_image=True))
-    print("getting squad. ret is " + str(ret))
     return ret
 
 
@@ -630,13 +629,13 @@ def delete_squad():
         db.session.delete(squad_to_delete)
         db.session.commit()
     squad_members = SquadMembership.query.filter_by(squad_id=squad_id).all()
+    # Send notification
+    notify_squad_members(
+        squad_to_delete.id, squad_to_delete.name,body="The squad was deleted." , users_to_exclude={squad_to_delete.admin_id})
     for squad_member in squad_members:
         db.session.delete(squad_member)
         db.session.commit()
 
-    # Send notification
-    notify_squad_members(
-        squad_to_delete.id, squad_to_delete.name,body="The squad was deleted." , users_to_exclude={squad_to_delete.admin_id})
     # get squads
     user_squad_memberships = SquadMembership.query.filter_by(
         user_id=user_id).all()

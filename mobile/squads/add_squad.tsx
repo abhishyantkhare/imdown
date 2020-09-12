@@ -69,10 +69,10 @@ const AddNewSquad = (props: AddSquadProps) => {
         return (
             <BlurModal visible={createSquadSuccessModal}>
                 <Image source={require('../assets/success_icon.png')} style={AddSquadStyles.successIcon} />
-                <Text style={AddSquadStyles.successText}>Success!</Text>
-                <TextInput editable={false} multiline={true} style={AddSquadStyles.squadCreateModalText}>Your squad <Text style={{ fontFamily: "Roboto_700Bold" }}>{`${squadName}`}</Text> has been created.{`\n`}Use your squad code to invite friends!</TextInput>
+                <Text style={[TextStyles.headerLarge, AddSquadStyles.successText]}>Success!</Text>
+                <TextInput editable={false} multiline={true} style={[TextStyles.paragraph, AddSquadStyles.squadCreateModalText]}>Your squad <Text style={{ fontFamily: "Roboto_700Bold" }}>{`${squadName}`}</Text> has been created.{`\n`}Use your squad code to invite friends!</TextInput>
                 <View style={AddSquadStyles.squadCodeContainer}>
-                    <Text style={AddSquadStyles.squadCodeValueText} selectable={true}>
+                    <Text style={[TextStyles.headerLarge, AddSquadStyles.squadCodeValueText]} selectable={true}>
                         {squadCode}
                     </Text>
                 </View>
@@ -157,9 +157,9 @@ const AddExistingSquad = (props: AddSquadProps) => {
         return (
             <BlurModal visible={addToSquadSuccessModal}>
                 <Image source={require('../assets/success_icon.png')} style={AddSquadStyles.successIcon} />
-                <Text style={AddSquadStyles.successText}>Success!</Text>
-                <TextInput editable={false} multiline={true} style={AddSquadStyles.squadCreateModalText}>You've joined squad <Text style={{ fontFamily: "Roboto_700Bold" }}>{`${squadName}`}</Text>!</TextInput>
-                <StandardButton text="Done" override_style={{ marginBottom: 35, width: 130 }} onPress={() => { props.navigation.pop(); setAddToSquadSuccessModal(false) }} />
+                <Text style={[TextStyles.headerLarge, AddSquadStyles.successText]}>Success!</Text>
+                <TextInput editable={false} multiline={true} style={[TextStyles.paragraph, AddSquadStyles.squadCreateModalText]}>You've joined squad <Text style={{ fontFamily: "Roboto_700Bold" }}>{`${squadName}`}</Text>!</TextInput>
+                <StandardButton text="Done" override_style={{ marginBottom: 35, marginTop: 40, width: 130 }} onPress={() => { props.navigation.pop(); setAddToSquadSuccessModal(false) }} />
             </BlurModal>
         );
     }
