@@ -28,7 +28,12 @@ export type RootStackParamList = {
     email: string;
   };
   AddEvent: SquadRouteParams;
-  Events: SquadRouteParams
+  Events: SquadRouteParams;
+  SquadMembers: {
+    isInEditView: boolean;
+    squadId: number;
+    userId: number;
+  };
 };
 
 const Stack = createStackNavigator<RootStackParamList>();

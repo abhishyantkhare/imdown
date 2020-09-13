@@ -5,6 +5,10 @@ export const EditSquadSettingsStyles = StyleSheet.create({
     flexDirection: "row", 
     marginRight: 20 
   },
+  saveButton: {
+    height: 50,
+    width: 85
+  },
   container: {
     flex: 1
   },

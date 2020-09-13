@@ -79,6 +79,14 @@ const Events = (props: EventsProps) => {
     });
   }
 
+  const goToSquadMembers = () => {
+    props.navigation.navigate("Squad Members", {
+      userId: userId,
+      squadId: squadId,
+      isInEditView: false
+    });
+  }
+
   const goToEventDetailsPage = (event: EventLite) => {
     props.navigation.navigate("EventDetails", {
       eventId: event.id,
@@ -292,9 +300,11 @@ const Events = (props: EventsProps) => {
           <Text style={TextStyles.headerLarge}>
             {squadEmoji}
           </Text>
-          <Text style={[TextStyles.headerLarge, event_styles.squadTitleName]}>
-            {squadName}
-          </Text>
+          <TouchableOpacity onPress={goToSquadMembers}>
+            <Text style={[TextStyles.headerLarge, event_styles.squadTitleName]}>
+              {squadName}
+            </Text>
+          </TouchableOpacity>
         </View>
         <View style={event_styles.eventListContainer}>
           <TabView

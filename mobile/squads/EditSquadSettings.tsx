@@ -23,7 +23,7 @@ const EditSquadSettings = (props) => {
 
   const renderSaveButton = () => {
     return (
-      <StandardButton text="Save" override_style={{width: 85, height: 50}} onPress={() => saveSquad()} />
+      <StandardButton text="Save" override_style={EditSquadSettingsStyles.saveButton} onPress={() => saveSquad()} />
     );
   }
 

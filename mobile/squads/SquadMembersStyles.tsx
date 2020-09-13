@@ -5,6 +5,15 @@ export const SquadMembersStyles = StyleSheet.create({
     flexDirection: "row", 
     marginRight: 20 
   },
+  editToggle: {
+    height: 50,
+    width: 85
+  },
+  titleText: {
+    color: "#84D3FF",
+    marginBottom: "10%",
+    marginLeft: "10%"
+  },
   squadsMembersContainer: {
     flex: 1,
     flexDirection: "column",

@@ -22,7 +22,7 @@ const SquadMembers = (props) => {
 
     const renderEditButton = () => {
         return (
-            <StandardButton text="Edit" override_style={{width: 100}} onPress={() => { setIsInEditView(true); 
+            <StandardButton text="Edit" override_style={SquadMembersStyles.editToggle} onPress={() => { setIsInEditView(true); 
                 props.navigation.setOptions({
                     headerRight: () => (
                         <View style={SquadMembersStyles.headerRight}>
@@ -36,7 +36,7 @@ const SquadMembers = (props) => {
     
     const renderDoneEdittingButton = () => {
         return (
-            <StandardButton text="Done" override_style={{width: 100}} onPress={() => { setIsInEditView(false);
+            <StandardButton text="Done" override_style={SquadMembersStyles.editToggle} onPress={() => { setIsInEditView(false);
                 props.navigation.setOptions({
                     headerRight: () => (
                         <View style={SquadMembersStyles.headerRight}>
@@ -99,6 +99,7 @@ const SquadMembers = (props) => {
 
     return (
         <View style={SquadMembersStyles.squadsMembersContainer}>
+            <Text style={[TextStyles.title, SquadMembersStyles.titleText]}>Squad Members</Text>
             <FlatList
                 data={users}
                 renderItem={renderUsersItem}

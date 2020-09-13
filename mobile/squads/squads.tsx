@@ -269,7 +269,7 @@ const Squads = (props) => {
                 hideBottomSheet={hideBottomSheet}
             >
                 <StandardButton text="Join an existing squad" onPress={() => goToAddExistingSquad()} />
-                <StandardButton text="Create a new squad" override_style={{ marginTop: 10, marginBottom: "10%" }} onPress={() => {console.log("ADDING NEW2"); goToAddNewSquad()}} />
+                <StandardButton text="Create a new squad" override_style={{ marginTop: 10, marginBottom: "10%" }} onPress={() => goToAddNewSquad()} />
             </ButtonBottomSheet>
         </View>
     );
