@@ -63,8 +63,10 @@ def device_token():
         return jsonify({'device_token': current_user.device_token})
     content = request.get_json()
     validate_request_args(content, 'deviceToken')
-    current_user.device_token = content['deviceToken']
-    db.session.commit()
+    device_token = content['deviceToken']
+    if device_token:
+        current_user.device_token = device_token
+        db.session.commit()
     return "Successfully set device token!", 200
 
 
