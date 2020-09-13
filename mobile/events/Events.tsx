@@ -15,7 +15,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 
 import { callBackend, getUsersInSquad } from '../backend/backend';
 import EventsStyles from './EventsStyles';
-import { TextStyles } from '../TextStyles';
+import TextStyles from '../TextStyles';
 import StandardButton from '../components/button/Button';
 import { RootStackParamList } from '../App';
 

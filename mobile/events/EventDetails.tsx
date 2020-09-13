@@ -39,7 +39,7 @@ export type Event = {
   url?: string,
   downThreshold: number,
   creatorUserId: number,
-  squadId: number
+  squadId?: number
 }
 
 // Converts response from backend for a single event into an internally used Event object
