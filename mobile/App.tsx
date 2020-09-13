@@ -21,7 +21,7 @@ import Events from './events/events';
 import AddEvent from './events/AddEvent';
 import EventDetails from './events/event_details';
 import EditEvent from './events/edit_event';
-import EditSquad from './squads/edit_squad';
+import EditSquad from './squads/EditSquad';
 import SquadMembers from './squads/SquadMembers';
 import AuthLoadingScreen from './login/AuthLoadingScreen';
 import { SquadRouteParams } from './types/Squad';
