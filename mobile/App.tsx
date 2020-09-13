@@ -14,7 +14,7 @@ import { SourceSansPro_400Regular, SourceSansPro_700Bold, SourceSansPro_400Regul
 import { Roboto_400Regular, Roboto_700Bold } from '@expo-google-fonts/roboto';
 import FlashMessage from 'react-native-flash-message';
 
-import Login from './login/login';
+import Login from './login/Login';
 import { AddNewSquad, AddExistingSquad } from './squads/AddSquad';
 import Squads from './squads/Squads';
 import Events from './events/events';
