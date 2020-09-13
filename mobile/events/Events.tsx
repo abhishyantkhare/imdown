@@ -24,8 +24,6 @@ export type RSVPUser = {
   email: String;
 };
 
-// type EventsProps = AppNavRouteProp<'Events'>
-
 type EventsScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   'Events'

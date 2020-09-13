@@ -1,4 +1,4 @@
-import { Event } from "./events/event_details"
+import { Event } from "./events/EventDetails"
 
 // Constants for event details page
 export const DOWN_EMOJI_HEIGHT = 82

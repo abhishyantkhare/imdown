@@ -19,7 +19,7 @@ import { AddNewSquad, AddExistingSquad } from './squads/AddSquad';
 import Squads from './squads/Squads';
 import Events from './events/Events';
 import AddEvent from './events/AddEvent';
-import EventDetails from './events/event_details';
+import EventDetails, { Event } from './events/EventDetails';
 import EditEvent from './events/edit_event';
 import EditSquad from './squads/EditSquad';
 import SquadMembers from './squads/SquadMembers';
@@ -53,7 +53,12 @@ export type RootStackParamList = {
     userId: number | undefined,
     numUsers: number,
   };
-  EditEvent: undefined;
+  EditEvent: {
+    event: Event,
+    userEmail: string,
+    setEvent?: Function,
+    numUsers: number,
+  };
   SquadMembers: {
     squadId: number,
   };
