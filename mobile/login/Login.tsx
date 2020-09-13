@@ -4,22 +4,14 @@ import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-com
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-community/async-storage';
 import messaging from '@react-native-firebase/messaging';
-import { StackNavigationProp } from '@react-navigation/stack';
 
 import LoginStyles from './LoginStyles';
 import { BACKEND_URL, callBackend } from '../backend/backend';
 import { User } from '../types/user';
 import AuthLoadingScreen from './AuthLoadingScreen';
-import { RootStackParamList } from '../App';
+import AppNavRouteProp from '../types/navigation';
 
-type LoginScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  'Squads'
->;
-
-type LoginProps = {
-  navigation: LoginScreenNavigationProp;
-};
+type LoginProps = AppNavRouteProp<'Login'>;
 
 const Login = ({ navigation }: LoginProps) => {
   const [isSigninInProgress, setIsSigninInProgress] = useState(false);

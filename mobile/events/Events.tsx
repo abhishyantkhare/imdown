@@ -8,33 +8,22 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import { useFocusEffect, RouteProp } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import { TabBar, TabView } from 'react-native-tab-view';
 import moment from 'moment';
-import { StackNavigationProp } from '@react-navigation/stack';
 
 import { callBackend, getUsersInSquad } from '../backend/backend';
 import EventsStyles from './EventsStyles';
 import TextStyles from '../TextStyles';
 import StandardButton from '../components/button/Button';
-import { RootStackParamList } from '../App';
+import AppNavRouteProp from '../types/navigation';
 
 export type RSVPUser = {
   userId: String;
   email: String;
 };
 
-type EventsScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  'Events'
->;
-
-type EventsScreenRouteProp = RouteProp<RootStackParamList, 'Events'>;
-
-type EventsProps = {
-  navigation: EventsScreenNavigationProp;
-  route: EventsScreenRouteProp;
-};
+type EventsProps = AppNavRouteProp<'Events'>;
 
 const settingsButton = require('../assets/settings_button.png');
 const blueCheckIcon = require('../assets/blue_check_icon.png');

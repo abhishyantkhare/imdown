@@ -7,17 +7,13 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view';
-import { useFocusEffect, RouteProp } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 
 import SquadMembersStyles from './SquadMembersStyles';
 import { callBackend, getUsersInSquad } from '../backend/backend';
-import { RootStackParamList } from '../App';
+import AppNavRouteProp from '../types/navigation';
 
-type SquadMembersScreenRouteProp = RouteProp<RootStackParamList, 'SquadMembers'>;
-
-type SquadMembersProps = {
-  route: SquadMembersScreenRouteProp;
-};
+type SquadMembersProps = AppNavRouteProp<'SquadMembers'>;
 
 const SquadMembers = ({ route }: SquadMembersProps) => {
   const [users, setUsers] = useState([]);

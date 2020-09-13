@@ -1,11 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import { View, useWindowDimensions } from 'react-native';
 import Slider from '@react-native-community/slider';
-import { useFocusEffect, RouteProp } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import moment from 'moment';
 import { showMessage } from 'react-native-flash-message';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { StackNavigationProp } from '@react-navigation/stack';
 
 import EmojiPicker from '../components/emojipicker/EmojiPicker';
 import AddEventStyles from './AddEventStyles';
@@ -19,21 +18,9 @@ import StandardButton from '../components/button/Button';
 import { getUsersInSquad, postRequest } from '../backend/backend';
 import { DEFAULT_EMOJI } from '../constants';
 import Label from '../components/label/Label';
-import { RootStackParamList } from '../App';
+import AppNavRouteProp from '../types/navigation';
 
-// type AddEventProps = AppNavRouteProp<'AddEvent'>
-
-type AddEventScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  'AddEvent'
->;
-
-type AddEventScreenRouteProp = RouteProp<RootStackParamList, 'AddEvent'>;
-
-type AddEventProps = {
-  navigation: AddEventScreenNavigationProp;
-  route: AddEventScreenRouteProp;
-};
+type AddEventProps = AppNavRouteProp<'AddEvent'>
 
 const downBorderFilled = require('../assets/down_border_filled.png');
 

@@ -21,6 +21,7 @@ import Divider from '../components/divider/Divider';
 import { callBackend } from '../backend/backend';
 import { IMG_URL_BASE_64_PREFIX } from '../constants';
 import { RootStackParamList } from '../App';
+// import AppNavRouteProp from '../types/navigation';
 
 type EditEventScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -33,6 +34,8 @@ type EditEventProps = {
   navigation: EditEventScreenNavigationProp;
   route: EditEventScreenRouteProp;
 };
+
+// type EditEventProps = AppNavRouteProp<'EditEvent'>;
 
 const downStatic = require('../assets/down_static.png');
 const uploadPhoto = require('../assets/upload_photo.png');

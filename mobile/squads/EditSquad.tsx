@@ -29,6 +29,8 @@ type EditSquadProps = {
   route: EditSquadScreenRouteProp;
 };
 
+// type EditSquadProps = AppNavRouteProp<'EditSquad'>;
+
 const EditSquad = ({ route, navigation }: EditSquadProps) => {
   // eslint-disable-next-line no-unused-vars
   const [squadId, setSquadId] = useState(route.params.squadId);

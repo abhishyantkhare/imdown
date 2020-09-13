@@ -8,28 +8,16 @@ import {
 } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { showMessage } from 'react-native-flash-message';
-import { RouteProp } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 
-import { RootStackParamList } from '../App';
 import AddSquadStyles from './AddSquadStyles';
 import TextStyles from '../TextStyles';
 import EmojiPicker from '../components/emojipicker/EmojiPicker';
 import { callBackend } from '../backend/backend';
 import StandardButton from '../components/button/Button';
 import BlurModal from '../components/blurmodal/BlurModal';
+import AppNavRouteProp from '../types/navigation';
 
-type AddSquadScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  'AddSquad'
->;
-
-type AddSquadScreenRouteProp = RouteProp<RootStackParamList, 'AddSquad'>;
-
-type AddSquadProps = {
-  navigation: AddSquadScreenNavigationProp;
-  route: AddSquadScreenRouteProp;
-};
+type AddSquadProps = AppNavRouteProp<'AddSquad'>;
 
 const DEFAULT_EMOJI = '😎';
 const ADD_SQUAD_BY_CODE_TITLE = 'Have a squad code? Enter it here:';
@@ -106,7 +94,7 @@ const AddNewSquad = ({ route, navigation }: AddSquadProps) => {
           {squadCode}
         </Text>
       </View>
-      <StandardButton text='Done' override_style={{ marginBottom: 35, width: 130 }} onPress={() => { navigation.pop(); setCreateSquadSuccessModal(false); }} />
+      <StandardButton text='Done' overrideStyle={{ marginBottom: 35, width: 130 }} onPress={() => { navigation.pop(); setCreateSquadSuccessModal(false); }} />
     </BlurModal>
   );
 
@@ -116,7 +104,7 @@ const AddNewSquad = ({ route, navigation }: AddSquadProps) => {
         {renderCreateNewSquad()}
       </ScrollView>
       {renderCreateSquadSuccessModal()}
-      <StandardButton text='Submit' override_style={{ width: 200, marginBottom: '15%' }} onPress={() => addSquadOnBackend()} />
+      <StandardButton text='Submit' overrideStyle={{ width: 200, marginBottom: '15%' }} onPress={() => addSquadOnBackend()} />
     </View>
   );
 };
@@ -192,7 +180,7 @@ const AddExistingSquad = ({ route, navigation }: AddSquadProps) => {
         </Text>
         !
       </TextInput>
-      <StandardButton text='Done' override_style={{ marginBottom: 35, width: 130 }} onPress={() => { navigation.pop(); setAddToSquadSuccessModal(false); }} />
+      <StandardButton text='Done' overrideStyle={{ marginBottom: 35, width: 130 }} onPress={() => { navigation.pop(); setAddToSquadSuccessModal(false); }} />
     </BlurModal>
   );
 
@@ -201,7 +189,7 @@ const AddExistingSquad = ({ route, navigation }: AddSquadProps) => {
       <ScrollView keyboardShouldPersistTaps='handled' scrollEnabled={false}>
         {renderAddSquadByCode()}
       </ScrollView>
-      <StandardButton text='Submit' override_style={{ width: 200, marginBottom: '15%' }} onPress={() => addSquadByCodeOnBackend()} />
+      <StandardButton text='Submit' overrideStyle={{ width: 200, marginBottom: '15%' }} onPress={() => addSquadByCodeOnBackend()} />
       {renderAddToSquadSuccessModal()}
     </View>
   );

@@ -25,6 +25,7 @@ import {
   ROW_BUTTON_WIDTH,
 } from '../constants';
 import { RootStackParamList } from '../App';
+// import AppNavRouteProp from '../types/navigation';
 
 export type Event = {
   id: number,
@@ -74,6 +75,8 @@ type EventDetailsProps = {
   navigation: EventDetailsScreenNavigationProp;
   route: EventDetailsScreenRouteProp;
 };
+
+// type EventDetailsProps = AppNavRouteProp<'EventDetails'>;
 
 const deleteIcon = require('../assets/delete_icon.png');
 const editEvent = require('../assets/edit_event.png');

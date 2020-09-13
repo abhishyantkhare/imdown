@@ -8,15 +8,14 @@ import {
   Button,
 } from 'react-native';
 import { SwipeRow, SwipeListView } from 'react-native-swipe-list-view';
-import { useFocusEffect, RouteProp } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { useFocusEffect } from '@react-navigation/native';
 
 import SquadsStyles from './SquadsStyles';
 import TextStyles from '../TextStyles';
 import { callBackend } from '../backend/backend';
 import StandardButton from '../components/button/Button';
 import BlurModal from '../components/blurmodal/BlurModal';
-import { RootStackParamList } from '../App';
+import AppNavRouteProp from '../types/navigation';
 
 export type Squad = {
   id: number;
@@ -26,17 +25,7 @@ export type Squad = {
   adminId: number;
 };
 
-type SquadsScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  'Squads'
->;
-
-type SquadsScreenRouteProp = RouteProp<RootStackParamList, 'Squads'>;
-
-type SquadsProps = {
-  navigation: SquadsScreenNavigationProp;
-  route: SquadsScreenRouteProp;
-};
+type SquadsProps = AppNavRouteProp<'Squads'>;
 
 const searchButton = require('../assets/search_button.png');
 const addSquadButton = require('../assets/add_squad_button.png');
