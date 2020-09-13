@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { TextStyles } from '../../TextStyles';
+import TextStyles from '../../TextStyles';
 
 type LabelProps = {
   labelText: string;

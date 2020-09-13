@@ -13,7 +13,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 
 import { RootStackParamList } from '../App';
 import AddSquadStyles from './AddSquadStyles';
-import { TextStyles } from '../TextStyles';
+import TextStyles from '../TextStyles';
 import EmojiPicker from '../components/emojipicker/EmojiPicker';
 import { callBackend } from '../backend/backend';
 import StandardButton from '../components/button/Button';

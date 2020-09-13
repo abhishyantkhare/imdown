@@ -12,7 +12,7 @@ import { useFocusEffect, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 import SquadsStyles from './SquadsStyles';
-import { TextStyles } from '../TextStyles';
+import TextStyles from '../TextStyles';
 import { callBackend } from '../backend/backend';
 import StandardButton from '../components/button/Button';
 import BlurModal from '../components/blurmodal/BlurModal';

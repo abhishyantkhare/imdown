@@ -1,6 +1,6 @@
 import React from 'react';
 import { TextInput } from 'react-native';
-import { TextStyles } from '../../TextStyles';
+import TextStyles from '../../TextStyles';
 
 type RobotoTextInputProps = {
   placeholder: string;
