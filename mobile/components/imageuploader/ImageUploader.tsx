@@ -64,7 +64,7 @@ const ImageUploader = (props: ImageUploaderProps) => {
             <BlurModal visible={uploadImageModal} cancel={() => setUploadImageModal(false)}>
                 <StandardButton text="Take photo from camera" onPress={() => pickImageFromCamera()} />
                 <StandardButton text="Choose photo from gallery" override_style={ImageUploaderStyles.chooseFromGalleryButton} onPress={() => pickImageFromGallery()} />
-                {image ? <StandardButton text="Delete image" override_style={ImageUploaderStyles.deleteImageButton} onPress={() => deleteImage()} /> : <View></View> }
+                {image ? <StandardButton text="Remove image" override_style={ImageUploaderStyles.deleteImageButton} onPress={() => deleteImage()} /> : <View></View> }
             </BlurModal>
         </View>
     );

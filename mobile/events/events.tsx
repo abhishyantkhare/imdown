@@ -70,12 +70,12 @@ const Events = (props: EventsProps) => {
 
   const goToViewSquadSettings = (squadId: number, squadName: string, squadEmoji: string) => {
     props.navigation.navigate("View Squad Settings", {
-      squadId: squadId,
-      squadName: squadName,
-      squadEmoji: squadEmoji,
-      squadCode: squadCode,
-      squadImage: squadImage,
-      userId: userId
+      squadId,
+      squadName,
+      squadEmoji,
+      squadCode,
+      squadImage,
+      userId
     });
   }
 
@@ -112,7 +112,7 @@ const Events = (props: EventsProps) => {
   }
 
   const getSquadDetails = () => {
-    const endpoint = 'get_squad?squad_id=' + squadId
+    const endpoint = 'squad?squad_id=' + squadId
     const init: RequestInit = {
       method: "GET",
       headers: {

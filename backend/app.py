@@ -127,10 +127,30 @@ def add_to_squad():
     return addUserToSquad(squad_code, email)
 
 
-@application.route("/create_squad", methods=["POST"])
+@application.route("/squad", methods=["GET", "POST", "DELETE"])
 # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
 @login_required
-def createSquad():
+def squad():
+    if request.method == "POST":
+        return create_squad(request)
+    if request.method == "DELETE":
+        return delete_squad(request)
+    if request.method == "GET":
+        return get_squad(request)
+
+
+def get_squad(request):
+    args = request.args
+    validate_request_args(args, 'squad_id')
+    squad_id = args["squad_id"]
+    squad = Squad.query.get(squad_id)
+    if squad is None:
+        raise NotFound(f"Squad {squad_id} does not exist")
+    ret = jsonify(squad.squadDict(include_image=True))
+    return ret
+
+
+def create_squad(request):
     content = request.get_json()
     validate_request_args(content, 'email', 'squad_name', 'squad_emoji')
     email = content["email"]
@@ -146,6 +166,39 @@ def createSquad():
     return squad.jsonifySquad()
 
 
+def delete_squad(content):
+    content = request.get_json()
+    validate_request_args(content, 'squad_id', 'user_id')
+    squad_id = content["squad_id"]
+    user_id = content["user_id"]
+    squad_to_delete = Squad.query.filter_by(id=squad_id).first()
+    if squad_to_delete == None:
+        print("Squad is already deleted.")
+        return "Squad is already deleted."
+    else:
+        db.session.delete(squad_to_delete)
+        db.session.commit()
+    squad_members = SquadMembership.query.filter_by(squad_id=squad_id).all()
+    # Send notification
+    notify_squad_members(
+        squad_to_delete.id, squad_to_delete.name,body="The squad was deleted." , users_to_exclude={squad_to_delete.admin_id})
+    for squad_member in squad_members:
+        db.session.delete(squad_member)
+        db.session.commit()
+
+    # get squads
+    user_squad_memberships = SquadMembership.query.filter_by(
+        user_id=user_id).all()
+    squads_lst = []
+    for user_squad_membership in user_squad_memberships:
+        squad_id = user_squad_membership.squad_id
+        squad = Squad.query.filter_by(id=squad_id).first()
+        if squad is None:
+            raise NotFound(f"Could not find Squad {squad_id}")
+        squads_lst.append(squad)
+    return jsonify(squads=[squad.squadDict() for squad in squads_lst])
+
+
 @application.route("/edit_squad", methods=["PUT"])
 # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
 @login_required
@@ -158,10 +211,7 @@ def edit_squad():
         raise NotFound(f"Could not find Squad {squad_id}")
     squad.name = content["squad_name"]
     squad.squad_emoji = content["squad_emoji"]
-    if "squad_image" in content:
-        squad.image = content["squad_image"]
-    else:
-        squad.image = None
+    squad.image = content.get('squad_image')
     # Send notification
     notify_squad_members(
         squad.id, squad.name, body="Squad details were updated.", users_to_exclude={squad.admin_id})
@@ -547,19 +597,6 @@ def get_squads():
         squads_lst.append(squad)
     return jsonify(squads=[squad.squadDict() for squad in squads_lst])
 
-@application.route("/get_squad", methods=["GET"])
-# If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
-@login_required
-def getSquad():
-    args = request.args
-    validate_request_args(args, 'squad_id')
-    squad_id = args["squad_id"]
-    squad = Squad.query.get(squad_id)
-    if squad is None:
-        raise NotFound(f"Squad {squad_id} does not exist")
-    ret = jsonify(squad.squadDict(include_image=True))
-    return ret
-
 
 @application.route("/get_users", methods=["GET"])
 # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
@@ -611,39 +648,3 @@ def get_user_id():
         raise NotFound(f"Could not find User {email}")
     user_id = user.id
     return jsonify(user_id=user_id)
-
-
-@application.route("/delete_squad", methods=["DELETE"])
-# If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
-@login_required
-def delete_squad():
-    content = request.get_json()
-    validate_request_args(content, 'squad_id', 'user_id')
-    squad_id = content["squad_id"]
-    user_id = content["user_id"]
-    squad_to_delete = Squad.query.filter_by(id=squad_id).first()
-    if squad_to_delete == None:
-        print("Squad is already deleted.")
-        return "Squad is already deleted."
-    else:
-        db.session.delete(squad_to_delete)
-        db.session.commit()
-    squad_members = SquadMembership.query.filter_by(squad_id=squad_id).all()
-    # Send notification
-    notify_squad_members(
-        squad_to_delete.id, squad_to_delete.name,body="The squad was deleted." , users_to_exclude={squad_to_delete.admin_id})
-    for squad_member in squad_members:
-        db.session.delete(squad_member)
-        db.session.commit()
-
-    # get squads
-    user_squad_memberships = SquadMembership.query.filter_by(
-        user_id=user_id).all()
-    squads_lst = []
-    for user_squad_membership in user_squad_memberships:
-        squad_id = user_squad_membership.squad_id
-        squad = Squad.query.filter_by(id=squad_id).first()
-        if squad is None:
-            raise NotFound(f"Could not find Squad {squad_id}")
-        squads_lst.append(squad)
-    return jsonify(squads=[squad.squadDict() for squad in squads_lst])

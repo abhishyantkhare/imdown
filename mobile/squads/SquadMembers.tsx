@@ -2,7 +2,7 @@ import React, { useState, useCallback, useLayoutEffect } from "react";
 import { FlatList, View, Text, Image, Alert, TouchableOpacity } from "react-native";
 import { TextStyles } from "../TextStyles";
 import { SquadMembersStyles } from "./SquadMembersStyles";
-import { callBackend, getUsersInSquad, deleteUser } from "../backend/backend"
+import { callBackend, getUsersInSquad, deleteRequest } from "../backend/backend"
 import { useFocusEffect } from "@react-navigation/native";
 import { StandardButton } from "../components/button/Button";
 
@@ -67,7 +67,7 @@ const SquadMembers = (props) => {
                     {
                         text: 'Yes',
                         onPress: () => {
-                            deleteUser(id, squadId).then(data => {
+                            deleteRequest('delete_user', { user_id: id, squad_id: squadId }).then(data => {
                                 setUsers(data.user_info);
                                 if (id == userId) {
                                     props.navigation.navigate("Squads");

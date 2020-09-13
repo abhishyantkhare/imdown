@@ -27,7 +27,7 @@ const AddNewSquad = (props: AddSquadProps) => {
     const email = props.route.params.email
 
     const addSquadOnBackend = () => {
-        const endpoint = 'create_squad'
+        const endpoint = 'squad'
         const data = {
             email: email,
             squad_name: squadName,

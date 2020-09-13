@@ -33,6 +33,7 @@ export const SquadMembersStyles = StyleSheet.create({
   userImage: {
     width: 30, 
     height: 30,
-    borderRadius: 24/2
+    // to get a circular image, simply take width/height of a square image, and divide by 2
+    borderRadius: 15
   }
 });

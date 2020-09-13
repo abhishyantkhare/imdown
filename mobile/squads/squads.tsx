@@ -3,7 +3,7 @@ import { Image, View, Text, TouchableOpacity, TouchableWithoutFeedback, Alert } 
 import { squad_styles } from "./squads_styles";
 import { TextStyles } from "../TextStyles";
 import { Button } from "react-native";
-import { callBackend, deleteSquad } from "../backend/backend"
+import { callBackend, deleteRequest } from "../backend/backend"
 import { SwipeRow, SwipeListView } from "react-native-swipe-list-view"
 import { useFocusEffect } from "@react-navigation/native";
 import { StandardButton } from "../components/button/Button"
@@ -136,7 +136,7 @@ const Squads = (props) => {
                     {
                         text: 'Yes',
                         onPress: () => {
-                            deleteSquad(squadId, userId).then(data => {
+                            deleteRequest('squad', { squad_id: squadId, user_id: userId }).then(data => {
                                 setSquads(convertToKeyValDict(data.squads));
                             });
                         },

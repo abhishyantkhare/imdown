@@ -3,13 +3,13 @@ import { Image, ScrollView, Text, TextInput, TouchableOpacity, View, _View } fro
 import { EditSquadSettingsStyles } from "./EditSquadSettingsStyles";
 import EmojiPicker from "../components/emojipicker/EmojiPicker";
 import Divider from '../components/divider/divider'
-import { callBackend, deleteSquad } from "../backend/backend"
+import { callBackend, deleteRequest } from "../backend/backend"
 import { TextStyles } from "../TextStyles";
 import { StandardButton } from "../components/button/Button";
-import { LinearGradient } from 'expo-linear-gradient';
 import { StandardButtonStyles } from "../components/button/ButtonStyles";
 import ImageUploader  from "../components/imageuploader/ImageUploader"
 import BlurModal from "../components/blurmodal/BlurModal"
+import ImagePlaceholder from "../components/imageplaceholder/ImagePlaceholder";
 
 const EditSquadSettings = (props) => {
   const userId = props.route.params.userId;
@@ -40,14 +40,7 @@ const EditSquadSettings = (props) => {
   const renderSquadImage = () => {
     return(
       <View style = {EditSquadSettingsStyles.squadImageContainer}>
-        { squadImage ?  <Image source={{ uri: squadImage }} style = {EditSquadSettingsStyles.squadImage} /> 
-                      : 
-                      <LinearGradient
-                        start={{x: 0.0, y: 0.25}} end={{x: 0.95, y: 1.0}}
-                        colors={['#84D3FF', '#CFFFFF']}
-                        style={EditSquadSettingsStyles.squadImage}
-                      /> 
-        }
+        { squadImage ?  <Image source={{ uri: squadImage }} style = {EditSquadSettingsStyles.squadImage} /> : <ImagePlaceholder style={EditSquadSettingsStyles.squadImage}/> }
         <ImageUploader image={squadImage} imageWidth={350} imageHeight={200} onImagePicked={setSquadImage} touchableStyle={[StandardButtonStyles.button, EditSquadSettingsStyles.uploadButtonContainer]}>
           <Text style={[TextStyles.secondary, EditSquadSettingsStyles.uploadButtonText]}>{squadImage ? `Replace` : `Upload`}</Text>
         </ImageUploader>
@@ -117,7 +110,7 @@ const EditSquadSettings = (props) => {
             <Text style={[TextStyles.paragraph, {textAlign: "center"}]}>{`Are you sure you want to\ndelete this squad?\nThis action cannot be undone.`}</Text>
             <View style={EditSquadSettingsStyles.deleteSquadModalButtonRow}>
                 <StandardButton text="Cancel" override_style={EditSquadSettingsStyles.deleteSquadModalCancelButton} text_override_style={{color:"#84D3FF"}} onPress={() => { setDeleteSquadModalVisible(false) }} />
-                <StandardButton text="Leave" override_style={EditSquadSettingsStyles.deleteSquadModalDeleteButton} onPress={() => { deleteSquad(squadId, userId).then(data => { props.navigation.navigate("Squads")  }); }} />
+                <StandardButton text="Leave" override_style={EditSquadSettingsStyles.deleteSquadModalDeleteButton} onPress={() => { deleteRequest('squad', { squad_id: squadId, user_id: userId }).then(data => { props.navigation.navigate("Squads")  }); }} />
             </View>
         </BlurModal>
     );

@@ -37,31 +37,7 @@ export const getUsersInSquad = (squadId: number) => {
     })
 }
 
-export const deleteUser = (userId: number, squadId: number) => {
-    const endpoint = 'delete_user'
-    const data = {
-        user_id: userId,
-        squad_id: squadId
-    }
-    const init: RequestInit = {
-        method: 'DELETE',
-        mode: 'no-cors',
-        body: JSON.stringify(data),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    }
-    return callBackend(endpoint, init).then(response => {
-        return response.json();
-    });
-}
-
-export const deleteSquad = (squadId: number, userId: number) => {
-    const endpoint = 'delete_squad'
-    const data = {
-        squad_id: squadId,
-        user_id: userId
-    }
+export const deleteRequest = (endpoint: string, data: object) => {
     const init: RequestInit = {
         method: 'DELETE',
         mode: 'no-cors',
