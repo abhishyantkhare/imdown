@@ -20,7 +20,7 @@ import Squads from './squads/Squads';
 import Events from './events/Events';
 import AddEvent from './events/AddEvent';
 import EventDetails, { Event } from './events/EventDetails';
-import EditEvent from './events/edit_event';
+import EditEvent from './events/EditEvent';
 import EditSquad from './squads/EditSquad';
 import SquadMembers from './squads/SquadMembers';
 import AuthLoadingScreen from './login/AuthLoadingScreen';

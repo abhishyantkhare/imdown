@@ -96,7 +96,7 @@ const EditSquad = ({ route, navigation }: EditSquadProps) => {
     <View style={{ alignItems: 'center' }}>
       <TouchableOpacity onPress={saveSquad}>
         <View style={EditSquadStyles.saveButton}>
-          <Text style={EditSquadStyles.saveButtonText}>Save</Text>
+          <Text style={EditSquadStyles.saveButtonText}> Save </Text>
         </View>
       </TouchableOpacity>
     </View>
