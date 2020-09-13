@@ -282,7 +282,7 @@ const Squads = ({ route, navigation }: SquadsProps) => {
   const renderAddSquadModal = () => (
     <BlurModal visible={addSquadModal} cancel={() => setAddSquadModal(false)}>
       <StandardButton text='Join an existing squad' onPress={() => goToAddExistingSquad()} />
-      <StandardButton text='Create a new squad' override_style={{ marginTop: 10, marginBottom: 30 }} onPress={() => goToAddNewSquad()} />
+      <StandardButton text='Create a new squad' overrideStyle={{ marginTop: 10, marginBottom: 30 }} onPress={() => goToAddNewSquad()} />
     </BlurModal>
   );
 

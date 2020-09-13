@@ -17,7 +17,7 @@ import FlashMessage from 'react-native-flash-message';
 import Login from './login/Login';
 import { AddNewSquad, AddExistingSquad } from './squads/AddSquad';
 import Squads from './squads/Squads';
-import Events from './events/events';
+import Events from './events/Events';
 import AddEvent from './events/AddEvent';
 import EventDetails from './events/event_details';
 import EditEvent from './events/edit_event';
@@ -47,7 +47,12 @@ export type RootStackParamList = {
   AddExistingSquad: {
     email: string
   };
-  EventDetails: undefined;
+  EventDetails: {
+    eventId: number,
+    userEmail: string,
+    userId: number | undefined,
+    numUsers: number,
+  };
   EditEvent: undefined;
   SquadMembers: {
     squadId: number,

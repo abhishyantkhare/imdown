@@ -33,6 +33,7 @@
     "react/jsx-filename-extension": [1, { "extensions": [".tsx", ".ts"] }],
     "import/extensions": ["error", "never"],
     "camelcase": ["error", {"ignoreImports": true}],
-    "jsx-quotes": ["error", "prefer-single"]
+    "jsx-quotes": ["error", "prefer-single"],
+    "react/jsx-props-no-spreading": ["error", {"custom": "ignore"}]
   }
 }
