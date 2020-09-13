@@ -22,7 +22,7 @@ import AddEvent from './events/AddEvent';
 import EventDetails from './events/event_details';
 import EditEvent from './events/edit_event';
 import EditSquad from './squads/edit_squad';
-import SquadMembers from './squads/squad_members';
+import SquadMembers from './squads/SquadMembers';
 import AuthLoadingScreen from './login/AuthLoadingScreen';
 import { SquadRouteParams } from './types/Squad';
 
@@ -49,7 +49,9 @@ export type RootStackParamList = {
   };
   EventDetails: undefined;
   EditEvent: undefined;
-  SquadMembers: undefined;
+  SquadMembers: {
+    squadId: number,
+  };
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
