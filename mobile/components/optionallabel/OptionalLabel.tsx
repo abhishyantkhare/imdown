@@ -1,20 +1,26 @@
-import React from "react"
-import Label from "../label/Label"
+import React from 'react';
+
+import Label from '../label/Label';
 
 type OptionalLabelProps = {
-    style?: object
+  style?: object;
 }
 
 const OptionalLabel = (props: OptionalLabelProps) => {
-    return (
-        <Label
-            labelText={"OPTIONAL"}
-            style={[{
-                fontSize: 13,
-                color: "grey",
-            }, props.style]}
-        />
-    )
-}
+  const { style } = props;
+  return (
+    <Label
+      labelText='OPTIONAL'
+      style={[{
+        fontSize: 13,
+        color: 'grey',
+      }, style]}
+    />
+  );
+};
 
-export default OptionalLabel
+OptionalLabel.defaultProps = {
+  style: {},
+};
+
+export default OptionalLabel;
