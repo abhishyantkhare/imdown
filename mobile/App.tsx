@@ -15,7 +15,7 @@ import { Roboto_400Regular, Roboto_700Bold } from '@expo-google-fonts/roboto';
 import FlashMessage from 'react-native-flash-message';
 
 import Login from './login/login';
-import { AddNewSquad, AddExistingSquad } from './squads/add_squad';
+import { AddNewSquad, AddExistingSquad } from './squads/AddSquad';
 import Squads from './squads/Squads';
 import Events from './events/events';
 import AddEvent from './events/AddEvent';
