@@ -1,20 +1,29 @@
-import React from "react";
-import { Text } from "react-native";
-import { StandardButtonStyles } from "./ButtonStyles";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import React from 'react';
+import { Text } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+
+import StandardButtonStyles from './ButtonStyles';
 
 type StandardButtonProps = {
   text: string
-  override_style?: object,
+  overrideStyle?: object,
   onPress: () => void
 }
 
 function StandardButton(props: StandardButtonProps) {
+  const { text, overrideStyle, onPress } = props;
   return (
-    <TouchableOpacity style={[StandardButtonStyles.button, props.override_style]} onPress={()=> props.onPress()}>
-      <Text style={StandardButtonStyles.buttonText}>{`${props.text}`}</Text>
+    <TouchableOpacity
+      style={[StandardButtonStyles.button, overrideStyle]}
+      onPress={() => onPress()}
+    >
+      <Text style={StandardButtonStyles.buttonText}>{`${text}`}</Text>
     </TouchableOpacity>
   );
 }
+
+StandardButton.defaultProps = {
+  overrideStyle: {},
+};
 
 export default StandardButton;
