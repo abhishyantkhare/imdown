@@ -5,10 +5,10 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import StandardButtonStyles from './ButtonStyles';
 
 type StandardButtonProps = {
-  text: string
-  overrideStyle?: object,
-  onPress: () => void
-}
+  text: string;
+  overrideStyle?: object;
+  onPress: () => void;
+};
 
 function StandardButton(props: StandardButtonProps) {
   const { text, overrideStyle, onPress } = props;

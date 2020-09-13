@@ -8,8 +8,8 @@ import ImageUploaderStyles from './ImageUploaderStyles';
 import { IMG_URL_BASE_64_PREFIX } from '../../constants';
 
 type ImageUploaderProps = {
-    style?: object;
-    onSetImage: (imageUrl: string) => void; // eslint-disable-line no-unused-vars
+  style?: object;
+  onSetImage: (imageUrl: string) => void; // eslint-disable-line no-unused-vars
 };
 
 const addPhoto = require('../../assets/add_photo.png');

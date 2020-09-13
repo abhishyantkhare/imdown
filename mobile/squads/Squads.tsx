@@ -19,11 +19,11 @@ import BlurModal from '../components/blurmodal/BlurModal';
 import { RootStackParamList } from '../App';
 
 export type Squad = {
-  id: number,
-  name: string,
-  squadEmoji: string,
-  code: string,
-  adminId: number
+  id: number;
+  name: string;
+  squadEmoji: string;
+  code: string;
+  adminId: number;
 };
 
 type SquadsScreenNavigationProp = StackNavigationProp<

@@ -8,10 +8,10 @@ import {
 import BlurModalStyles from './BlurModalStyles';
 
 type BlurModalProps = {
-  children: React.ReactNode,
-  cancel?: () => void,
-  visible: boolean
-}
+  children: React.ReactNode;
+  cancel?: () => void;
+  visible: boolean;
+};
 
 const exitButton = require('../../assets/exit_button.png');
 

@@ -3,8 +3,8 @@ import { View } from 'react-native';
 import DividerStyles from './DividerStyles';
 
 type DividerProps = {
-  style?: object
-}
+  style?: object;
+};
 
 const Divider = (props: DividerProps) => {
   const { style } = props;

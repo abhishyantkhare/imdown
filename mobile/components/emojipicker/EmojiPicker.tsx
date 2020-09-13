@@ -13,9 +13,9 @@ import EmojiPickerStyles from './EmojiPickerStyles';
 import { DEFAULT_EMOJI } from '../../constants';
 
 type EmojiPickerProps = {
-    defaultEmoji?: string,
-    onEmojiPicked: (emoji: string) => void, // eslint-disable-line no-unused-vars
-    emojiPickerTitle: string,
+    defaultEmoji?: string;
+    onEmojiPicked: (emoji: string) => void; // eslint-disable-line no-unused-vars
+    emojiPickerTitle: string;
 }
 
 const EmojiPicker = (props: EmojiPickerProps) => {
