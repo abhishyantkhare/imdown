@@ -1,7 +1,7 @@
 import React from "react"
 import { View } from "react-native"
 import Label from "../label/Label"
-import Divider from "../divider/divider"
+import Divider from "../divider/Divider"
 import OptionalLabel from "../optionallabel/OptionalLabel"
 import SectionStyles from "./SectionStyles"
 

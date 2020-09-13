@@ -13,7 +13,7 @@ import { RouteProp } from '@react-navigation/native';
 
 import EditSquadStyles from './EditSquadStyles';
 import EmojiPicker from '../components/emojipicker/EmojiPicker';
-import Divider from '../components/divider/divider';
+import Divider from '../components/divider/Divider';
 import { callBackend } from '../backend/backend';
 import { RootStackParamList } from '../App';
 
@@ -70,7 +70,7 @@ const EditSquad = ({ route, navigation }: EditSquadProps) => {
   const renderAdditionalFieldsBox = () => (
     <View style={EditSquadStyles.additionalFieldsContainer}>
       {renderEmojiField()}
-      {Divider()}
+      {Divider({})}
     </View>
   );
 

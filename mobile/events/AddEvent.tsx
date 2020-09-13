@@ -8,7 +8,7 @@ import Section from "../components/section/Section"
 import SwitchButton from "../components/switchbutton/SwitchButton"
 import Slider from "@react-native-community/slider";
 import ImageUploader from "../components/imageuploader/ImageUploader"
-import Divider from "../components/divider/divider"
+import Divider from "../components/divider/Divider"
 import { StandardButton } from "../components/button/Button";
 import AppNavRouteProp from "../types/navigation";
 import { useFocusEffect } from "@react-navigation/native";

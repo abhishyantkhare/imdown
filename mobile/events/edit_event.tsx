@@ -3,7 +3,7 @@ import { Button, Image, SafeAreaView, Text, TextInput, TouchableOpacity, View } 
 import { EditEventStyles } from "./edit_event_styles";
 import EmojiPicker from "../components/emojipicker/EmojiPicker";
 import DateTimeInput from "../components/date_time_input/date_time_input";
-import Divider from '../components/divider/divider'
+import Divider from '../components/divider/Divider'
 import { callBackend } from "../backend/backend"
 import { IMG_URL_BASE_64_PREFIX } from "../constants"
 import ImagePicker from 'react-native-image-picker';
