@@ -179,16 +179,12 @@ def edit_squad():
 def respond_to_event():
     content = request.get_json()
     validate_request_args(content, 'eventId', 'response')
-    event_id = content['eventId']
-    response = content['response']
-    return respondToEvent(current_user.id, event_id, response)
+    return respondToEvent(content['eventId'], content['response'])
 
 
-def respondToEvent(user_id, event_id, response):
+def respondToEvent(event_id, response):
     existing_entry_exists = False
-    user = User.query.filter_by(id=user_id).first()
-    if not user:
-        raise NotFound(f"Could not find User {user_id}")
+    user_id = current_user.id
     event = Event.query.get(event_id)
     if not event:
         raise NotFound(f"Could not find Event {event_id}")
@@ -230,7 +226,7 @@ def respondToEvent(user_id, event_id, response):
     # send notification
     # we send a notification if the person responding is not the event creator and they are saying they're down
     if user_id != event.creator_user_id and user_event_response.response:
-        notif_body = f"{user.name} accepted the event."
+        notif_body = f"{current_user.name} accepted the event."
         if threshold_passed:
             notif_body = notif_body + " " + "Enough people are down! The event will automatically be scheduled on Google Calendar."
         notify_squad_members(
@@ -245,7 +241,6 @@ def getEventResponsesAndCheckDownThresh(event):
         event_id=event.id).all()
     num_accepted = 0
     num_declined = 0
-    down_threshold = event.down_threshold
     accepted_responses = []
     for resp in event_responses:
         if resp.response:
@@ -619,15 +614,14 @@ def delete_squad():
     squad_id = content['squadId']
     user_id = current_user.id
     squad_to_delete = Squad.query.get(squad_id)
-    if squad_to_delete is None:
+    if not squad_to_delete:
         return "Squad is already deleted."
-    else:
-        db.session.delete(squad_to_delete)
-        db.session.commit()
+    # TODO: this can be done automatically by setting ON DELETE CASCADE or similar
     squad_members = SquadMembership.query.filter_by(squad_id=squad_id).all()
     for squad_member in squad_members:
         db.session.delete(squad_member)
-        db.session.commit()
+    db.session.delete(squad_to_delete)
+    db.session.commit()
 
     # Send notification
     notify_squad_members(
@@ -638,7 +632,7 @@ def delete_squad():
     squads_lst = []
     for user_squad_membership in user_squad_memberships:
         squad_id = user_squad_membership.squad_id
-        squad = Squad.query.filter_by(id=squad_id).first()
+        squad = Squad.query.get(id=squad_id)
         if squad is None:
             raise NotFound(f"Could not find Squad {squad_id}")
         squads_lst.append(squad)
