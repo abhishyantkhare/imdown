@@ -1,12 +1,11 @@
-import { StyleSheet } from "react-native"
-
+import { StyleSheet } from 'react-native';
 
 const DateTimeInputStyles = StyleSheet.create({
-    dateTimeContainer: {
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-between"
-    }
-})
+  dateTimeContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+});
 
-export default DateTimeInputStyles
+export default DateTimeInputStyles;
