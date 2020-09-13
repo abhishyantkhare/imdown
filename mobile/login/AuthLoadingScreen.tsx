@@ -1,16 +1,15 @@
-import React from "react"
-import { Image } from "react-native"
+import React from 'react';
+import { Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { AuthLoadingScreenStyles } from "./AuthLoadingScreenStyles"
 
+import AuthLoadingScreenStyles from './AuthLoadingScreenStyles';
 
-const AuthLoadingScreen = () => {
+const downFilled = require('../assets/down_filled.png');
 
-    return (
-        <LinearGradient colors={['#84D3FF', '#CFFFFF']} style={AuthLoadingScreenStyles.background}>
-            <Image source={require('../assets/down_filled.png')} />
-        </LinearGradient>
-    )
-}
+const AuthLoadingScreen = () => (
+  <LinearGradient colors={['#84D3FF', '#CFFFFF']} style={AuthLoadingScreenStyles.background}>
+    <Image source={downFilled} />
+  </LinearGradient>
+);
 
-export default AuthLoadingScreen
+export default AuthLoadingScreen;
