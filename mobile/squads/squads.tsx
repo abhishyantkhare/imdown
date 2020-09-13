@@ -267,6 +267,7 @@ const Squads = (props) => {
             <ButtonBottomSheet
                 sheetRef={sheetRef}
                 hideBottomSheet={hideBottomSheet}
+                snapPoints={[0, 250, 300]}
             >
                 <StandardButton text="Join an existing squad" onPress={() => goToAddExistingSquad()} />
                 <StandardButton text="Create a new squad" override_style={{ marginTop: 10, marginBottom: "10%" }} onPress={() => goToAddNewSquad()} />

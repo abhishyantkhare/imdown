@@ -6,6 +6,7 @@ import ButtonBottomSheetStyles from './ButtonBottomSheetStyles';
 type BottomSheetProps = {
     children: React.ReactNode,
     sheetRef: MutableRefObject,
+    snapPoints: Array<number>,
     hideBottomSheet: () => void
 }
 
@@ -32,7 +33,7 @@ const ButtonBottomSheet = (props: BottomSheetProps) => {
             enabledContentTapInteraction={false}
             initialSnap={0}
             ref={props.sheetRef}
-            snapPoints={[0, 250, 300]}
+            snapPoints={props.snapPoints}
             onCloseEnd={() => props.hideBottomSheet()}
             renderHeader={renderHeader}
             renderContent={renderContent}
