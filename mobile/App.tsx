@@ -16,7 +16,7 @@ import FlashMessage from 'react-native-flash-message';
 
 import Login from './login/login';
 import { AddNewSquad, AddExistingSquad } from './squads/add_squad';
-import Squads from './squads/squads';
+import Squads from './squads/Squads';
 import Events from './events/events';
 import AddEvent from './events/AddEvent';
 import EventDetails from './events/event_details';
@@ -24,7 +24,7 @@ import EditEvent from './events/edit_event';
 import EditSquad from './squads/edit_squad';
 import SquadMembers from './squads/squad_members';
 import AuthLoadingScreen from './login/AuthLoadingScreen';
-import { SquadRouteParams } from './types/squad';
+import { SquadRouteParams } from './types/Squad';
 
 export type RootStackParamList = {
   AddSquad: {
@@ -33,10 +33,20 @@ export type RootStackParamList = {
   AddEvent: SquadRouteParams;
   Events: SquadRouteParams;
   Login: undefined;
-  Squads: undefined;
-  EditSquad: undefined;
-  AddNewSquad: undefined;
-  AddExistingSquad: undefined;
+  Squads: {
+    email: string;
+  };
+  EditSquad: {
+    squadId: number,
+    squadName: string,
+    squadEmoji: string,
+  };
+  AddNewSquad: {
+    email: string
+  };
+  AddExistingSquad: {
+    email: string
+  };
   EventDetails: undefined;
   EditEvent: undefined;
   SquadMembers: undefined;

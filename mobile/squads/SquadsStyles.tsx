@@ -1,13 +1,14 @@
-import { StyleSheet } from "react-native";
-export const squad_styles = StyleSheet.create({
-  squads_container: {
+import { StyleSheet } from 'react-native';
+
+const SquadsStyles = StyleSheet.create({
+  squadsContainer: {
     flex: 1,
-    flexDirection: "column",
-    backgroundColor: "#fff",
+    flexDirection: 'column',
+    backgroundColor: '#fff',
   },
   searchButtonContainer: {
     justifyContent: 'flex-end',
-    marginRight: "10%",
+    marginRight: '10%',
     marginTop: 20,
   },
   searchButtonIcon: {
@@ -16,18 +17,18 @@ export const squad_styles = StyleSheet.create({
     width: 40,
   },
   squadsTitleContainer: {
-    alignItems: "center",
-    justifyContent: "space-between",
-    flexDirection: "row",
-    marginHorizontal: "10%",
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    marginHorizontal: '10%',
     marginBottom: 35,
     marginTop: 40,
   },
   squadsTitleText: {
-    color: "#84D3FF"
+    color: '#84D3FF',
   },
   addSquadContainer: {
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   addSquadButton: {
     alignSelf: 'flex-end',
@@ -44,16 +45,16 @@ export const squad_styles = StyleSheet.create({
     height: 40,
     width: 40,
   },
-  squad_item: {
+  squadItem: {
     flex: 1,
     paddingBottom: 15,
     paddingTop: 15,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  squad_text: {
-    color: "#333333",
-    fontFamily: "SourceSansPro_400Regular",
+  squadText: {
+    color: '#333333',
+    fontFamily: 'SourceSansPro_400Regular',
     fontSize: 25,
     paddingLeft: 20,
   },
@@ -97,16 +98,18 @@ export const squad_styles = StyleSheet.create({
     backgroundColor: 'red',
     right: 0,
     borderTopRightRadius: 10,
-    borderBottomRightRadius: 10
+    borderBottomRightRadius: 10,
   },
   noSquadViewWave: {
     fontSize: 50,
     marginBottom: 50,
     marginTop: 50,
-    marginLeft: "10%"
+    marginLeft: '10%',
   },
   noSquadViewText: {
     marginBottom: 50,
-    marginHorizontal: "10%"
-  }
+    marginHorizontal: '10%',
+  },
 });
+
+export default SquadsStyles;
