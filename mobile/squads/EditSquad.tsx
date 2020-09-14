@@ -8,28 +8,18 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp } from '@react-navigation/native';
 
 import EditSquadStyles from './EditSquadStyles';
 import EmojiPicker from '../components/emojipicker/EmojiPicker';
 import Divider from '../components/divider/Divider';
 import { callBackend } from '../backend/backend';
-import { RootStackParamList } from '../App';
+import { AppNavigationProp, AppRouteProp } from '../types/navigation';
 
-type EditSquadScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  'EditSquad'
->;
-
-type EditSquadScreenRouteProp = RouteProp<RootStackParamList, 'EditSquad'>;
-
+// We have to expand it explicitly because eslint breaks otherwise
 type EditSquadProps = {
-  navigation: EditSquadScreenNavigationProp;
-  route: EditSquadScreenRouteProp;
+  navigation: AppNavigationProp<'EditSquad'>;
+  route: AppRouteProp<'EditSquad'>;
 };
-
-// type EditSquadProps = AppNavRouteProp<'EditSquad'>;
 
 const EditSquad = ({ route, navigation }: EditSquadProps) => {
   // eslint-disable-next-line no-unused-vars

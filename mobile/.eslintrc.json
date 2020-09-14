@@ -1,8 +1,8 @@
 {
   "env": {
-    "browser": true,
     "es2021": true,
-    "node": true
+    "node": true,
+    "browser": true,
   },
   "extends": [
     "plugin:react/recommended",
@@ -23,17 +23,55 @@
   "settings": {
     "import/resolver": {
       "node": {
-        "extensions": [".js", ".jsx", ".ts", ".tsx"],
-        "moduleDirectory": ["node_modules", "src/"]
+        "extensions": [
+          ".js",
+          ".jsx",
+          ".ts",
+          ".tsx"
+        ],
+        "moduleDirectory": [
+          "node_modules",
+          "src/"
+        ]
       }
     }
   },
   "rules": {
     "no-console": "off",
-    "react/jsx-filename-extension": [1, { "extensions": [".tsx", ".ts"] }],
-    "import/extensions": ["error", "never"],
-    "camelcase": ["error", {"ignoreImports": true}],
-    "jsx-quotes": ["error", "prefer-single"],
-    "react/jsx-props-no-spreading": ["error", {"custom": "ignore"}]
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [
+          ".tsx",
+          ".ts"
+        ]
+      }
+    ],
+    "import/extensions": [
+      "error",
+      "never"
+    ],
+    "camelcase": [
+      "error",
+      {
+        "ignoreImports": true
+      }
+    ],
+    "jsx-quotes": [
+      "error",
+      "prefer-single"
+    ],
+    "react/jsx-props-no-spreading": [
+      "error",
+      {
+        "custom": "ignore"
+      }
+    ],
+    "no-use-before-define": [
+      0
+    ],
+    "@typescript-eslint/no-use-before-define": [
+      1
+    ]
   }
 }

@@ -11,8 +11,6 @@ import {
 import ImagePicker from 'react-native-image-picker';
 import Slider from '@react-native-community/slider';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp } from '@react-navigation/native';
 
 import EditEventStyles from './EditEventStyles';
 import EmojiPicker from '../components/emojipicker/EmojiPicker';
@@ -20,22 +18,12 @@ import DateTimeInput from '../components/date_time_input/date_time_input';
 import Divider from '../components/divider/Divider';
 import { callBackend } from '../backend/backend';
 import { IMG_URL_BASE_64_PREFIX } from '../constants';
-import { RootStackParamList } from '../App';
-// import AppNavRouteProp from '../types/navigation';
-
-type EditEventScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  'EditEvent'
->;
-
-type EditEventScreenRouteProp = RouteProp<RootStackParamList, 'EditEvent'>;
+import { AppNavigationProp, AppRouteProp } from '../types/navigation';
 
 type EditEventProps = {
-  navigation: EditEventScreenNavigationProp;
-  route: EditEventScreenRouteProp;
+  navigation: AppNavigationProp<'EditEvent'>;
+  route: AppRouteProp<'EditEvent'>;
 };
-
-// type EditEventProps = AppNavRouteProp<'EditEvent'>;
 
 const downStatic = require('../assets/down_static.png');
 const uploadPhoto = require('../assets/upload_photo.png');
@@ -151,9 +139,9 @@ const EditEvent = ({ route, navigation }: EditEventProps) => {
   /* Additional event fields box (Fields related to event not shown on details page) */
   const renderAdditionalFieldsBox = () => (
     <View style={EditEventStyles.additionalFieldsContainer}>
-      renderEmojiField()
+      {renderEmojiField()}
       <Divider />
-      renderDownThresholdSlider()
+      {renderDownThresholdSlider()}
     </View>
   );
 

@@ -82,7 +82,9 @@ const Squads = ({ route, navigation }: SquadsProps) => {
     };
     callBackend(endpoint, init)
       .then((response) => response.json())
-      .then((data) => { setUserId(data.user_id); });
+      .then((data) => {
+        setUserId(data.user_id);
+      });
   };
 
   const convertToKeyValDict = (squadsConvert: any) => (
@@ -189,21 +191,25 @@ const Squads = ({ route, navigation }: SquadsProps) => {
     rowKey: number,
     rowMap: any,
   ) => (
-    <TouchableOpacity
-      style={[SquadsStyles.backRightBtns, SquadsStyles.editBtn]}
-      onPress={() => {
-        closeRow(rowMap, rowKey);
-        goToEditSquad(squadId, squadName, squadEmoji);
-      }}
-    >
-      <Text style={SquadsStyles.editText}>Edit</Text>
-    </TouchableOpacity>
-  );
+      <TouchableOpacity
+        style={[SquadsStyles.backRightBtns, SquadsStyles.editBtn]}
+        onPress={() => {
+          closeRow(rowMap, rowKey);
+          goToEditSquad(squadId, squadName, squadEmoji);
+        }}
+      >
+        <Text style={SquadsStyles.editText}>Edit</Text>
+      </TouchableOpacity>
+    );
 
   const renderNoSquadsView = () => (
     <View>
-      <Text style={SquadsStyles.noSquadViewWave}>
-        <span role='img' aria-label='Handwave'>👋</span>
+      <Text // eslint-disable-line 
+        style={SquadsStyles.noSquadViewWave}
+        accessibilityLabel='Handwave'
+        accessibilityRole='text'
+      >
+        👋
       </Text>
       <Text
         style={[TextStyles.paragraph, SquadsStyles.noSquadViewText]}

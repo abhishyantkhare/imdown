@@ -8,8 +8,7 @@ import {
   ScrollView,
 } from 'react-native';
 import moment from 'moment';
-import { useFocusEffect, RouteProp } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { useFocusEffect } from '@react-navigation/native';
 
 import EventDetailsStyles from './EventDetailsStyles';
 import Divider from '../components/divider/Divider';
@@ -24,8 +23,7 @@ import {
   ROW_BUTTON_HEIGHT,
   ROW_BUTTON_WIDTH,
 } from '../constants';
-import { RootStackParamList } from '../App';
-// import AppNavRouteProp from '../types/navigation';
+import AppNavRouteProp from '../types/navigation';
 
 export type Event = {
   id: number,
@@ -43,6 +41,15 @@ export type Event = {
   squadId?: number
 }
 
+
+const backendEventResponseListToRSVPUser = (backendERList: any[]) => {
+  return backendERList.map((backendUser: any) => ({
+    userId: backendUser.user_id,
+    email: backendUser.email,
+  })
+  );
+}
+
 // Converts response from backend for a single event into an internally used Event object
 // Event object contains all necessary and related information regarding an Event. It is used
 // both on Event Details and Edit Event page
@@ -55,8 +62,8 @@ export const toEvent = (backendEvent: any) => (
     imageUrl: backendEvent.image_url,
     startMs: backendEvent.start_time,
     endMs: backendEvent.end_time,
-    rsvpUsers: backendEvent.event_responses.accepted,
-    declinedUsers: backendEvent.event_responses.declined,
+    rsvpUsers: backendEventResponseListToRSVPUser(backendEvent.event_responses.accepted),
+    declinedUsers: backendEventResponseListToRSVPUser(backendEvent.event_responses.declined),
     url: backendEvent.event_url,
     downThreshold: backendEvent.down_threshold,
     creatorUserId: backendEvent.creator_user_id,
@@ -64,19 +71,19 @@ export const toEvent = (backendEvent: any) => (
   }
 );
 
-type EventDetailsScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  'EventDetails'
->;
+// type EventDetailsScreenNavigationProp = StackNavigationProp<
+//   RootStackParamList,
+//   'EventDetails'
+// >;
 
-type EventDetailsScreenRouteProp = RouteProp<RootStackParamList, 'EventDetails'>;
+// type EventDetailsScreenRouteProp = RouteProp<RootStackParamList, 'EventDetails'>;
 
-type EventDetailsProps = {
-  navigation: EventDetailsScreenNavigationProp;
-  route: EventDetailsScreenRouteProp;
-};
+// type EventDetailsProps = {
+//   navigation: EventDetailsScreenNavigationProp;
+//   route: EventDetailsScreenRouteProp;
+// };
 
-// type EventDetailsProps = AppNavRouteProp<'EventDetails'>;
+type EventDetailsProps = AppNavRouteProp<'EventDetails'>;
 
 const deleteIcon = require('../assets/delete_icon.png');
 const editEvent = require('../assets/edit_event.png');
@@ -84,13 +91,13 @@ const downButton = require('../assets/down.png');
 const cancelRSVP = require('../assets/cancel_rsvp.png');
 const acceptRSVP = require('../assets/accept_rsvp.png');
 
-const EventDetails = ({ route, navigation }: EventDetailsProps) => {
+const EventDetails = (props: EventDetailsProps) => {
   const {
     eventId,
     userEmail,
     userId,
     numUsers,
-  } = route.params;
+  } = props.route.params;
   const [event, setEvent] = useState(DEFAULT_EVENT);
   const [isUserAccepted, setIsUserAccepted] = useState(false);
   const isUserEventAccepted = (acceptedEvent: Event) => (
@@ -250,7 +257,7 @@ const EventDetails = ({ route, navigation }: EventDetailsProps) => {
   };
 
   const goToEditEvent = (editEvent: Event) => { // eslint-disable-line
-    navigation.navigate('EditEvent', {
+    props.navigation.navigate('EditEvent', {
       event: editEvent,
       userEmail,
       setEvent,
@@ -284,7 +291,7 @@ const EventDetails = ({ route, navigation }: EventDetailsProps) => {
         'Content-Type': 'application/json',
       },
     };
-    callBackend(endpoint, init).then(() => { navigation.pop(); });
+    callBackend(endpoint, init).then(() => { props.navigation.pop(); });
   };
 
   const renderDeleteButton = () => {

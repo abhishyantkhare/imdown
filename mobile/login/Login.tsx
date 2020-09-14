@@ -101,8 +101,8 @@ const Login = ({ navigation }: LoginProps) => {
       email: user.email,
       name: user.name,
       photo: user.photo,
+      deviceToken: deviceToken || "",
       googleServerCode,
-      deviceToken,
     };
     fetch(loginUrl, {
       method: 'POST',

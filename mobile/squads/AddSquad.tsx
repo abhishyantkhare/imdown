@@ -85,7 +85,7 @@ const AddNewSquad = ({ route, navigation }: AddSquadProps) => {
       >
         Your squad
         <Text style={{ fontFamily: 'Roboto_700Bold' }}>
-          {`${squadName}`}
+          {` ${squadName} `}
         </Text>
         has been created. Use your squad code to invite friends!
       </TextInput>

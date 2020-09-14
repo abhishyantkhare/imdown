@@ -300,7 +300,7 @@ const Events = ({ route, navigation }: EventsProps) => {
   );
 
   // eslint-disable-next-line no-shadow
-  const renderTabViewLabel = ({ route, focused }: {route: any, focused: boolean}) => (
+  const renderTabViewLabel = ({ route, focused }: { route: any, focused: boolean }) => (
     <View>
       <Text style={{ color: focused ? '#333333' : '#BEBEBE', fontFamily: 'Roboto_400Regular' }}>
         {route.title}

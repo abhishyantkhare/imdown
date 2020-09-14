@@ -3,11 +3,11 @@ import { StackNavigationProp } from '@react-navigation/stack';
 
 import { RootStackParamList } from '../App';
 
-type AppNavigationProp<K extends keyof RootStackParamList> = StackNavigationProp<
+export type AppNavigationProp<K extends keyof RootStackParamList> = StackNavigationProp<
   RootStackParamList,
   K>;
 
-type AppRouteProp<K extends keyof RootStackParamList> = RouteProp<RootStackParamList, K>;
+export type AppRouteProp<K extends keyof RootStackParamList> = RouteProp<RootStackParamList, K>;
 
 type AppNavRouteProp<K extends keyof RootStackParamList> = {
   navigation: AppNavigationProp<K>;
