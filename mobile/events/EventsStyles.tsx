@@ -1,28 +1,29 @@
-import { StyleSheet } from "react-native";
-export const event_styles = StyleSheet.create({
+import { StyleSheet } from 'react-native';
+
+const EventStyles = StyleSheet.create({
   // All styles associated with header and header buttons
   headerRight: {
-    alignItems: "center",
-    flexDirection: "row", 
-    marginRight: 20, 
-    marginTop:20,
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginRight: 20,
+    marginTop: 20,
   },
   squadCodeContainer: {
-    borderColor: "#84D3FF",
+    borderColor: '#84D3FF',
     borderRadius: 7.5,
     borderWidth: 2,
-    borderStyle: "solid",
-    flexDirection: "row"
+    borderStyle: 'solid',
+    flexDirection: 'row',
   },
   squadCodeDescriptionText: {
-    color: "#84D3FF",
+    color: '#84D3FF',
     marginVertical: 5,
-    marginLeft: 5
+    marginLeft: 5,
   },
   squadCodeValueText: {
-    color: "#84D3FF",
+    color: '#84D3FF',
     marginVertical: 5,
-    marginRight: 5
+    marginRight: 5,
   },
   squadSettingsButtonImage: {
     marginHorizontal: 10,
@@ -30,28 +31,28 @@ export const event_styles = StyleSheet.create({
     width: 40,
   },
   container: {
-    flex:1
+    flex: 1,
   },
   scrollViewContainer: {
-    backgroundColor: "#ffff",
-    flexDirection: "column",
+    backgroundColor: '#ffff',
+    flexDirection: 'column',
     flexGrow: 1,
   },
   squadImageContainer: {
-    marginTop: "10%"
+    marginTop: '10%',
   },
   squadImage: {
     height: 200,
     width: 350,
   },
   squadNameEmojiContainer: {
-    alignSelf: "flex-start",
-    flexDirection: 'row', 
-    marginHorizontal: "10%",
-    marginTop: 20
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    marginHorizontal: '10%',
+    marginTop: 20,
   },
   squadTitleName: {
-    marginLeft: 20
+    marginLeft: 20,
   },
   eventListContainer: {
     alignSelf: 'stretch',
@@ -62,15 +63,15 @@ export const event_styles = StyleSheet.create({
     marginRight: 10,
     paddingHorizontal: 10,
     paddingVertical: 10,
-    flexGrow: 0
+    flexGrow: 0,
   },
   eventList: {
     paddingHorizontal: 20,
-    flex:1,
+    flex: 1,
   },
   // All styles for event item in events list
   eventItemOuterBox: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 5,
     flexGrow: 1,
     height: 140,
@@ -81,7 +82,7 @@ export const event_styles = StyleSheet.create({
     shadowColor: 'rgba(0,0,0, .2)', // IOS
     shadowOffset: { height: 3, width: 3 }, // IOS
     shadowOpacity: 1, // IOS
-    shadowRadius: 5, //IOS
+    shadowRadius: 5, // IOS
   },
   eventEmojiBox: {
     alignItems: 'center',
@@ -100,59 +101,61 @@ export const event_styles = StyleSheet.create({
   },
   eventTitle: {
     marginBottom: 3,
-    width: "80%"
+    width: '80%',
   },
   eventTimeProximity: {
     alignItems: 'center',
-    color: "#BEBEBE"
+    color: '#BEBEBE',
   },
   forwardArrowIcon: {
-    alignSelf:"flex-end",
-    height: 25, 
-    width: 25, 
-    position:"absolute",
-    right: 20, 
-    top: 30, 
+    alignSelf: 'flex-end',
+    height: 25,
+    width: 25,
+    position: 'absolute',
+    right: 20,
+    top: 30,
   },
   downBarSectionContainer: {
-    alignItems: "center", 
-    justifyContent:"space-evenly", 
-    flexDirection:"row", 
-    height:"40%"
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+    flexDirection: 'row',
+    height: '40%',
   },
-  downBarContainer: { 
-    height:30, 
-    width: "80%", 
-    justifyContent:'center'
+  downBarContainer: {
+    height: 30,
+    width: '80%',
+    justifyContent: 'center',
   },
   downBarEmpty: {
-    backgroundColor: "#E7EAF6",
+    backgroundColor: '#E7EAF6',
     borderRadius: 5,
     height: 5,
-    width: "100%",
-    opacity: .6, 
-    position: "absolute",
+    width: '100%',
+    opacity: 0.6,
+    position: 'absolute',
   },
   downBarFilled: {
     borderBottomLeftRadius: 5,
     borderTopLeftRadius: 5,
     height: 5,
-    position: "absolute",
-    zIndex: 1
+    position: 'absolute',
+    zIndex: 1,
   },
   downThresholdReachedContainer: {
-    height:25, 
-    width: 25
+    height: 25,
+    width: 25,
   },
   downThresholdReachedIcon: {
-    height:25, 
-    width: 25
+    height: 25,
+    width: 25,
   },
   addEventButtonContainer: {
-    backgroundColor: "white", 
-    borderColor: "#BEBEBE", 
-    borderTopWidth:2, 
-    height:"15%",
-    justifyContent: "center"
-  }
+    backgroundColor: 'white',
+    borderColor: '#BEBEBE',
+    borderTopWidth: 2,
+    height: '15%',
+    justifyContent: 'center',
+  },
 });
+
+export default EventStyles;

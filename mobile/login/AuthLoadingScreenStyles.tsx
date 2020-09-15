@@ -1,9 +1,11 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native';
 
-export const AuthLoadingScreenStyles = StyleSheet.create({
-    background: {
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center"
-    }
-})
+const AuthLoadingScreenStyles = StyleSheet.create({
+  background: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
+
+export default AuthLoadingScreenStyles;

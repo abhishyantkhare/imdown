@@ -1,0 +1,13 @@
+name: MobileLint
+
+on: pull_request
+
+jobs:
+  eslint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: |
+        cd mobile
+        yarn install
+        yarn eslint . --ext .tsx

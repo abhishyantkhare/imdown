@@ -1,19 +1,21 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native';
 
-export const StandardButtonStyles = StyleSheet.create({
+const StandardButtonStyles = StyleSheet.create({
   button: {
-    alignItems: "center",
+    alignItems: 'center',
     alignSelf: 'center',
-    justifyContent: "center",
-    backgroundColor: "#84D3FF",
+    justifyContent: 'center',
+    backgroundColor: '#84D3FF',
     borderRadius: 10,
     height: 60,
     width: 300,
-    margin: 10
+    margin: 10,
   },
   buttonText: {
     fontSize: 20,
-    color: "white",
-    fontFamily: "Roboto_400Regular"
-  }
-})
+    color: 'white',
+    fontFamily: 'Roboto_400Regular',
+  },
+});
+
+export default StandardButtonStyles;

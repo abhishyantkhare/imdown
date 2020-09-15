@@ -1,47 +1,49 @@
-import React, { useState } from "react"
-import { View } from "react-native"
-import BlurModal from "../blurmodal/BlurModal"
-import { StandardButton } from "../button/Button"
-import DateTimePicker from "@react-native-community/datetimepicker";
+import React, { useState } from 'react';
+import { View } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
+import BlurModal from '../blurmodal/BlurModal';
+import StandardButton from '../button/Button';
 
 type DateTimeModalProps = {
-    visible: boolean,
-    onSetPress: (dateTime: Date) => void,
-    initialDateTime: Date,
-    hideDatePicker: () => void,
-    mode: "date" | "time"
-}
+    visible: boolean;
+    onSetPress: (dateTime: Date) => void; // eslint-disable-line no-unused-vars
+    initialDateTime: Date;
+    hideDatePicker: () => void;
+    mode: 'date' | 'time';
+};
 
 const DateTimeModal = (props: DateTimeModalProps) => {
-    const [dateTime, setDateTime] = useState<Date>(props.initialDateTime)
-    return (
-        <BlurModal
-            visible={props.visible}
-            cancel={() => {
-                setDateTime(props.initialDateTime);
-                props.hideDatePicker()
-            }}>
-            <View style={{ width: "80%" }}>
-                <DateTimePicker
-                    mode={props.mode}
-                    value={dateTime}
-                    onChange={(_, selectedDate) => {
-                        if (selectedDate) {
-                            setDateTime(selectedDate)
-                        }
-                    }}
-                />
-                <StandardButton
-                    text={"Set"}
-                    onPress={() => {
-                        props.onSetPress(dateTime);
-                        props.hideDatePicker()
-                    }}
-                />
-            </View>
-        </BlurModal >
-    )
-}
+  const { initialDateTime, visible, mode } = props;
+  const [dateTime, setDateTime] = useState<Date>(initialDateTime);
+  return (
+    <BlurModal
+      visible={visible}
+      cancel={() => {
+        setDateTime(props.initialDateTime);
+        props.hideDatePicker();
+      }}
+    >
+      <View style={{ width: '80%' }}>
+        <DateTimePicker
+          mode={mode}
+          value={dateTime}
+          onChange={(_, selectedDate) => {
+            if (selectedDate) {
+              setDateTime(selectedDate);
+            }
+          }}
+        />
+        <StandardButton
+          text='Set'
+          onPress={() => {
+            props.onSetPress(dateTime);
+            props.hideDatePicker();
+          }}
+        />
+      </View>
+    </BlurModal>
+  );
+};
 
-export default DateTimeModal
+export default DateTimeModal;

@@ -1,11 +1,11 @@
-import { StyleSheet } from "react-native"
+import { StyleSheet } from 'react-native';
 
 const SwitchButtonStyles = StyleSheet.create({
-    switchButtonContainer: {
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-    }
-})
+  switchButtonContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+});
 
-export default SwitchButtonStyles
+export default SwitchButtonStyles;
