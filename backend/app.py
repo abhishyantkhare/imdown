@@ -6,6 +6,7 @@ from errors import HttpError, BadRequest, Unauthorized, Forbidden, NotFound
 from models.user import User
 from models.event_response import EventResponse
 from models.event import Event
+from models.event_time import EventTime
 from models.squad import Squad
 from models.squadmembership import SquadMembership, GetUsersBySquadId
 from flask_login import login_user, login_required, logout_user, current_user
