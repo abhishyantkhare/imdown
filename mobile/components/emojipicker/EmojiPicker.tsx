@@ -51,12 +51,12 @@ const EmojiPicker = (props: EmojiPickerProps) => {
       </SafeAreaView>
     </Modal>
   ) : (
-      <View style={EmojiPickerStyles.emojiContainer}>
-        <TouchableOpacity onPress={() => setShowEmojiPicker(true)}>
-          <Text style={EmojiPickerStyles.emoji}>{emojiPicked}</Text>
-        </TouchableOpacity>
-      </View>
-    );
+    <View style={EmojiPickerStyles.emojiContainer}>
+      <TouchableOpacity onPress={() => setShowEmojiPicker(true)}>
+        <Text style={EmojiPickerStyles.emoji}>{emojiPicked}</Text>
+      </TouchableOpacity>
+    </View>
+  );
 };
 
 EmojiPicker.defaultProps = {

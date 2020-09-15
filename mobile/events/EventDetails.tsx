@@ -23,7 +23,7 @@ import {
   ROW_BUTTON_HEIGHT,
   ROW_BUTTON_WIDTH,
 } from '../constants';
-import AppNavRouteProp from '../types/navigation';
+import { AppNavigationProp, AppRouteProp } from '../types/navigation';
 
 export type Event = {
   id: number,
@@ -41,14 +41,13 @@ export type Event = {
   squadId?: number
 }
 
-
-const backendEventResponseListToRSVPUser = (backendERList: any[]) => {
-  return backendERList.map((backendUser: any) => ({
-    userId: backendUser.user_id,
-    email: backendUser.email,
-  })
-  );
-}
+const backendEventResponseListToRSVPUser = (backendERList: any[]) => backendERList.map(
+  (backendUser: any) => (
+    {
+      userId: backendUser.user_id,
+      email: backendUser.email,
+    }),
+);
 
 // Converts response from backend for a single event into an internally used Event object
 // Event object contains all necessary and related information regarding an Event. It is used
@@ -70,20 +69,10 @@ export const toEvent = (backendEvent: any) => (
     squadId: backendEvent.squad_id,
   }
 );
-
-// type EventDetailsScreenNavigationProp = StackNavigationProp<
-//   RootStackParamList,
-//   'EventDetails'
-// >;
-
-// type EventDetailsScreenRouteProp = RouteProp<RootStackParamList, 'EventDetails'>;
-
-// type EventDetailsProps = {
-//   navigation: EventDetailsScreenNavigationProp;
-//   route: EventDetailsScreenRouteProp;
-// };
-
-type EventDetailsProps = AppNavRouteProp<'EventDetails'>;
+type EventDetailsProps = {
+  navigation: AppNavigationProp<'EventDetails'>;
+  route: AppRouteProp<'EventDetails'>;
+};
 
 const deleteIcon = require('../assets/delete_icon.png');
 const editEvent = require('../assets/edit_event.png');
@@ -91,13 +80,13 @@ const downButton = require('../assets/down.png');
 const cancelRSVP = require('../assets/cancel_rsvp.png');
 const acceptRSVP = require('../assets/accept_rsvp.png');
 
-const EventDetails = (props: EventDetailsProps) => {
+const EventDetails = ({ route, navigation }: EventDetailsProps) => {
   const {
     eventId,
     userEmail,
     userId,
     numUsers,
-  } = props.route.params;
+  } = route.params;
   const [event, setEvent] = useState(DEFAULT_EVENT);
   const [isUserAccepted, setIsUserAccepted] = useState(false);
   const isUserEventAccepted = (acceptedEvent: Event) => (
@@ -257,7 +246,7 @@ const EventDetails = (props: EventDetailsProps) => {
   };
 
   const goToEditEvent = (editEvent: Event) => { // eslint-disable-line
-    props.navigation.navigate('EditEvent', {
+    navigation.navigate('EditEvent', {
       event: editEvent,
       userEmail,
       setEvent,
@@ -291,7 +280,7 @@ const EventDetails = (props: EventDetailsProps) => {
         'Content-Type': 'application/json',
       },
     };
-    callBackend(endpoint, init).then(() => { props.navigation.pop(); });
+    callBackend(endpoint, init).then(() => { navigation.pop(); });
   };
 
   const renderDeleteButton = () => {

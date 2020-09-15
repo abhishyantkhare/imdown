@@ -7,11 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
     - run: |
-        npm install -g yarn
         cd mobile
         yarn install
-    - uses: hallee/eslint-action@1.0.3
-      with: 
-        entryPoint: cd mobile
+        yarn eslint . --ext .tsx

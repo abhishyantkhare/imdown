@@ -191,17 +191,16 @@ const Squads = ({ route, navigation }: SquadsProps) => {
     rowKey: number,
     rowMap: any,
   ) => (
-      <TouchableOpacity
-        style={[SquadsStyles.backRightBtns, SquadsStyles.editBtn]}
-        onPress={() => {
-          closeRow(rowMap, rowKey);
-          goToEditSquad(squadId, squadName, squadEmoji);
-        }}
-      >
-        <Text style={SquadsStyles.editText}>Edit</Text>
-      </TouchableOpacity>
-    );
-
+    <TouchableOpacity
+      style={[SquadsStyles.backRightBtns, SquadsStyles.editBtn]}
+      onPress={() => {
+        closeRow(rowMap, rowKey);
+        goToEditSquad(squadId, squadName, squadEmoji);
+      }}
+    >
+      <Text style={SquadsStyles.editText}>Edit</Text>
+    </TouchableOpacity>
+  );
   const renderNoSquadsView = () => (
     <View>
       <Text // eslint-disable-line 

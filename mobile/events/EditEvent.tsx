@@ -135,16 +135,6 @@ const EditEvent = ({ route, navigation }: EditEventProps) => {
       />
     </View>
   );
-
-  /* Additional event fields box (Fields related to event not shown on details page) */
-  const renderAdditionalFieldsBox = () => (
-    <View style={EditEventStyles.additionalFieldsContainer}>
-      {renderEmojiField()}
-      <Divider />
-      {renderDownThresholdSlider()}
-    </View>
-  );
-
   // eslint-disable-next-line no-unused-vars
   const renderEmojiField = () => (
     <SafeAreaView style={EditEventStyles.emojiContainer}>
@@ -176,6 +166,14 @@ const EditEvent = ({ route, navigation }: EditEventProps) => {
         thumbImage={downStatic}
         style={EditEventStyles.downThresholdSlider}
       />
+    </View>
+  );
+  /* Additional event fields box (Fields related to event not shown on details page) */
+  const renderAdditionalFieldsBox = () => (
+    <View style={EditEventStyles.additionalFieldsContainer}>
+      {renderEmojiField()}
+      <Divider />
+      {renderDownThresholdSlider()}
     </View>
   );
 
