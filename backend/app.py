@@ -389,6 +389,15 @@ def createEvent():
               end_time=end_time, squad_id=event_squad.id, event_url=event_url, image_url=image_url, down_threshold=down_threshold, creator_user_id=u.id)
     db.session.add(e)
     db.session.commit()
+    # Also add to event time table
+    db.session.add(
+        EventTime(
+            event_id=e.id,
+            start_time=e.start_time,
+            end_time=e.end_time
+        )
+    )
+    db.session.commit()
     respondToEvent(u.id, e.id, True)
 
     # send notification
@@ -425,6 +434,15 @@ def edit_event():
     event.end_time = content["end_time"]
 
     db.session.add(event)
+    db.session.commit()
+    # Also update event time
+    event_time = EventTime.query.filter_by(event_id=event.id).first()
+    if not event_time:
+        raise NotFound(f"Could not find event time for event {event_id}")
+    event_time.start_time = content["start_time"]
+    event_time.end_time = content["end_time"]
+    db.session.add(event_time)
+
     db.session.commit()
     getEventResponsesAndCheckDownThresh(event)
 
@@ -488,6 +506,8 @@ def deleteEvent():
         raise NotFound(f"Could not find Event {e_id}")
     EventResponse.query.filter_by(event_id=e_id).delete()
     db.session.delete(event)
+    # Also delete event time
+    EventTime.query.filter_by(event_id=e_id).delete()
     db.session.commit()
     return "Safely deleted event", 200
 
