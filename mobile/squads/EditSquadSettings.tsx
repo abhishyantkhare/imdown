@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { Image, ScrollView, Text, TextInput, TouchableOpacity, View, _View } from "react-native";
 import { EditSquadSettingsStyles } from "./EditSquadSettingsStyles";
 import EmojiPicker from "../components/emojipicker/EmojiPicker";
-import Divider from '../components/divider/divider'
+import Divider from '../components/divider/Divider'
 import { callBackend, deleteRequest } from "../backend/backend"
-import { TextStyles } from "../TextStyles";
-import { StandardButton } from "../components/button/Button";
-import { StandardButtonStyles } from "../components/button/ButtonStyles";
+import TextStyles from "../TextStyles";
+import StandardButton from "../components/button/Button";
+import StandardButtonStyles from "../components/button/ButtonStyles";
 import ImageUploader  from "../components/imageuploader/ImageUploader"
 import BlurModal from "../components/blurmodal/BlurModal"
 import ImagePlaceholder from "../components/imageplaceholder/ImagePlaceholder";
@@ -23,7 +23,7 @@ const EditSquadSettings = (props) => {
 
   const renderSaveButton = () => {
     return (
-      <StandardButton text="Save" override_style={EditSquadSettingsStyles.saveButton} onPress={() => saveSquad()} />
+      <StandardButton text="Save" overrideStyle={EditSquadSettingsStyles.saveButton} onPress={() => saveSquad()} />
     );
   }
 
@@ -44,7 +44,7 @@ const EditSquadSettings = (props) => {
         <ImageUploader image={squadImage} imageWidth={350} imageHeight={200} onImagePicked={setSquadImage} touchableStyle={[StandardButtonStyles.button, EditSquadSettingsStyles.uploadButtonContainer]}>
           <Text style={[TextStyles.secondary, EditSquadSettingsStyles.uploadButtonText]}>{squadImage ? `Replace` : `Upload`}</Text>
         </ImageUploader>
-      </View> 
+      </View>
     )
   };
 
@@ -53,8 +53,8 @@ const EditSquadSettings = (props) => {
       return (
           <View style={EditSquadSettingsStyles.squadTitleContainer}>
               <Text style={[TextStyles.paragraph, EditSquadSettingsStyles.squadAttributeName]}>Name</Text>
-              <TextInput style={[TextStyles.paragraph, EditSquadSettingsStyles.squadTitleTextInput ]} 
-                          clearButtonMode="always" editable={true} placeholder="Squad Name" value={squadName} 
+              <TextInput style={[TextStyles.paragraph, EditSquadSettingsStyles.squadTitleTextInput ]}
+                          clearButtonMode="always" editable={true} placeholder="Squad Name" value={squadName}
                           onChangeText={(value) => setSquadName(value)} />
           </View>
       );
@@ -99,7 +99,7 @@ const EditSquadSettings = (props) => {
           <Image source={require('../assets/arrow_forward_gray.png')} style={EditSquadSettingsStyles.forwardArrowIcon} />
         </TouchableOpacity>
         <Divider />
-        {(squadAdminId == userId) && <StandardButton text="Delete Squad" override_style={EditSquadSettingsStyles.deleteSquadButton} onPress={() => setDeleteSquadModalVisible(true) } />}
+        {(squadAdminId == userId) && <StandardButton text="Delete Squad" overrideStyle={EditSquadSettingsStyles.deleteSquadButton} onPress={() => setDeleteSquadModalVisible(true) } />}
       </View>
     );
   }
@@ -109,8 +109,8 @@ const EditSquadSettings = (props) => {
             <Image source={require('../assets/exit_icon.png')} style={EditSquadSettingsStyles.deleteSquadIcon} />
             <Text style={[TextStyles.paragraph, {textAlign: "center"}]}>{`Are you sure you want to\ndelete this squad?\nThis action cannot be undone.`}</Text>
             <View style={EditSquadSettingsStyles.deleteSquadModalButtonRow}>
-                <StandardButton text="Cancel" override_style={EditSquadSettingsStyles.deleteSquadModalCancelButton} text_override_style={{color:"#84D3FF"}} onPress={() => { setDeleteSquadModalVisible(false) }} />
-                <StandardButton text="Leave" override_style={EditSquadSettingsStyles.deleteSquadModalDeleteButton} onPress={() => { deleteRequest('squad', { squad_id: squadId, user_id: userId }).then(data => { props.navigation.navigate("Squads")  }); }} />
+                <StandardButton text="Cancel" overrideStyle={EditSquadSettingsStyles.deleteSquadModalCancelButton} textOverrideStyle={{color:"#84D3FF"}} onPress={() => { setDeleteSquadModalVisible(false) }} />
+                <StandardButton text="Leave" overrideStyle={EditSquadSettingsStyles.deleteSquadModalDeleteButton} onPress={() => { deleteRequest('squad', { squad_id: squadId, user_id: userId }).then(data => { props.navigation.navigate("Squads")  }); }} />
             </View>
         </BlurModal>
     );
@@ -122,7 +122,7 @@ const EditSquadSettings = (props) => {
             squad_id: squadId,
             squad_name: squadName,
             squad_emoji: squadEmoji,
-            squad_image: squadImage 
+            squad_image: squadImage
         }
         const init: RequestInit = {
             method: 'PUT',

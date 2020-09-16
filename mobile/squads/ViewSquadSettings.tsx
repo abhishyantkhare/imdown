@@ -1,12 +1,12 @@
 import React, { useCallback, useState } from "react";
 import { Image, ScrollView, Text, TextInput, TouchableOpacity, View, _View } from "react-native";
 import { ViewSquadSettingsStyles } from "./ViewSquadSettingsStyles";
-import Divider from '../components/divider/divider'
+import Divider from '../components/divider/Divider'
 import { callBackend, deleteRequest } from "../backend/backend"
-import { TextStyles } from "../TextStyles";
+import TextStyles from "../TextStyles";
 import { useFocusEffect } from "@react-navigation/native";
 import BlurModal from "../components/blurmodal/BlurModal"
-import { StandardButton } from "../components/button/Button"
+import StandardButton from "../components/button/Button"
 
 const ViewSquadSettings = (props) => {
     const userId = props.route.params.userId;
@@ -55,7 +55,7 @@ const ViewSquadSettings = (props) => {
             squadImage: squadImage,
             userId: userId
         });
-    } 
+    }
 
     const renderEditSquadSettingsButton = (squadId: number, squadName: string, squadEmoji: string, squadImage: string, squadAdminId: number) => {
         return (
@@ -64,12 +64,12 @@ const ViewSquadSettings = (props) => {
             </TouchableOpacity>
         );
       }
-    
+
     const renderSquadImage = () => {
         return(
             <View style = {ViewSquadSettingsStyles.squadImageContainer}>
             { squadImage ? <Image source={{ uri: squadImage }} style = {ViewSquadSettingsStyles.squadImage} /> : <View></View> }
-            </View> 
+            </View>
         )
     };
 
@@ -107,7 +107,7 @@ const ViewSquadSettings = (props) => {
             isInEditView: false
         });
       }
-    
+
     const renderActionsSection = () => {
         return (
           <View style={ViewSquadSettingsStyles.additionalActionContainer}>
@@ -134,8 +134,8 @@ const ViewSquadSettings = (props) => {
                 <Image source={require('../assets/exit_icon.png')} style={ViewSquadSettingsStyles.leaveSquadIcon} />
                 <Text style={[TextStyles.paragraph, {textAlign: "center"}]}>{`Are you sure you want to leave this squad? You can always \n re-join with the squad code.`}</Text>
                 <View style={ViewSquadSettingsStyles.leaveSquadModalButtonRow}>
-                    <StandardButton text="Cancel" override_style={ViewSquadSettingsStyles.leaveSquadModalCancelButton} text_override_style={{color:"#84D3FF"}} onPress={() => { setLeaveSquadModalVisible(false) }} />
-                    <StandardButton text="Leave" override_style={ViewSquadSettingsStyles.leaveSquadModalLeaveButton} onPress={() => { deleteRequest('delete_user', { user_id: userId, squad_id: squadId }).then(data => { props.navigation.navigate("Squads") }) }} />
+                    <StandardButton text="Cancel" overrideStyle={ViewSquadSettingsStyles.leaveSquadModalCancelButton} textOverrideStyle={{color:"#84D3FF"}} onPress={() => { setLeaveSquadModalVisible(false) }} />
+                    <StandardButton text="Leave" overrideStyle={ViewSquadSettingsStyles.leaveSquadModalLeaveButton} onPress={() => { deleteRequest('delete_user', { user_id: userId, squad_id: squadId }).then(data => { props.navigation.navigate("Squads") }) }} />
                 </View>
             </BlurModal>
         );

@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useLayoutEffect } from 'react';
 import {
-  Flatlist,
+  FlatList,
   View,
   Text,
   Image,
@@ -11,103 +11,95 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import SquadMembersStyles from './SquadMembersStyles';
 import { callBackend, getUsersInSquad, deleteRequest } from '../backend/backend';
-import { StandardButton } from "../components/button/Button";
-import { TextStyles } from "../TextStyles";
+import StandardButton from "../components/button/Button";
+import TextStyles from "../TextStyles";
 import AppNavRouteProp from '../types/navigation';
 
 type SquadMembersProps = AppNavRouteProp<'SquadMembers'>;
 
-const SquadMembers = ({ route }: SquadMembersProps) => {
-  const userId = props.route.params.userId
-  const squadId = props.route.params.squadId
+const SquadMembers = ({ route, navigation }: SquadMembersProps) => {
+  const userId = route.params.userId
+  const squadId = route.params.squadId
   const [users, setUsers] = useState([]);
   // eslint-disable-next-line no-unused-vars
-  const [isInEditView, setIsInEditView] = useState(props.route.params.isInEditView)
+  const [isInEditView, setIsInEditView] = useState(route.params.isInEditView)
 
   useFocusEffect(
     useCallback(() => {
       getUsersInSquad(squadId).then(data => {
         setUsers(data.user_info);
       });
-    }, [])
+    }, []),
   );
 
-  const renderEditButton = () => {
-    return (
-      <StandardButton text="Edit" override_style={SquadMembersStyles.editToggle} onPress={() => { setIsInEditView(true);
-        props.navigation.setOptions({
-          headerRight: () => (
-            <View style={SquadMembersStyles.headerRight}>
-              {renderDoneEdittingButton()}
-            </View>
-          )
-        });
-      }} />
-    );
-  }
+  const renderEditButton = () => (
+    <StandardButton text="Edit" overrideStyle={SquadMembersStyles.editToggle} onPress={() => { setIsInEditView(true);
+      navigation.setOptions({
+        headerRight: () => (
+          <View style={SquadMembersStyles.headerRight}>
+            {renderDoneEdittingButton()}
+          </View>
+        )
+      });
+    }} />
+  );
 
-  const renderDoneEdittingButton = () => {
-    return (
-      <StandardButton text="Done" override_style={SquadMembersStyles.editToggle} onPress={() => { setIsInEditView(false);
-        props.navigation.setOptions({
-          headerRight: () => (
-            <View style={SquadMembersStyles.headerRight}>
-              {renderEditButton()}
-            </View>
-          )
-        });
-      }} />
-    );
-  }
+  const renderDoneEdittingButton = () => (
+    <StandardButton text="Done" overrideStyle={SquadMembersStyles.editToggle} onPress={() => { setIsInEditView(false);
+      navigation.setOptions({
+        headerRight: () => (
+          <View style={SquadMembersStyles.headerRight}>
+            {renderEditButton()}
+          </View>
+        )
+      });
+    }} />
+  );
 
   useLayoutEffect(() => {
-    props.navigation.setOptions({
+    navigation.setOptions({
       headerRight: () => (
       <View style={SquadMembersStyles.headerRight}>
         {isInEditView ? renderDoneEdittingButton() :  renderEditButton()}
       </View>
       ),
     });
-  }, [props.navigation]);
+  }, [navigation]);
 
-  const alertPopUp = (id: number, name: string) => {
-    return (
-      Alert.alert(
-        'Alert',
-        `Are you sure you want to delete ${name}?`,
-        [
-          {
-            text: 'Yes',
-            onPress: () => {
-              deleteRequest('delete_user', { user_id: id, squad_id: squadId }).then(data => {
-                setUsers(data.user_info);
-                if (id == userId) {
-                  props.navigation.navigate("Squads");
-                }
-              });
-            },
+  const alertPopUp = (id: number, name: string) => (
+    Alert.alert(
+      'Alert',
+      `Are you sure you want to delete ${name}?`,
+      [
+        {
+          text: 'Yes',
+          onPress: () => {
+            deleteRequest('delete_user', { user_id: id, squad_id: squadId }).then(data => {
+              setUsers(data.user_info);
+              if (id == userId) {
+                navigation.navigate('Squads');
+              }
+            });
           },
-          {
-            text: 'Cancel',
-            style: 'cancel'
-          }
-        ],
-        { cancelable: true }
-      )
+        },
+        {
+          text: 'Cancel',
+          style: 'cancel'
+        }
+      ],
+      { cancelable: true }
     )
-  }
+  );
 
-  const renderUsersItem = ({ item }: { item: any}) => {
-    return (
-      <View style={SquadMembersStyles.userInfoView}>
-        { isInEditView && <TouchableOpacity style={[SquadMembersStyles.deleteIcon, {marginRight: "5%"}]} onPress={() => alertPopUp(item.id, item.name)}>
-          <Image source={require('../assets/list_delete_icon.png')} style={SquadMembersStyles.deleteIcon} />
-        </TouchableOpacity> }
-        <Image style={[SquadMembersStyles.userImage, {marginRight: "3%"}]} source={{ uri: item.photo }} />
-        <Text style={[TextStyles.paragraph]}>{item.name}</Text>
-      </View>
-    )
-  }
+  const renderUsersItem = ({ item }: { item: any}) => (
+    <View style={SquadMembersStyles.userInfoView}>
+      { isInEditView && <TouchableOpacity style={[SquadMembersStyles.deleteIcon, {marginRight: "5%"}]} onPress={() => alertPopUp(item.id, item.name)}>
+        <Image source={require('../assets/list_delete_icon.png')} style={SquadMembersStyles.deleteIcon} />
+      </TouchableOpacity> }
+      <Image style={[SquadMembersStyles.userImage, {marginRight: "3%"}]} source={{ uri: item.photo }} />
+      <Text style={[TextStyles.paragraph]}>{item.name}</Text>
+    </View>
+  );
 
   return (
     <View style={SquadMembersStyles.squadsMembersContainer}>
@@ -118,6 +110,6 @@ const SquadMembers = ({ route }: SquadMembersProps) => {
       />
     </View>
   );
-}
+};
 
 export default SquadMembers;

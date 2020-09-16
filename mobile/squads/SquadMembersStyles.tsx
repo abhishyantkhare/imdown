@@ -1,9 +1,9 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native';
 
 const SquadMembersStyles = StyleSheet.create({
   headerRight: {
-    alignItems: "center",
-    flexDirection: "row",
+    alignItems: 'center',
+    flexDirection: 'row',
     marginRight: 20,
   },
   editToggle: {
@@ -11,20 +11,20 @@ const SquadMembersStyles = StyleSheet.create({
     width: 85,
   },
   titleText: {
-    color: "#84D3FF",
-    marginBottom: "10%",
-    marginLeft: "10%",
+    color: '#84D3FF',
+    marginBottom: '10%',
+    marginLeft: '10%',
   },
   squadsMembersContainer: {
     flex: 1,
-    flexDirection: "column",
-    backgroundColor: "#fff",
+    flexDirection: 'column',
+    backgroundColor: '#fff',
     padding: 20,
   },
   userInfoView: {
-    marginLeft: "10%",
-    flexDirection: "row",
-    alignItems: "center",
+    marginLeft: '10%',
+    flexDirection: 'row',
+    alignItems: 'center',
     height: 50,
   },
   deleteIcon: {
