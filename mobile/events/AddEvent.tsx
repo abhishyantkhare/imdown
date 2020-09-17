@@ -18,12 +18,13 @@ import StandardButton from '../components/button/Button';
 import { getUsersInSquad, postRequest } from '../backend/backend';
 import { DEFAULT_EMOJI } from '../constants';
 import Label from '../components/label/Label';
-import OptionalLabel from "../components/optionallabel/OptionalLabel"
+import OptionalLabel from '../components/optionallabel/OptionalLabel';
 import AppNavRouteProp from '../types/navigation';
 
 type AddEventProps = AppNavRouteProp<'AddEvent'>
 
 const downBorderFilled = require('../assets/down_border_filled.png');
+const addPhoto = require('../assets/add_photo.png');
 
 const AddEvent = ({ route, navigation }: AddEventProps) => {
   const { squadId } = route.params;
@@ -181,30 +182,35 @@ const AddEvent = ({ route, navigation }: AddEventProps) => {
   );
 
   const renderEventImage = () => (
-    <View style={{ marginTop: "10%", marginBottom: "10%" }}>
-      {imageUrl ?
-        <Image source={{ uri: imageUrl }}
-          style={{ height: 300 }}
-        />
-        :
-        null
-      }
-      <View style={[AddEventStyles.imageUploadBox, { marginTop: "10%", marginBottom: "10%" }]}>
-        <ImageUploader touchableStyle={{}} onImagePicked={setImageUrl} image={imageUrl} imageHeight={200} imageWidth={200} >
+    <View style={{ marginTop: '10%', marginBottom: '10%' }}>
+      {imageUrl
+        ? (
+          <Image
+            source={{ uri: imageUrl }}
+            style={{ height: 300 }}
+          />
+        )
+        : null}
+      <View style={[AddEventStyles.imageUploadBox, { marginTop: '10%', marginBottom: '10%' }]}>
+        <ImageUploader
+          touchableStyle={{}}
+          onImagePicked={setImageUrl}
+          image={imageUrl}
+          imageHeight={200}
+          imageWidth={200}
+        >
           <View style={AddEventStyles.uploadLabelRow}>
             <Image
-              source={require("../assets/add_photo.png")}
+              source={addPhoto}
             />
-            <View style={{ marginLeft: "5%" }}>
+            <View style={{ marginLeft: '5%' }}>
               <Label
-                labelText={imageUrl ? "Replace/Remove image" : "Upload an image"}
-                size={"small"}
+                labelText={imageUrl ? 'Replace/Remove image' : 'Upload an image'}
+                size='small'
               />
-              {!imageUrl ?
-                <OptionalLabel style={{ marginTop: "5%" }} />
-                :
-                null
-              }
+              {!imageUrl
+                ? <OptionalLabel style={{ marginTop: '5%' }} />
+                : null}
             </View>
           </View>
         </ImageUploader>

@@ -1,8 +1,9 @@
 import { StyleSheet } from 'react-native';
-export const EditSquadSettingsStyles = StyleSheet.create({
+
+const EditSquadSettingsStyles = StyleSheet.create({
   headerRight: {
     alignItems: 'center',
-    flexDirection: 'row', 
+    flexDirection: 'row',
     marginRight: 20,
   },
   saveButton: {
@@ -30,14 +31,14 @@ export const EditSquadSettingsStyles = StyleSheet.create({
     bottom: 5,
     height: 40,
     width: 70,
-    position:'absolute',
+    position: 'absolute',
     right: 5,
   },
   uploadButtonText: {
     color: '#ffffff',
   },
   squadAttributeName: {
-    color:'#BEBEBE',
+    color: '#BEBEBE',
     marginBottom: '5%',
   },
   squadTitleContainer: {
@@ -46,11 +47,11 @@ export const EditSquadSettingsStyles = StyleSheet.create({
     marginHorizontal: '10%',
   },
   squadTitleTextInput: {
-    borderColor:'#BEBEBE', 
+    borderColor: '#BEBEBE',
     borderRadius: 5,
-    borderWidth: 1, 
-    paddingHorizontal:20,  
-    paddingVertical:20, 
+    borderWidth: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
   },
   emojiContainer: {
     backgroundColor: '#ffff',
@@ -58,12 +59,12 @@ export const EditSquadSettingsStyles = StyleSheet.create({
     marginVertical: '5%',
   },
   emojiBox: {
-    alignItems:'center', 
-    justifyContent:'center', 
-    backgroundColor:'#E7EAF6', 
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#E7EAF6',
     borderRadius: 5,
-    height:60,
-    width:60, 
+    height: 60,
+    width: 60,
   },
   squadCodeContainer: {
     backgroundColor: '#ffff',
@@ -87,22 +88,22 @@ export const EditSquadSettingsStyles = StyleSheet.create({
     width: 40,
   },
   actionSectionImage: {
-    height: 30, 
+    height: 30,
     width: 30,
   },
   forwardArrowIcon: {
-    height: 25, 
-    width: 25, 
-    position:'absolute', 
-    right:0,
+    height: 25,
+    width: 25,
+    position: 'absolute',
+    right: 0,
   },
   editMembersText: {
     marginLeft: '3%',
   },
   deleteSquadButton: {
     alignSelf: 'flex-start',
-    backgroundColor: '#FC6E5E', 
-    marginLeft: 0, 
+    backgroundColor: '#FC6E5E',
+    marginLeft: 0,
     marginTop: '15%',
     width: 150,
   },
@@ -114,12 +115,12 @@ export const EditSquadSettingsStyles = StyleSheet.create({
   },
   deleteSquadModalButtonRow: {
     flexDirection: 'row',
-    justifyContent:'space-around',
+    justifyContent: 'space-around',
     marginVertical: '15%',
   },
   deleteSquadModalCancelButton: {
-    backgroundColor: '#ffffff', 
-    borderColor: '#84D3FF', 
+    backgroundColor: '#ffffff',
+    borderColor: '#84D3FF',
     borderWidth: 2,
     width: 125,
   },
@@ -129,3 +130,4 @@ export const EditSquadSettingsStyles = StyleSheet.create({
   },
 });
 
+export default EditSquadSettingsStyles;

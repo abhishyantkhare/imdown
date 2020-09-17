@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { View, TouchableOpacity } from "react-native";
+import React, { useState } from 'react';
+import { View, TouchableOpacity } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 
-import BlurModal from "../blurmodal/BlurModal";
-import StandardButton from "../button/Button";
-import ImageUploaderStyles from "./ImageUploaderStyles";
-import { IMG_URL_BASE_64_PREFIX } from "../../constants";
+import BlurModal from '../blurmodal/BlurModal';
+import StandardButton from '../button/Button';
+import ImageUploaderStyles from './ImageUploaderStyles';
+import { IMG_URL_BASE_64_PREFIX } from '../../constants';
 
 type ImageUploaderProps = {
   children: React.ReactNode;
@@ -17,64 +17,63 @@ type ImageUploaderProps = {
 }
 
 const ImageUploader = (props: ImageUploaderProps) => {
-  const { style } = props;
-  const [image, setImage] = useState(props.image)
-  const [uploadImageModal, setUploadImageModal] = useState(false)
+  const { children, image, touchableStyle } = props;
+  const [currentImage, setCurrentImage] = useState(image);
+  const [uploadImageModal, setUploadImageModal] = useState(false);
 
   const deleteImage = () => {
-    setImage("");
-    props.onImagePicked("");
+    setCurrentImage('');
+    props.onImagePicked('');
     setUploadImageModal(false);
-  }
+  };
 
   const pickImageFromCamera = () => {
     ImagePicker.openCamera({
       width: props.imageWidth,
       height: props.imageHeight,
       cropping: true,
-      includeBase64: true
-    }).then(image => {
-      const imageEncoded = IMG_URL_BASE_64_PREFIX + image.data
+      includeBase64: true,
+    }).then((chosenImage) => {
+      const imageEncoded = IMG_URL_BASE_64_PREFIX + chosenImage.data;
       props.onImagePicked(imageEncoded);
-      setImage(imageEncoded);
-      setUploadImageModal(false)
+      setCurrentImage(imageEncoded);
+      setUploadImageModal(false);
     });
-  }
+  };
 
   const pickImageFromGallery = () => {
     ImagePicker.openPicker({
       width: props.imageWidth,
       height: props.imageHeight,
       cropping: true,
-      includeBase64: true
-    }).then(image => {
-      const imageEncoded = IMG_URL_BASE_64_PREFIX + image.data
+      includeBase64: true,
+    }).then((chosenImage) => {
+      const imageEncoded = IMG_URL_BASE_64_PREFIX + chosenImage.data;
       props.onImagePicked(imageEncoded);
-      setImage(imageEncoded);
-      setUploadImageModal(false)
+      setCurrentImage(imageEncoded);
+      setUploadImageModal(false);
     });
-    }
+  };
 
   const onImageUploaderToggled = () => {
-    setUploadImageModal(!uploadImageModal)
-  }
+    setUploadImageModal(!uploadImageModal);
+  };
 
   return (
     <View>
-      <TouchableOpacity style={props.touchableStyle} onPress={()=> onImageUploaderToggled()}>
-        {props.children}
+      <TouchableOpacity style={touchableStyle} onPress={() => onImageUploaderToggled()}>
+        {children}
       </TouchableOpacity>
       <BlurModal visible={uploadImageModal} cancel={() => setUploadImageModal(false)}>
-        <StandardButton text="Take photo from camera" onPress={() => pickImageFromCamera()} />
-        <StandardButton text="Choose photo from gallery" overrideStyle={ImageUploaderStyles.chooseFromGalleryButton} onPress={() => pickImageFromGallery()} />
-        {image ? <StandardButton text="Remove image" overrideStyle={ImageUploaderStyles.deleteImageButton} onPress={() => deleteImage()} /> : <View></View> }
+        <StandardButton text='Take photo from camera' onPress={() => pickImageFromCamera()} />
+        <StandardButton text='Choose photo from gallery' overrideStyle={ImageUploaderStyles.chooseFromGalleryButton} onPress={() => pickImageFromGallery()} />
+        {currentImage ? <StandardButton text='Remove image' overrideStyle={ImageUploaderStyles.deleteImageButton} onPress={() => deleteImage()} /> : <View /> }
       </BlurModal>
     </View>
   );
-}
+};
 
 ImageUploader.defaultProps = {
-  style: {},
 };
 
 export default ImageUploader;

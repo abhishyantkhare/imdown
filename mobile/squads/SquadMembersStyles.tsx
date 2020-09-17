@@ -36,7 +36,7 @@ const SquadMembersStyles = StyleSheet.create({
     height: 30,
     // to get a circular image, simply take width/height of a square image, and divide by 2
     borderRadius: 15,
-  }
+  },
 });
 
 export default SquadMembersStyles;

@@ -1,8 +1,9 @@
 import { StyleSheet } from 'react-native';
-export const ViewSquadSettingsStyles = StyleSheet.create({
+
+const ViewSquadSettingsStyles = StyleSheet.create({
   headerRight: {
     alignItems: 'center',
-    flexDirection: 'row', 
+    flexDirection: 'row',
     marginRight: 20,
   },
   editSquadButtonImage: {
@@ -23,7 +24,7 @@ export const ViewSquadSettingsStyles = StyleSheet.create({
     width: 350,
   },
   squadAttributeName: {
-    color:'#BEBEBE',
+    color: '#BEBEBE',
     marginBottom: '5%',
   },
   squadTitleContainer: {
@@ -55,17 +56,17 @@ export const ViewSquadSettingsStyles = StyleSheet.create({
     backgroundColor: '#ffff',
   },
   actionSectionImage: {
-    height: 30, 
+    height: 30,
     width: 30,
   },
   viewMembersText: {
     marginLeft: '3%',
   },
   forwardArrowIcon: {
-    height: 25, 
-    width: 25, 
-    position:'absolute', 
-    right:0,
+    height: 25,
+    width: 25,
+    position: 'absolute',
+    right: 0,
   },
   leaveSquadIcon: {
     height: 60,
@@ -74,17 +75,17 @@ export const ViewSquadSettingsStyles = StyleSheet.create({
     marginTop: '20%',
   },
   leaveSquadText: {
-    color:'#FC6E5E',
+    color: '#FC6E5E',
     marginLeft: '3%',
   },
   leaveSquadModalButtonRow: {
     flexDirection: 'row',
-    justifyContent:'space-around',
+    justifyContent: 'space-around',
     marginVertical: '15%',
   },
   leaveSquadModalCancelButton: {
-    backgroundColor: '#ffffff', 
-    borderColor: '#84D3FF', 
+    backgroundColor: '#ffffff',
+    borderColor: '#84D3FF',
     borderWidth: 2,
     width: 125,
   },
@@ -93,3 +94,5 @@ export const ViewSquadSettingsStyles = StyleSheet.create({
     width: 125,
   },
 });
+
+export default ViewSquadSettingsStyles;

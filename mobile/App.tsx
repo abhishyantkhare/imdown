@@ -21,9 +21,9 @@ import Events from './events/Events';
 import AddEvent from './events/AddEvent';
 import EventDetails, { Event } from './events/EventDetails';
 import EditEvent from './events/EditEvent';
-import ViewSquad from "./squads/ViewSquadSettings";
-import EditSquad from "./squads/EditSquadSettings";
-import SquadMembers from "./squads/SquadMembers";
+import ViewSquad from './squads/ViewSquadSettings';
+import EditSquad from './squads/EditSquadSettings';
+import SquadMembers from './squads/SquadMembers';
 import AuthLoadingScreen from './login/AuthLoadingScreen';
 import { SquadRouteParams } from './types/Squad';
 
@@ -37,10 +37,22 @@ export type RootStackParamList = {
   Squads: {
     email: string;
   };
-  EditSquad: {
+  ViewSquadSettings: {
     squadId: number,
+    squadCode: string,
     squadName: string,
     squadEmoji: string,
+    squadImage: string,
+    userId: number
+  };
+  EditSquadSettings: {
+    squadId: number,
+    squadAdminId: number,
+    squadCode: string,
+    squadName: string,
+    squadEmoji: string,
+    squadImage: string,
+    userId: number
   };
   AddNewSquad: {
     email: string
@@ -82,7 +94,7 @@ const hiddenHeaderOptions = {
   headerBackImage: backButton,
   headerBackTitleVisible: false,
   headerTitle: '',
-  headerStyle: { shadowColor: 'transparent', height: 125 }
+  headerStyle: { shadowColor: 'transparent', height: 125 },
 };
 
 export default function App() {
@@ -108,8 +120,8 @@ export default function App() {
         <Stack.Navigator>
           <Stack.Screen name='Login' component={Login} options={{ headerShown: false }} />
           <Stack.Screen name='Squads' component={Squads} options={{ gestureEnabled: false, headerStyle: { shadowColor: 'transparent' }, headerTitle: '' }} />
-          <Stack.Screen name="View Squad Settings" component={ViewSquad} options={hiddenHeaderOptions} />
-          <Stack.Screen name="Edit Squad Settings" component={EditSquad} options={hiddenHeaderOptions} />
+          <Stack.Screen name='View Squad Settings' component={ViewSquad} options={hiddenHeaderOptions} />
+          <Stack.Screen name='Edit Squad Settings' component={EditSquad} options={hiddenHeaderOptions} />
           <Stack.Screen name='AddNewSquad' component={AddNewSquad} options={hiddenHeaderOptions} />
           <Stack.Screen name='AddExistingSquad' component={AddExistingSquad} options={hiddenHeaderOptions} />
           <Stack.Screen name='Events' component={Events} options={hiddenHeaderOptions} />

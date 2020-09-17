@@ -170,7 +170,7 @@ const AddExistingSquad = ({ route, navigation }: AddSquadProps) => {
       >
         You&apos;ve joined squad
         <Text style={{ fontFamily: 'Roboto_700Bold' }}>
-          {`${squadName}`}
+          {` ${squadName}`}
         </Text>
         !
       </TextInput>

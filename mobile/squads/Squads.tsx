@@ -143,7 +143,7 @@ const Squads = ({ route, navigation }: SquadsProps) => {
         {
           text: 'Yes',
           onPress: () => {
-            deleteRequest('squad', { squad_id: squadId, user_id: userId }).then(
+            deleteRequest('squad', { squad_id: squadId, user_id: userId }).then( // eslint-disable-line camelcase
               (data) => {
                 setSquads(convertToKeyValDict(data.squads));
               },

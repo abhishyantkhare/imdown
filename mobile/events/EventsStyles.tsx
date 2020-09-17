@@ -3,9 +3,9 @@ import { StyleSheet } from 'react-native';
 const EventStyles = StyleSheet.create({
   // All styles associated with header and header buttons
   headerRight: {
-    alignItems: "center",
-    flexDirection: "row",
-    marginRight: 20 ,
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginRight: 20,
   },
   squadCodeContainer: {
     borderColor: '#84D3FF',
@@ -149,15 +149,15 @@ const EventStyles = StyleSheet.create({
     width: 25,
   },
   addEventButtonContainer: {
-    backgroundColor: "white",
-    borderColor: "#BEBEBE",
-    borderTopWidth:2,
+    backgroundColor: 'white',
+    borderColor: '#BEBEBE',
+    borderTopWidth: 2,
     elevation: 5,
-    height:"15%",
-    justifyContent: "center",
+    height: '15%',
+    justifyContent: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 1, height: -1 },
-    shadowOpacity:  0.4,
+    shadowOpacity: 0.4,
     shadowRadius: 3,
   },
 });

@@ -12,19 +12,22 @@ type StandardButtonProps = {
 };
 
 function StandardButton(props: StandardButtonProps) {
-  const { text, overrideStyle, onPress } = props;
+  const {
+    text, overrideStyle, textOverrideStyle, onPress,
+  } = props;
   return (
     <TouchableOpacity
       style={[StandardButtonStyles.button, overrideStyle]}
       onPress={() => onPress()}
     >
-      <Text style={[StandardButtonStyles.buttonText, props.textOverrideStyle]}>{`${text}`}</Text>
+      <Text style={[StandardButtonStyles.buttonText, textOverrideStyle]}>{`${text}`}</Text>
     </TouchableOpacity>
   );
 }
 
 StandardButton.defaultProps = {
   overrideStyle: {},
+  textOverrideStyle: {},
 };
 
 export default StandardButton;

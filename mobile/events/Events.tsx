@@ -90,11 +90,20 @@ const Events = ({ route, navigation }: EventsProps) => {
     navigation.navigate('AddEvent', route.params);
   };
 
+<<<<<<< HEAD
   const goToViewSquadSettings = (squadId: number, squadName: string, squadEmoji: string) => {
     navigation.navigate('View Squad Settings', {
       squadId,
       squadName,
       squadEmoji,
+=======
+  const goToViewSquadSettings = (squadIdVal: number, squadNameVal: string,
+    squadEmojiVal: string) => {
+    navigation.navigate('View Squad Settings', {
+      squadId: squadIdVal,
+      squadName: squadNameVal,
+      squadEmoji: squadEmojiVal,
+>>>>>>> Fix linting errors
       squadCode,
       squadImage,
       userId,
@@ -134,7 +143,11 @@ const Events = ({ route, navigation }: EventsProps) => {
 
   const getSquadDetails = () => {
     const endpoint = `squad?squad_id=${squadId}`;
+<<<<<<< HEAD
     const init: RequestInit = {
+=======
+    const init: RequestInit = { // eslint-disable-line no-undef
+>>>>>>> Fix linting errors
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
