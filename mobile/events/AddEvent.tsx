@@ -118,6 +118,7 @@ const AddEvent = ({ route, navigation }: AddEventProps) => {
     <Section label='Start and end times'>
       <DateTimeInput
         onSetDateTime={setStartDateTime}
+        initialDateTime={startDateTime}
       />
       {showEndTime
         ? (
