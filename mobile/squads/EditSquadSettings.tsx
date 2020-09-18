@@ -12,18 +12,13 @@ import StandardButtonStyles from '../components/button/ButtonStyles';
 import ImageUploader from '../components/imageuploader/ImageUploader';
 import BlurModal from '../components/blurmodal/BlurModal';
 import ImagePlaceholder from '../components/imageplaceholder/ImagePlaceholder';
-import { AppNavigationProp, AppRouteProp } from '../types/navigation';
-
-type EditSquadSettingsProps = {
-  navigation: AppNavigationProp<'EditSquadSettings'>;
-  route: AppRouteProp<'EditSquadSettings'>;
-};
+import { SquadSettingsProps } from '../types/SquadSettings';
 
 const userButton = require('../assets/user_button.png');
 const exitIcon = require('../assets/exit_icon.png');
 const arrowForwardGray = require('../assets/arrow_forward_gray.png');
 
-const EditSquadSettings = ({ route, navigation }: EditSquadSettingsProps) => {
+const EditSquadSettings = ({ route, navigation }: SquadSettingsProps) => {
   const {
     squadId, squadAdminId, squadCode, userId,
   } = route.params;
@@ -33,7 +28,7 @@ const EditSquadSettings = ({ route, navigation }: EditSquadSettingsProps) => {
   const [deleteSquadModalVisible, setDeleteSquadModalVisible] = useState(false);
 
   const saveSquad = () => {
-    const endpoint = 'edit_squad';
+    const endpoint = 'squad';
     const data = {
       squad_id: squadId, // eslint-disable-line camelcase
       squad_name: squadName, // eslint-disable-line camelcase
@@ -60,7 +55,6 @@ const EditSquadSettings = ({ route, navigation }: EditSquadSettingsProps) => {
   };
 
   const goToEditSquadMembers = () => {
-    console.log(`saving wit2h values ${squadAdminId} and ${squadId} and ${squadAdminId === userId}`);
     navigation.navigate('Squad Members', {
       userId,
       squadId,
@@ -153,7 +147,9 @@ const EditSquadSettings = ({ route, navigation }: EditSquadSettingsProps) => {
   const renderDeleteSquadModel = () => (
     <BlurModal visible={deleteSquadModalVisible}>
       <Image source={exitIcon} style={EditSquadSettingsStyles.deleteSquadIcon} />
-      <Text style={[TextStyles.paragraph, { textAlign: 'center' }]}>{'Are you sure you want to\ndelete this squad?\nThis action cannot be undone.'}</Text>
+      <View style={EditSquadSettingsStyles.deleteSquadModalTextContainer}>
+        <Text style={[TextStyles.paragraph, { textAlign: 'center' }]}>Are you sure you want to delete this squad? This action cannot be undone.</Text>
+      </View>
       <View style={EditSquadSettingsStyles.deleteSquadModalButtonRow}>
         <StandardButton
           text='Cancel'

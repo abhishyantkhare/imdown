@@ -74,6 +74,9 @@ const ViewSquadSettingsStyles = StyleSheet.create({
     marginBottom: '10%',
     marginTop: '20%',
   },
+  leaveSquadModalTextContainer: {
+    width: '80%',
+  },
   leaveSquadText: {
     color: '#FC6E5E',
     marginLeft: '3%',

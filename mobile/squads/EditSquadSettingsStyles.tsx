@@ -113,6 +113,9 @@ const EditSquadSettingsStyles = StyleSheet.create({
     marginBottom: '10%',
     marginTop: '20%',
   },
+  deleteSquadModalTextContainer: {
+    width: '80%',
+  },
   deleteSquadModalButtonRow: {
     flexDirection: 'row',
     justifyContent: 'space-around',

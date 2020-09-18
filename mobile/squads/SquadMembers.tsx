@@ -25,7 +25,6 @@ const deleteIcon = require('../assets/list_delete_icon.png');
 const SquadMembers = ({ route, navigation }: SquadMembersProps) => {
   const { userId, squadId } = route.params;
   const [users, setUsers] = useState([]);
-  // eslint-disable-next-line no-unused-vars
   const [isInEditView, setIsInEditView] = useState(route.params.isInEditView);
 
   useFocusEffect(

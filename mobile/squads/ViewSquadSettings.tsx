@@ -5,38 +5,26 @@ import {
 import { useFocusEffect } from '@react-navigation/native';
 import ViewSquadSettingsStyles from './ViewSquadSettingsStyles';
 import Divider from '../components/divider/Divider';
-import { callBackend, deleteRequest } from '../backend/backend';
+import { deleteRequest, getSquadDetails } from '../backend/backend';
 import TextStyles from '../TextStyles';
 import BlurModal from '../components/blurmodal/BlurModal';
 import StandardButton from '../components/button/Button';
-import { AppNavigationProp, AppRouteProp } from '../types/navigation';
-
-type ViewSquadSettingsProps = {
-  navigation: AppNavigationProp<'ViewSquadSettings'>;
-  route: AppRouteProp<'ViewSquadSettings'>;
-};
+import { SquadSettingsProps } from '../types/SquadSettings';
 
 const pencilButton = require('../assets/pencil_button.png');
 const userButton = require('../assets/user_button.png');
 const exitIcon = require('../assets/exit_icon.png');
 const arrowForwardGray = require('../assets/arrow_forward_gray.png');
 
-const ViewSquadSettings = ({ route, navigation }: ViewSquadSettingsProps) => {
+const ViewSquadSettings = ({ route, navigation }: SquadSettingsProps) => {
   const { userId, squadId, squadCode } = route.params;
   const [squadName, setSquadName] = useState(route.params.squadName);
   const [squadEmoji, setSquadEmoji] = useState(route.params.squadEmoji);
   const [squadImage, setSquadImage] = useState(route.params.squadImage);
   const [leaveSquadModalVisible, setLeaveSquadModalVisible] = useState(false);
 
-  const getSquadDetails = () => {
-    const endpoint = `squad?squad_id=${squadId}`;
-    const init: RequestInit = { // eslint-disable-line no-undef
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-    callBackend(endpoint, init).then((response) => response.json()).then((data) => {
+  const getSquadDetailsFromBackend = () => {
+    getSquadDetails(squadId).then((data) => {
       setSquadName(data.name);
       setSquadEmoji(data.squad_emoji);
       setSquadImage(data.image);
@@ -59,7 +47,7 @@ const ViewSquadSettings = ({ route, navigation }: ViewSquadSettingsProps) => {
     );
   };
 
-  useFocusEffect(useCallback(getSquadDetails, []));
+  useFocusEffect(useCallback(getSquadDetailsFromBackend, []));
 
   const goToEditSquad = (squadIdVal: number, squadNameVal: string, squadEmojiVal: string,
     squadImageVal: string, squadAdminIdVal: number) => {
@@ -153,7 +141,9 @@ const ViewSquadSettings = ({ route, navigation }: ViewSquadSettingsProps) => {
   const renderLeaveSquadModel = () => (
     <BlurModal visible={leaveSquadModalVisible}>
       <Image source={exitIcon} style={ViewSquadSettingsStyles.leaveSquadIcon} />
-      <Text style={[TextStyles.paragraph, { textAlign: 'center' }]}>{'Are you sure you want to leave this squad? You can always \n re-join with the squad code.'}</Text>
+      <View style={ViewSquadSettingsStyles.leaveSquadModalTextContainer}>
+        <Text style={[TextStyles.paragraph, { textAlign: 'center' }]}>Are you sure you want to leave this squad? You can always re-join with the squad code.</Text>
+      </View>
       <View style={ViewSquadSettingsStyles.leaveSquadModalButtonRow}>
         <StandardButton
           text='Cancel'

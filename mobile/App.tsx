@@ -37,17 +37,9 @@ export type RootStackParamList = {
   Squads: {
     email: string;
   };
-  ViewSquadSettings: {
+  SquadSettings: {
     squadId: number,
-    squadCode: string,
-    squadName: string,
-    squadEmoji: string,
-    squadImage: string,
-    userId: number
-  };
-  EditSquadSettings: {
-    squadId: number,
-    squadAdminId: number,
+    squadAdminId?: number,
     squadCode: string,
     squadName: string,
     squadEmoji: string,
