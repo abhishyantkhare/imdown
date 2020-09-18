@@ -221,28 +221,41 @@ const Events = ({ route, navigation }: EventsProps) => {
     );
   };
 
+  const isPastEvent = (event: EventLite) => {
+    const currMs = new Date().valueOf();
+    if (event.endMs && event.endMs < currMs) {
+      return true;
+    }
+    if (event.startMs && event.startMs < currMs && event.rsvpUsers.length < event.downThreshold) {
+      return true;
+    }
+    if (!event.endMs && event.startMs && event.startMs < (currMs - 24 * 60 * 60 * 1000)) {
+      return true;
+    }
+
+    return false;
+  };
+
   // Given event, returns string that describes how far (time-wise) event is from now.
-  // For ex: 'ended 3 days ago' / 'starts 3 minutes from now' / 'happening now!'
+  // For ex: "ended 3 days ago" / "starts 3 minutes from now" / "happening now!"
   const calcEventProximity = (event: EventLite) => {
-    const now = parseInt(moment().format('x'), 10);
-    if (event.startMs != null) {
-      if (now < event.startMs) {
-        return `starts ${moment(event.startMs).fromNow().toLocaleString()}`;
+    const now = new Date().valueOf();
+    if (isPastEvent(event)) {
+      if (event.rsvpUsers.length < event.downThreshold) {
+        return 'not enough people responded';
       }
-
-      if (now >= event.startMs
-        && ((event.endMs != null && now < event.endMs) || event.endMs == null)) {
-        return 'happening now!';
+      if (!event.endMs) {
+        return 'event was over a day ago';
       }
-
       return `ended ${moment(event.endMs).fromNow().toLocaleString()}`;
     }
-
-    if (event.endMs != null && now > event.endMs) {
-      return `ended ${moment(event.endMs).fromNow().toLocaleString()}`;
+    if (!event.startMs) {
+      return '';
     }
-
-    return '';
+    if (now < event.startMs) {
+      return `starts ${moment(event.startMs).fromNow().toLocaleString()}`;
+    }
+    return 'happening now!';
   };
 
   const renderEventItem = ({ item }: { item: EventLite }) => (
@@ -270,32 +283,27 @@ const Events = ({ route, navigation }: EventsProps) => {
 
   const PendingEventsTabContents = () => (
     <FlatList
-      data={events
-        .filter((event: EventLite) => !event.endMs || event.endMs > new Date().valueOf())
-        .sort((a: EventLite, b: EventLite) => {
-          if ((!a.startMs && b.startMs) || (a.startMs && b.startMs && a.startMs > b.startMs)) {
-            return 1;
-          }
-          return -1;
-        })}
+      data={events.filter(
+        (event) => !isPastEvent(event),
+      ).sort(
+        (a, b) => ((
+          (!a.startMs && b.startMs) || (a.startMs && b.startMs && a.startMs > b.startMs)) ? 1 : -1),
+      )}
       renderItem={renderEventItem}
       style={EventsStyles.eventList}
-      keyExtractor={(item, index) => index.toString()}
+      keyExtractor={(_, index) => index.toString()}
     />
   );
 
   const PastEventsTabContents = () => (
     <FlatList
-      data={events.filter((event: EventLite) => event.endMs && event.endMs < new Date().valueOf())
-        .sort((a: EventLite, b: EventLite) => {
-          if (a.endMs && b.endMs && a.endMs < b.endMs) {
-            return 1;
-          }
-          return -1;
-        })}
+      data={events.filter(
+        (event) => isPastEvent(event),
+      ).sort((a, b) => (
+        (a.endMs && !b.endMs) || (a.endMs && b.endMs && a.endMs < b.endMs) ? 1 : -1))}
       renderItem={renderEventItem}
       style={EventsStyles.eventList}
-      keyExtractor={(item, index) => index.toString()}
+      keyExtractor={(_, index) => index.toString()}
     />
   );
 
