@@ -1,7 +1,7 @@
 """Add image to squad
 
 Revision ID: 77e4ebb2a766
-Revises: c3b2faf138c0
+Revises: b6e81caa582f
 Create Date: 2020-09-12 23:14:14.114672
 
 """
@@ -11,7 +11,7 @@ from sqlalchemy.dialects import mysql
 
 # revision identifiers, used by Alembic.
 revision = '77e4ebb2a766'
-down_revision = 'c3b2faf138c0'
+down_revision = 'b6e81caa582f'
 branch_labels = None
 depends_on = None
 
