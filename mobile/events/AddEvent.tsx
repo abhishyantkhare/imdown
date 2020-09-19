@@ -25,7 +25,7 @@ type AddEventProps = AppNavRouteProp<'AddEvent'>
 const downBorderFilled = require('../assets/down_border_filled.png');
 
 const AddEvent = ({ route, navigation }: AddEventProps) => {
-  const { squadId, userEmail } = route.params;
+  const { squadId } = route.params;
   const [emoji, setEmojiPicked] = useState<string>(DEFAULT_EMOJI);
   const [eventTitle, setEventTitle] = useState('');
   const [startDateTime, setStartDateTime] = useState<Date>(new Date());
@@ -52,20 +52,19 @@ const AddEvent = ({ route, navigation }: AddEventProps) => {
 
   const generateEventForBackend = () => (
     {
-      email: userEmail,
       title: eventTitle,
       description: eventDescription || null,
       emoji,
-      start_time: moment(startDateTime).valueOf(), // eslint-disable-line camelcase
-      end_time: showEndTime ? moment(endDateTime).valueOf() : null, // eslint-disable-line camelcase
+      startTime: moment(startDateTime).valueOf(),
+      endTime: showEndTime ? moment(endDateTime).valueOf() : null,
       // TODO: Add address + lat/lng to add event page
       // address,
       // lat,
       // lng,
-      squad_id: squadId, // eslint-disable-line camelcase
-      event_url: null, // eslint-disable-line camelcase
-      image_url: imageUrl || null, // eslint-disable-line camelcase
-      down_threshold: downThreshold, // eslint-disable-line camelcase
+      squadId,
+      eventUrl: null,
+      imageUrl: imageUrl || null,
+      downThreshold,
     }
   );
 

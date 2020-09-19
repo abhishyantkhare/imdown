@@ -181,8 +181,7 @@ const EventDetails = ({ route, navigation }: EventDetailsProps) => {
   const callBackendRespondToEvent = (rsvpResponse: Boolean) => {
     const endpoint = 'respond_to_event';
     const data = {
-      email: userEmail,
-      event_id: event.id, // eslint-disable-line camelcase
+      eventId: event.id,
       response: rsvpResponse,
     };
     const init: RequestInit = { // eslint-disable-line no-undef
@@ -193,7 +192,7 @@ const EventDetails = ({ route, navigation }: EventDetailsProps) => {
         'Content-Type': 'application/json',
       },
     };
-    callBackend(endpoint, init).then(() => { callBackendRefreshEventInfo(); });
+    callBackend(endpoint, init).then(callBackendRefreshEventInfo);
   };
 
   const calculateDownRSVPPercentage = (numAccepted: number) => (

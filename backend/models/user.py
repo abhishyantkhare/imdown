@@ -1,3 +1,6 @@
+import json
+
+from config import Config
 from extensions import db
 from flask import jsonify
 from flask_login import UserMixin
@@ -29,11 +32,13 @@ class User(UserMixin, db.Model):
     def jsonifyUser(self):
         return jsonify(email=self.email, name=self.name, photo=self.photo)
 
-    def getToken(self, secrets, oauth_url):
+    def getToken(self, oauth_url):
+        with open(Config.GOOGLE_SECRET_FILE, "r") as fp:
+            client_secret = json.load(fp)
         # always refresh the token for now. Eventually we only need to refresh when the token actually expires
         refresh_body = {
-            'client_id': secrets["GOOGLE_CLIENT_ID"],
-            'client_secret': secrets["GOOGLE_CLIENT_SECRET"],
+            'client_id': client_secret["GOOGLE_CLIENT_ID"],
+            'client_secret': client_secret["GOOGLE_CLIENT_SECRET"],
             'refresh_token': self.google_refresh_token,
             'grant_type': 'refresh_token'
         }

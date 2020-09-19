@@ -69,7 +69,7 @@ const Login = ({ navigation }: LoginProps) => {
   const checkIfUserSignedIn = async () => {
     const userEmail = await AsyncStorage.getItem('email');
     if (userEmail) {
-      const endpoint = `is_signed_in?email=${userEmail}`;
+      const endpoint = 'is_signed_in';
       const resp = await callBackend(endpoint);
       if (resp.ok) {
         goToSquads(userEmail);
@@ -96,14 +96,8 @@ const Login = ({ navigation }: LoginProps) => {
   };
 
   const signInOnBackend = (user: User, googleServerCode: string | null) => {
-    const loginUrl = `${BACKEND_URL}sign_in`;
-    const data = {
-      email: user.email,
-      name: user.name,
-      photo: user.photo,
-      deviceToken: deviceToken || '',
-      googleServerCode,
-    };
+    const loginUrl = `${BACKEND_URL}login`;
+    const data = { googleServerCode, deviceToken };
     fetch(loginUrl, {
       method: 'POST',
       mode: 'no-cors',

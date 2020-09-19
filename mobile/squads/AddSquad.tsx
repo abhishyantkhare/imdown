@@ -25,24 +25,18 @@ const ADD_SQUAD_BY_CODE_PLACEHOLDER = 'Code';
 const CREATE_NEW_SQUAD_PLACEHOLDER = 'Enter squad name...';
 const successIcon = require('../assets/success_icon.png');
 
-const AddNewSquad = ({ route, navigation }: AddSquadProps) => {
+const AddNewSquad = ({ navigation }: AddSquadProps) => {
   const [squadName, setSquadName] = useState('');
   const [emojiPicked, setEmojiPicked] = useState(DEFAULT_EMOJI);
   const [createSquadSuccessModal, setCreateSquadSuccessModal] = useState(false);
   const [squadCode, setSquadCode] = useState('');
-  const { email } = route.params;
 
   const addSquadOnBackend = () => {
     const endpoint = 'create_squad';
-    const data = {
-      email,
-      squad_name: squadName, // eslint-disable-line camelcase
-      squad_emoji: emojiPicked, // eslint-disable-line camelcase
-    };
     const init: RequestInit = { // eslint-disable-line no-undef
       method: 'POST',
       mode: 'no-cors',
-      body: JSON.stringify(data),
+      body: JSON.stringify({ name: squadName, emoji: emojiPicked }),
       headers: {
         'Content-Type': 'application/json',
       },
