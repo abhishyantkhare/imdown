@@ -200,7 +200,7 @@ def delete_squad(request):
     squads_lst = []
     for user_squad_membership in user_squad_memberships:
         squad_id = user_squad_membership.squad_id
-        squad = Squad.query.get(id=squad_id)
+        squad = Squad.query.get(squad_id)
         if squad is None:
             raise NotFound(f"Could not find Squad {squad_id}")
         squads_lst.append(squad)
@@ -446,7 +446,7 @@ def create_event():
         )
     )
     db.session.commit()
-    respondToEvent(current_user.id, e.id, True)
+    respondToEvent(e.id, True)
 
     # send notification
     notify_squad_members(event_squad.id, event_squad.name, body="New event!",

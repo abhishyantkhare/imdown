@@ -47,7 +47,7 @@ const EditSquadSettings = ({ route, navigation }: SquadSettingsProps) => {
   };
 
   const deleteSquad = () => {
-    deleteRequest('squad', { squad_id: squadId, user_id: userId }).then( // eslint-disable-line camelcase
+    deleteRequest('squad', { squadId }).then( // eslint-disable-line camelcase
       () => {
         navigation.navigate('Squads');
       },

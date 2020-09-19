@@ -12,7 +12,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { TabBar, TabView } from 'react-native-tab-view';
 import moment from 'moment';
 
-import { callBackend, getUsersInSquad } from '../backend/backend';
+import { callBackend, getSquadDetails, getUsersInSquad } from '../backend/backend';
 import EventsStyles from './EventsStyles';
 import TextStyles from '../TextStyles';
 import StandardButton from '../components/button/Button';
@@ -90,11 +90,12 @@ const Events = ({ route, navigation }: EventsProps) => {
     navigation.navigate('AddEvent', route.params);
   };
 
-  const goToViewSquadSettings = (squadId: number, squadName: string, squadEmoji: string) => {
+  const goToViewSquadSettings = (squadIdVal: number, squadNameVal: string,
+    squadEmojiVal: string) => {
     navigation.navigate('View Squad Settings', {
-      squadId,
-      squadName,
-      squadEmoji,
+      squadId: squadIdVal,
+      squadName: squadNameVal,
+      squadEmoji: squadEmojiVal,
       squadCode,
       squadImage,
       userId,
@@ -132,15 +133,8 @@ const Events = ({ route, navigation }: EventsProps) => {
       });
   };
 
-  const getSquadDetails = () => {
-    const endpoint = `squad?squad_id=${squadId}`;
-    const init: RequestInit = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-    callBackend(endpoint, init).then((response) => response.json()).then((data) => {
+  const getSquadDetailsFromBackend = () => {
+    getSquadDetails(squadId).then((data) => {
       setSquadName(data.name);
       setSquadEmoji(data.squad_emoji);
       setSquadImage(data.image);
@@ -156,7 +150,7 @@ const Events = ({ route, navigation }: EventsProps) => {
   useFocusEffect(
     useCallback(() => {
       getEvents();
-      getSquadDetails();
+      getSquadDetailsFromBackend();
       getNumUsers();
     }, []),
   );
