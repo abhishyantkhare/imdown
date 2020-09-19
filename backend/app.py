@@ -138,7 +138,7 @@ def add_to_squad():
     return addUserToSquad(squad_code, email)
 
 
-@application.route("/squad", methods=["GET", "POST", "DELETE"])
+@application.route("/squad", methods=["GET", "POST", "DELETE", "PUT"])
 # If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
 @login_required
 def squad():
@@ -148,7 +148,8 @@ def squad():
         return delete_squad(request)
     if request.method == "GET":
         return get_squad(request)
-
+    if request.method == "PUT":
+        return edit_squad(request)
 
 def get_squad(request):
     args = request.args
@@ -205,11 +206,7 @@ def delete_squad(request):
         squads_lst.append(squad)
     return jsonify(squads=[squad.squadDict() for squad in squads_lst])
 
-
-@application.route("/edit_squad", methods=["PUT"])
-# If you want to test this endpoint w/o requiring auth (i.e. Postman) comment this out
-@login_required
-def edit_squad():
+def edit_squad(request):
     content = request.get_json()
     validate_request_args(content, "squad_id", "squad_name", "squad_emoji")
     squad_id = content["squad_id"]
