@@ -21,7 +21,7 @@ const BlurModal = (props: BlurModalProps) => {
     <Modal visible={visible} animationType='fade' transparent>
       <View style={BlurModalStyles.modalBackgroundBlur}>
         <View style={BlurModalStyles.modalVisibleContainer}>
-          {cancel
+          {(cancel)
             ? (
               <TouchableOpacity onPress={cancel} style={BlurModalStyles.exitButtonContainer}>
                 <Image source={exitButton} style={BlurModalStyles.exitButton} />

@@ -4,6 +4,6 @@ export type SquadRouteParams = {
   squadCode: string;
   squadName: string;
   squadEmoji: string;
-  squadImageUrl?: string;
+  squadImage?: string;
   userEmail: string;
 };

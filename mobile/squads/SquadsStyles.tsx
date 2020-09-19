@@ -38,7 +38,6 @@ const SquadsStyles = StyleSheet.create({
   exitButtonContainer: {
     marginBottom: 25,
     marginTop: 25,
-    marginHorizontal: 20,
   },
   exitButton: {
     alignSelf: 'flex-end',

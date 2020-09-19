@@ -32,7 +32,7 @@ const AddNewSquad = ({ navigation }: AddSquadProps) => {
   const [squadCode, setSquadCode] = useState('');
 
   const addSquadOnBackend = () => {
-    const endpoint = 'create_squad';
+    const endpoint = 'squad';
     const init: RequestInit = { // eslint-disable-line no-undef
       method: 'POST',
       mode: 'no-cors',
@@ -71,11 +71,11 @@ const AddNewSquad = ({ navigation }: AddSquadProps) => {
         source={successIcon}
         style={AddSquadStyles.successIcon}
       />
-      <Text style={AddSquadStyles.successText}>Success!</Text>
+      <Text style={[TextStyles.headerLarge, AddSquadStyles.successText]}>Success!</Text>
       <TextInput
         editable={false}
         multiline
-        style={AddSquadStyles.squadCreateModalText}
+        style={[TextStyles.paragraph, AddSquadStyles.squadCreateModalText]}
       >
         Your squad
         <Text style={{ fontFamily: 'Roboto_700Bold' }}>
@@ -84,7 +84,7 @@ const AddNewSquad = ({ navigation }: AddSquadProps) => {
         has been created. Use your squad code to invite friends!
       </TextInput>
       <View style={AddSquadStyles.squadCodeContainer}>
-        <Text style={AddSquadStyles.squadCodeValueText} selectable>
+        <Text style={[TextStyles.headerLarge, AddSquadStyles.squadCodeValueText]} selectable>
           {squadCode}
         </Text>
       </View>
@@ -162,19 +162,19 @@ const AddExistingSquad = ({ route, navigation }: AddSquadProps) => {
   const renderAddToSquadSuccessModal = () => (
     <BlurModal visible={addToSquadSuccessModal}>
       <Image source={successIcon} style={AddSquadStyles.successIcon} />
-      <Text style={AddSquadStyles.successText}>Success!</Text>
+      <Text style={[TextStyles.headerLarge, AddSquadStyles.successText]}>Success!</Text>
       <TextInput
         editable={false}
         multiline
-        style={AddSquadStyles.squadCreateModalText}
+        style={[TextStyles.paragraph, AddSquadStyles.squadCreateModalText]}
       >
         You&apos;ve joined squad
         <Text style={{ fontFamily: 'Roboto_700Bold' }}>
-          {`${squadName}`}
+          {` ${squadName}`}
         </Text>
         !
       </TextInput>
-      <StandardButton text='Done' overrideStyle={{ marginBottom: 35, width: 130 }} onPress={() => { navigation.pop(); setAddToSquadSuccessModal(false); }} />
+      <StandardButton text='Done' overrideStyle={{ marginBottom: 35, marginTop: 40, width: 130 }} onPress={() => { navigation.pop(); setAddToSquadSuccessModal(false); }} />
     </BlurModal>
   );
 

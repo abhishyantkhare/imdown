@@ -6,7 +6,6 @@ const EventStyles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     marginRight: 20,
-    marginTop: 20,
   },
   squadCodeContainer: {
     borderColor: '#84D3FF',
@@ -153,8 +152,13 @@ const EventStyles = StyleSheet.create({
     backgroundColor: 'white',
     borderColor: '#BEBEBE',
     borderTopWidth: 2,
+    elevation: 5,
     height: '15%',
     justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 1, height: -1 },
+    shadowOpacity: 0.4,
+    shadowRadius: 3,
   },
 });
 

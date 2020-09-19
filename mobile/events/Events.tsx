@@ -12,7 +12,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { TabBar, TabView } from 'react-native-tab-view';
 import moment from 'moment';
 
-import { callBackend, getUsersInSquad } from '../backend/backend';
+import { callBackend, getSquadDetails, getUsersInSquad } from '../backend/backend';
 import EventsStyles from './EventsStyles';
 import TextStyles from '../TextStyles';
 import StandardButton from '../components/button/Button';
@@ -61,7 +61,7 @@ const Events = ({ route, navigation }: EventsProps) => {
   // eslint-disable-next-line no-unused-vars
   const [squadEmoji, setSquadEmoji] = useState(route.params.squadEmoji);
   // eslint-disable-next-line no-unused-vars
-  const [squadImageUrl, setSquadImageUrl] = useState(route.params.squadImageUrl);
+  const [squadImage, setSquadImage] = useState(route.params.squadImage);
   // eslint-disable-next-line no-unused-vars
   const [userEmail, setUserEmail] = useState(route.params.userEmail);
   const [numUsers, setNumUsers] = useState(0);
@@ -90,11 +90,23 @@ const Events = ({ route, navigation }: EventsProps) => {
     navigation.navigate('AddEvent', route.params);
   };
 
-  const goToEditSquad = (editSquadId: number, editSquadName: string, editSquadEmoji: string) => {
-    navigation.navigate('EditSquad', {
-      squadId: editSquadId,
-      squadName: editSquadName,
-      squadEmoji: editSquadEmoji,
+  const goToViewSquadSettings = (squadIdVal: number, squadNameVal: string,
+    squadEmojiVal: string) => {
+    navigation.navigate('View Squad Settings', {
+      squadId: squadIdVal,
+      squadName: squadNameVal,
+      squadEmoji: squadEmojiVal,
+      squadCode,
+      squadImage,
+      userId,
+    });
+  };
+
+  const goToSquadMembers = () => {
+    navigation.navigate('Squad Members', {
+      userId,
+      squadId,
+      isInEditView: false,
     });
   };
 
@@ -121,6 +133,14 @@ const Events = ({ route, navigation }: EventsProps) => {
       });
   };
 
+  const getSquadDetailsFromBackend = () => {
+    getSquadDetails(squadId).then((data) => {
+      setSquadName(data.name);
+      setSquadEmoji(data.squad_emoji);
+      setSquadImage(data.image);
+    });
+  };
+
   const getNumUsers = () => {
     getUsersInSquad(squadId).then((data) => {
       setNumUsers(data.user_info.length);
@@ -130,6 +150,7 @@ const Events = ({ route, navigation }: EventsProps) => {
   useFocusEffect(
     useCallback(() => {
       getEvents();
+      getSquadDetailsFromBackend();
       getNumUsers();
     }, []),
   );
@@ -153,7 +174,7 @@ const Events = ({ route, navigation }: EventsProps) => {
 
   const renderSquadSettingsButton = () => (
     <TouchableOpacity
-      onPress={() => goToEditSquad(squadId, squadName, squadEmoji)}
+      onPress={() => goToViewSquadSettings(squadId, squadName, squadEmoji)}
       style={EventsStyles.squadSettingsButtonImage}
     >
       <Image source={settingsButton} style={EventsStyles.squadSettingsButtonImage} />
@@ -172,13 +193,11 @@ const Events = ({ route, navigation }: EventsProps) => {
   }, [navigation]);
 
   const renderSquadImage = () => (
-    squadImageUrl && (
-      <View style={EventsStyles.squadImageContainer}>
-        {squadImageUrl
-          ? <Image source={{ uri: squadImageUrl }} style={EventsStyles.squadImage} />
-          : <View />}
-      </View>
-    )
+    <View style={EventsStyles.squadImageContainer}>
+      {squadImage
+        ? <Image source={{ uri: squadImage }} style={EventsStyles.squadImage} />
+        : <View />}
+    </View>
   );
 
   const calcDownPercentage = (event: EventLite) => {
@@ -333,9 +352,11 @@ const Events = ({ route, navigation }: EventsProps) => {
           <Text style={TextStyles.headerLarge}>
             {squadEmoji}
           </Text>
-          <Text style={[TextStyles.headerLarge, EventsStyles.squadTitleName]}>
-            {squadName}
-          </Text>
+          <TouchableOpacity onPress={goToSquadMembers}>
+            <Text style={[TextStyles.headerLarge, EventsStyles.squadTitleName]}>
+              {squadName}
+            </Text>
+          </TouchableOpacity>
         </View>
         <View style={EventsStyles.eventListContainer}>
           <TabView
