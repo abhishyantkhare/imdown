@@ -15,7 +15,6 @@ import TextStyles from '../TextStyles';
 import { callBackend, deleteRequest } from '../backend/backend';
 import ButtonBottomSheet from '../components/bottomsheet/ButtonBottomSheet';
 import StandardButton from '../components/button/Button';
-import BlurModal from '../components/blurmodal/BlurModal';
 import AppNavRouteProp from '../types/navigation';
 
 export type Squad = {
@@ -37,7 +36,6 @@ const Squads = ({ route, navigation }: SquadsProps) => {
   const [squads, setSquads] = useState([]);
   const [email, setEmail] = useState(route.params.email); // eslint-disable-line no-unused-vars
   const [userId, setUserId] = useState();
-  const [addSquadModal, setAddSquadModal] = useState(false);
 
   const hideBottomSheet = () => {
     setBottomSheetRefIndex(0);
@@ -216,7 +214,7 @@ const Squads = ({ route, navigation }: SquadsProps) => {
       >
         Add a squad to get started planning your next hangout.
       </Text>
-      <StandardButton text='Add a squad' onPress={() => setAddSquadModal(true)} />
+      <StandardButton text='Add a squad' onPress={() => (bottomSheetRefIndex ? hideBottomSheet() : showBottomSheet())} />
     </View>
   );
 
@@ -275,13 +273,6 @@ const Squads = ({ route, navigation }: SquadsProps) => {
     </SwipeRow>
   );
 
-  const renderAddSquadModal = () => (
-    <BlurModal visible={addSquadModal} cancel={() => setAddSquadModal(false)}>
-      <StandardButton text='Join an existing squad' onPress={() => goToAddExistingSquad()} />
-      <StandardButton text='Create a new squad' overrideStyle={{ marginTop: 10, marginBottom: 30 }} onPress={() => goToAddNewSquad()} />
-    </BlurModal>
-  );
-
   return (
     <View style={SquadsStyles.squadsContainer}>
       {renderSearchButton()}
@@ -295,7 +286,6 @@ const Squads = ({ route, navigation }: SquadsProps) => {
           renderItem={renderSquadItem}
         />
       ) : renderNoSquadsView()}
-      {renderAddSquadModal()}
       <ButtonBottomSheet
         sheetRef={sheetRef}
         hideBottomSheet={hideBottomSheet}

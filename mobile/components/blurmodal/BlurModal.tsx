@@ -9,21 +9,24 @@ import BlurModalStyles from './BlurModalStyles';
 
 type BlurModalProps = {
   children: React.ReactNode;
-  cancel?: () => void;
+  isCancelVisible?: boolean;
+  onCancel?: () => void;
   visible: boolean;
 };
 
 const exitButton = require('../../assets/exit_button.png');
 
 const BlurModal = (props: BlurModalProps) => {
-  const { visible, cancel, children } = props;
+  const {
+    visible, isCancelVisible, onCancel, children,
+  } = props;
   return (
     <Modal visible={visible} animationType='fade' transparent>
       <View style={BlurModalStyles.modalBackgroundBlur}>
         <View style={BlurModalStyles.modalVisibleContainer}>
-          {(cancel)
+          {(isCancelVisible)
             ? (
-              <TouchableOpacity onPress={cancel} style={BlurModalStyles.exitButtonContainer}>
+              <TouchableOpacity onPress={onCancel} style={BlurModalStyles.exitButtonContainer}>
                 <Image source={exitButton} style={BlurModalStyles.exitButton} />
               </TouchableOpacity>
             ) : null}
@@ -42,7 +45,8 @@ const BlurModal = (props: BlurModalProps) => {
 };
 
 BlurModal.defaultProps = {
-  cancel: () => {},
+  isCancelVisible: false,
+  onCancel: undefined,
 };
 
 export default BlurModal;

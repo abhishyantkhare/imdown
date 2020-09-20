@@ -19,7 +19,8 @@ const DateTimeModal = (props: DateTimeModalProps) => {
   return (
     <BlurModal
       visible={visible}
-      cancel={() => {
+      isCancelVisible
+      onCancel={() => {
         setDateTime(props.initialDateTime);
         props.hideDatePicker();
       }}

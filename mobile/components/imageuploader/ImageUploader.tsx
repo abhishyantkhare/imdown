@@ -64,7 +64,11 @@ const ImageUploader = (props: ImageUploaderProps) => {
       <TouchableOpacity style={touchableStyle} onPress={() => onImageUploaderToggled()}>
         {children}
       </TouchableOpacity>
-      <BlurModal visible={uploadImageModal} cancel={() => setUploadImageModal(false)}>
+      <BlurModal
+        visible={uploadImageModal}
+        isCancelVisible
+        onCancel={() => setUploadImageModal(false)}
+      >
         <StandardButton text='Take photo from camera' onPress={() => pickImageFromCamera()} />
         <StandardButton text='Choose photo from gallery' overrideStyle={ImageUploaderStyles.chooseFromGalleryButton} onPress={() => pickImageFromGallery()} />
         {currentImage ? <StandardButton text='Remove image' overrideStyle={ImageUploaderStyles.deleteImageButton} onPress={() => deleteImage()} /> : <View /> }
