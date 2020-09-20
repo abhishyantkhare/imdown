@@ -37,8 +37,8 @@ class User(UserMixin, db.Model):
             client_secret = json.load(fp)
         # always refresh the token for now. Eventually we only need to refresh when the token actually expires
         refresh_body = {
-            'client_id': client_secret["GOOGLE_CLIENT_ID"],
-            'client_secret': client_secret["GOOGLE_CLIENT_SECRET"],
+            'client_id': client_secret['web']['client_id'],
+            'client_secret': client_secret['web']['client_secret'],
             'refresh_token': self.google_refresh_token,
             'grant_type': 'refresh_token'
         }
