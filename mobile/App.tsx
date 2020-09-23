@@ -18,7 +18,7 @@ import Login from './login/Login';
 import { AddNewSquad, AddExistingSquad } from './squads/AddSquad';
 import Squads from './squads/Squads';
 import Events from './events/Events';
-import AddEvent from './events/AddEvent';
+import AddEditEvent from './events/AddEditEvent';
 import EventDetails, { Event } from './events/EventDetails';
 import EditEvent from './events/EditEvent';
 import ViewSquad from './squads/ViewSquadSettings';
@@ -31,7 +31,11 @@ export type RootStackParamList = {
   AddSquad: {
     email: string;
   };
-  AddEvent: SquadRouteParams;
+  AddEditEvent: {
+    squadRouteParams: SquadRouteParams,
+    isEditView: boolean,
+    prevEvent?: Event
+  };
   Events: SquadRouteParams;
   Login: undefined;
   Squads: {
@@ -53,10 +57,8 @@ export type RootStackParamList = {
     email: string
   };
   EventDetails: {
-    eventId: number,
-    userEmail: string,
-    userId: number | undefined,
-    numUsers: number,
+    squadRouteParams: SquadRouteParams,
+    eventId: number
   };
   EditEvent: {
     event: Event,
@@ -117,7 +119,7 @@ export default function App() {
           <Stack.Screen name='AddNewSquad' component={AddNewSquad} options={hiddenHeaderOptions} />
           <Stack.Screen name='AddExistingSquad' component={AddExistingSquad} options={hiddenHeaderOptions} />
           <Stack.Screen name='Events' component={Events} options={hiddenHeaderOptions} />
-          <Stack.Screen name='AddEvent' component={AddEvent} options={hiddenHeaderOptions} />
+          <Stack.Screen name='AddEditEvent' component={AddEditEvent} options={hiddenHeaderOptions} />
           <Stack.Screen name='EventDetails' component={EventDetails} />
           <Stack.Screen name='EditEvent' component={EditEvent} />
           <Stack.Screen name='Squad Members' component={SquadMembers} options={hiddenHeaderOptions} />

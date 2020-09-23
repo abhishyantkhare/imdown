@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-const AddEventStyles = StyleSheet.create({
+const AddEditEventStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -33,4 +33,4 @@ const AddEventStyles = StyleSheet.create({
   },
 });
 
-export default AddEventStyles;
+export default AddEditEventStyles;

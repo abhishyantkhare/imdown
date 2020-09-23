@@ -12,7 +12,7 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import EventDetailsStyles from './EventDetailsStyles';
 import Divider from '../components/divider/Divider';
-import { callBackend } from '../backend/backend';
+import { callBackend, getUsersInSquad } from '../backend/backend';
 import { RSVPUser } from './Events';
 import {
   DEFAULT_EVENT,
@@ -83,14 +83,13 @@ const acceptRSVP = require('../assets/accept_rsvp.png');
 const EventDetails = ({ route, navigation }: EventDetailsProps) => {
   const {
     eventId,
-    userEmail,
-    userId,
-    numUsers,
+    squadRouteParams,
   } = route.params;
   const [event, setEvent] = useState(DEFAULT_EVENT);
   const [isUserAccepted, setIsUserAccepted] = useState(false);
+  const [numUsers, setNumUsers] = useState<number>(1);
   const isUserEventAccepted = (acceptedEvent: Event) => (
-    acceptedEvent.rsvpUsers.some((item) => item.email === userEmail)
+    acceptedEvent.rsvpUsers.some((item) => item.email === squadRouteParams.userEmail)
   );
 
   const getEventDetails = () => {
@@ -105,12 +104,23 @@ const EventDetails = ({ route, navigation }: EventDetailsProps) => {
       .then((data) => {
         const updatedEvent: Event = toEvent(data);
         setEvent(updatedEvent);
-        const isUserAcceptedEvent = updatedEvent.rsvpUsers.some((item) => item.email === userEmail);
+        const isUserAcceptedEvent = updatedEvent.rsvpUsers.some(
+          (item) => item.email === squadRouteParams.userEmail,
+        );
         setIsUserAccepted(isUserAcceptedEvent);
       });
   };
 
-  useFocusEffect(useCallback(getEventDetails, []));
+  const getNumUsers = () => {
+    getUsersInSquad(squadRouteParams.squadId).then((data) => {
+      setNumUsers(data.user_info.length);
+    });
+  };
+
+  useFocusEffect(useCallback(() => {
+    getNumUsers();
+    getEventDetails();
+  }, []));
 
   /* Event title + pic + details box */
   const renderTitlePicDetailsBox = () => (
@@ -245,16 +255,15 @@ const EventDetails = ({ route, navigation }: EventDetailsProps) => {
   };
 
   const goToEditEvent = (editEvent: Event) => { // eslint-disable-line
-    navigation.navigate('EditEvent', {
-      event: editEvent,
-      userEmail,
-      setEvent,
-      numUsers,
+    navigation.navigate('AddEditEvent', {
+      isEditView: true,
+      prevEvent: editEvent,
+      squadRouteParams,
     });
   };
 
   const renderEditButton = () => {
-    if (event.creatorUserId === userId) {
+    if (event.creatorUserId === squadRouteParams.userId) {
       return (
         <TouchableOpacity
           onPress={() => { goToEditEvent(event); }}
@@ -283,7 +292,7 @@ const EventDetails = ({ route, navigation }: EventDetailsProps) => {
   };
 
   const renderDeleteButton = () => {
-    if (event.creatorUserId === userId) {
+    if (event.creatorUserId === squadRouteParams.userId) {
       return (
         <TouchableOpacity
           onPress={() => { deleteEvent(); }}

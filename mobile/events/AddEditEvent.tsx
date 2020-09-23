@@ -7,7 +7,7 @@ import { showMessage } from 'react-native-flash-message';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import EmojiPicker from '../components/emojipicker/EmojiPicker';
-import AddEventStyles from './AddEventStyles';
+import AddEditEventStyles from './AddEditEventStyles';
 import RobotoTextInput from '../components/robototextinput/RobotoTextInput';
 import DateTimeInput from '../components/date_time_input/DateTimeInput';
 import Section from '../components/section/Section';
@@ -15,32 +15,43 @@ import SwitchButton from '../components/switchbutton/SwitchButton';
 import ImageUploader from '../components/imageuploader/ImageUploader';
 import Divider from '../components/divider/Divider';
 import StandardButton from '../components/button/Button';
-import { getUsersInSquad, postRequest } from '../backend/backend';
+import { getUsersInSquad, backendRequest } from '../backend/backend';
 import { DEFAULT_EMOJI } from '../constants';
 import Label from '../components/label/Label';
 import OptionalLabel from '../components/optionallabel/OptionalLabel';
 import AppNavRouteProp from '../types/navigation';
+import { Event } from './EventDetails';
 
-type AddEventProps = AppNavRouteProp<'AddEvent'>
+type AddEditEventProps = AppNavRouteProp<'AddEditEvent'>
 
 const downBorderFilled = require('../assets/down_border_filled.png');
 const addPhoto = require('../assets/add_photo.png');
 
-const AddEvent = ({ route, navigation }: AddEventProps) => {
-  const { squadId } = route.params;
-  const [emoji, setEmojiPicked] = useState<string>(DEFAULT_EMOJI);
-  const [eventTitle, setEventTitle] = useState('');
-  const [startDateTime, setStartDateTime] = useState<Date>(new Date());
-  const [showEndTime, setShowEndTime] = useState(false);
-  const [endDateTime, setEndDateTime] = useState<Date | undefined>();
-  const [eventDescription, setEventDescription] = useState('');
-  const [downThreshold, setDownThreshold] = useState(1);
-  const [numUsers, setNumUsers] = useState(1);
-  const [imageUrl, setImageUrl] = useState('');
+const AddEditEvent = ({ route, navigation }: AddEditEventProps) => {
+  const {
+    squadRouteParams, prevEvent, isEditView,
+  } = route.params;
+
+  function prevEventVal(field: keyof Event) {
+    if (!prevEvent) {
+      return undefined;
+    }
+    return prevEvent[field];
+  }
+
+  const [emoji, setEmojiPicked] = useState<string>(prevEventVal('emoji') as string || DEFAULT_EMOJI);
+  const [eventTitle, setEventTitle] = useState<string>(prevEventVal('name') as string || '');
+  const [startDateTime, setStartDateTime] = useState<Date>(prevEventVal('startMs') ? new Date(prevEventVal('startMs') as number) : new Date());
+  const [showEndTime, setShowEndTime] = useState<boolean>(!!prevEventVal('endMs'));
+  const [endDateTime, setEndDateTime] = useState<Date | undefined>(prevEventVal('endMs') ? new Date(prevEventVal('endMs') as number) : undefined);
+  const [eventDescription, setEventDescription] = useState<string>(prevEventVal('description') as string || '');
+  const [downThreshold, setDownThreshold] = useState<number>(prevEventVal('downThreshold') as number || 1);
+  const [numUsers, setNumUsers] = useState<number>(1);
+  const [imageUrl, setImageUrl] = useState<string>(prevEventVal('imageUrl') as string || '');
   const windowWidth = useWindowDimensions().width;
 
   useFocusEffect(useCallback(() => {
-    getUsersInSquad(squadId).then((data) => {
+    getUsersInSquad(squadRouteParams.squadId).then((data) => {
       setNumUsers(data.user_info.length);
     });
   }, []));
@@ -49,11 +60,13 @@ const AddEvent = ({ route, navigation }: AddEventProps) => {
     <EmojiPicker
       onEmojiPicked={setEmojiPicked}
       emojiPickerTitle='Pick Event Emoji'
+      defaultEmoji={emoji}
     />
   );
 
   const generateEventForBackend = () => (
     {
+      eventId: prevEvent ? prevEvent.id : null,
       title: eventTitle,
       description: eventDescription || null,
       emoji,
@@ -63,7 +76,7 @@ const AddEvent = ({ route, navigation }: AddEventProps) => {
       // address,
       // lat,
       // lng,
-      squadId,
+      squadId: squadRouteParams.squadId,
       eventUrl: null,
       imageUrl: imageUrl || null,
       downThreshold,
@@ -92,10 +105,11 @@ const AddEvent = ({ route, navigation }: AddEventProps) => {
 
   const validateAndSaveEvent = () => {
     if (validateEvent()) {
-      const endpoint = 'create_event';
+      const endpoint = isEditView ? 'edit_event' : 'create_event';
+      const method = isEditView ? 'PUT' : 'POST';
       const data = generateEventForBackend();
-      postRequest(endpoint, data).then(() => {
-        navigation.navigate('Events', route.params);
+      backendRequest(endpoint, data, method).then(() => {
+        navigation.navigate('Events', { ...squadRouteParams });
       });
     }
   };
@@ -105,6 +119,7 @@ const AddEvent = ({ route, navigation }: AddEventProps) => {
       <RobotoTextInput
         placeholder='Awesome New Hangout!'
         onChangeText={setEventTitle}
+        defaultText={eventTitle}
       />
     </Section>
   );
@@ -119,6 +134,7 @@ const AddEvent = ({ route, navigation }: AddEventProps) => {
   const renderEventTimes = () => (
     <Section label='Start and end times'>
       <DateTimeInput
+        initialDateTime={startDateTime}
         onSetDateTime={setStartDateTime}
         initialDateTime={startDateTime}
       />
@@ -145,6 +161,7 @@ const AddEvent = ({ route, navigation }: AddEventProps) => {
         multiline
         style={{ height: 100 }}
         onChangeText={setEventDescription}
+        defaultText={eventDescription}
       />
     </Section>
   );
@@ -223,15 +240,15 @@ const AddEvent = ({ route, navigation }: AddEventProps) => {
       <Divider style={{ marginTop: '5%' }} />
       <StandardButton
         text='Save'
-        overrideStyle={AddEventStyles.saveButton}
+        overrideStyle={AddEditEventStyles.saveButton}
         onPress={validateAndSaveEvent}
       />
     </View>
   );
 
   return (
-    <KeyboardAwareScrollView style={AddEventStyles.container}>
-      <View style={AddEventStyles.childContainer}>
+    <KeyboardAwareScrollView style={AddEditEventStyles.container}>
+      <View style={AddEditEventStyles.childContainer}>
         {renderEventEmoji()}
         {renderEventTitleSection()}
         {renderEventTimes()}
@@ -244,4 +261,4 @@ const AddEvent = ({ route, navigation }: AddEventProps) => {
   );
 };
 
-export default AddEvent;
+export default AddEditEvent;

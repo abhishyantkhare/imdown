@@ -32,7 +32,6 @@ const arrowForwardBlue = require('../assets/arrow_forward_blue.png');
 const arrowForwardGray = require('../assets/arrow_forward_gray.png');
 
 const Events = ({ route, navigation }: EventsProps) => {
-  const { userId } = route.params;
   const tabViewInitialLayout = { width: Dimensions.get('window').width };
   const [tabViewRoutes] = React.useState([
     { key: 'first', title: 'Pending' },
@@ -86,8 +85,8 @@ const Events = ({ route, navigation }: EventsProps) => {
     ))
   );
 
-  const goToAddEvent = () => {
-    navigation.navigate('AddEvent', route.params);
+  const goToAddEditEvent = () => {
+    navigation.navigate('AddEditEvent', { isEditView: false, squadRouteParams: route.params });
   };
 
   const goToViewSquadSettings = (squadIdVal: number, squadNameVal: string,
@@ -113,9 +112,7 @@ const Events = ({ route, navigation }: EventsProps) => {
   const goToEventDetailsPage = (event: EventLite) => {
     navigation.navigate('EventDetails', {
       eventId: event.id,
-      userEmail,
-      userId,
-      numUsers,
+      squadRouteParams: route.params,
     });
   };
 
@@ -371,7 +368,7 @@ const Events = ({ route, navigation }: EventsProps) => {
         </View>
       </ScrollView>
       <View style={EventsStyles.addEventButtonContainer}>
-        <StandardButton text='Add event' onPress={() => goToAddEvent()} />
+        <StandardButton text='Add event' onPress={() => goToAddEditEvent()} />
       </View>
     </View>
   );

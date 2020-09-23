@@ -63,14 +63,16 @@ export const deleteRequest = (endpoint: string, data: object) => {
   return callBackend(endpoint, init).then((response) => response.json());
 };
 
-export const postRequest = (endpoint: string, data: object) => {
+export const backendRequest = (endpoint: string, data: object, method:string) => {
   const init: RequestInit = {
-    method: 'POST',
+    method,
     mode: 'no-cors',
-    body: JSON.stringify(data),
-    headers: {
-      'Content-Type': 'application/json',
-    },
   };
+  if (method === 'POST' || method === 'PUT') {
+    init.body = JSON.stringify(data);
+    init.headers = {
+      'Content-Type': 'application/json',
+    };
+  }
   return callBackend(endpoint, init);
 };
