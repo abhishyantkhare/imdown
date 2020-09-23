@@ -32,6 +32,7 @@ const arrowForwardBlue = require('../assets/arrow_forward_blue.png');
 const arrowForwardGray = require('../assets/arrow_forward_gray.png');
 
 const Events = ({ route, navigation }: EventsProps) => {
+  const { userId } = route.params;
   const tabViewInitialLayout = { width: Dimensions.get('window').width };
   const [tabViewRoutes] = React.useState([
     { key: 'first', title: 'Pending' },
@@ -61,8 +62,6 @@ const Events = ({ route, navigation }: EventsProps) => {
   const [squadEmoji, setSquadEmoji] = useState(route.params.squadEmoji);
   // eslint-disable-next-line no-unused-vars
   const [squadImage, setSquadImage] = useState(route.params.squadImage);
-  // eslint-disable-next-line no-unused-vars
-  const [userEmail, setUserEmail] = useState(route.params.userEmail);
   const [numUsers, setNumUsers] = useState(0);
   const [tabViewIndex, setTabViewIndex] = React.useState(0);
 

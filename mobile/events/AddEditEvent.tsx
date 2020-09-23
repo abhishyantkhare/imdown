@@ -136,7 +136,6 @@ const AddEditEvent = ({ route, navigation }: AddEditEventProps) => {
       <DateTimeInput
         initialDateTime={startDateTime}
         onSetDateTime={setStartDateTime}
-        initialDateTime={startDateTime}
       />
       {showEndTime
         ? (
@@ -208,7 +207,7 @@ const AddEditEvent = ({ route, navigation }: AddEditEventProps) => {
           />
         )
         : null}
-      <View style={[AddEventStyles.imageUploadBox, { marginTop: '10%', marginBottom: '10%' }]}>
+      <View style={[AddEditEventStyles.imageUploadBox, { marginTop: '10%', marginBottom: '10%' }]}>
         <ImageUploader
           touchableStyle={{}}
           onImagePicked={setImageUrl}
@@ -216,7 +215,7 @@ const AddEditEvent = ({ route, navigation }: AddEditEventProps) => {
           imageHeight={200}
           imageWidth={200}
         >
-          <View style={AddEventStyles.uploadLabelRow}>
+          <View style={AddEditEventStyles.uploadLabelRow}>
             <Image
               source={addPhoto}
             />
