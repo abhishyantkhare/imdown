@@ -4,15 +4,24 @@ import DividerStyles from './DividerStyles';
 
 type DividerProps = {
   style?: object;
+  vertical?: boolean;
 };
 
 const Divider = (props: DividerProps) => {
   const { style } = props;
-  return (
-    <View
-      style={[DividerStyles.divider, style]}
-    />
-  );
+  if (props.vertical) {
+    return (
+      <View
+        style={[DividerStyles.verticalDivider, style]}
+      />
+    );
+  } else {
+    return (
+      <View
+        style={[DividerStyles.divider, style]}
+      />
+    );
+  }
 };
 
 Divider.defaultProps = {

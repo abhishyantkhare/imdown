@@ -6,114 +6,171 @@ const EventDetailsStyles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: '#fff',
   },
-  // styles for event title + pic + event details box
-  eventPicAndTitleContainer: {
+  headerRight: {
+    alignItems: 'center',
     flexDirection: 'row',
-    marginBottom: 20,
+    marginRight: 20,
     marginTop: 20,
-  },
-  eventTitleContainer: {
-    flexGrow: 2,
-  },
-  eventPicture: {
-    alignItems: 'center',
-    flexGrow: 1,
-    justifyContent: 'center',
-  },
-  eventTitle: {
-    fontFamily: 'Ubuntu_400Regular',
-    fontSize: 20,
-    paddingBottom: 10,
-    paddingTop: 20,
-    paddingLeft: 10,
-  },
-  eventDescription: {
-    color: '#9C9C9C',
-    fontFamily: 'Ubuntu_400Regular',
-    fontSize: 15,
-    paddingHorizontal: 10,
-    paddingVertical: 40,
-  },
-  eventTime: {
-    color: '#9C9C9C',
-    fontFamily: 'Ubuntu_400Regular',
-    fontSize: 15,
-    paddingLeft: 10,
-  },
-  eventUrl: {
-    color: '#9C9C9C',
-    fontFamily: 'Ubuntu_400Regular',
-    fontSize: 15,
-    paddingTop: 5,
-    paddingLeft: 10,
-    textDecorationLine: 'underline',
-  },
-
-  // styles for list of users who are down for event
-  downThresholdText: {
-    color: '#9C9C9C',
-    fontFamily: 'Ubuntu_400Regular',
-    fontSize: 15,
-    paddingLeft: 10,
-    paddingTop: 30,
-  },
-  downListOuterContainer: {
-    flexDirection: 'row',
-    flexGrow: 1,
-    marginBottom: 20,
-    marginTop: 20,
-  },
-  downListInnerContainer: {
-    marginTop: 25,
-    flexGrow: 5,
-  },
-  downListEmoji: {
-    alignItems: 'center',
-    flexGrow: 1,
-    paddingTop: 20,
-  },
-  downListTitle: {
-    fontFamily: 'Ubuntu_400Regular',
-    fontSize: 30,
-    paddingBottom: 20,
-    paddingTop: 20,
-    paddingLeft: 10,
-  },
-  rsvpUser: {
-    color: '#9C9C9C',
-    fontFamily: 'Ubuntu_400Regular',
-    fontSize: 15,
-    paddingLeft: 20,
-    paddingVertical: 2,
-  },
-  // styles for row of buttons on bottom
-  buttonRowContainer: {
-    flexDirection: 'row',
-    marginBottom: 40,
-    marginTop: 20,
-  },
-  deleteEventContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexGrow: 1,
-  },
-  rsvpButtonContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexGrow: 1,
   },
   editEventContainer: {
     alignItems: 'center',
     justifyContent: 'center',
     flexGrow: 1,
   },
-  buttonRowText: {
+
+  // styles for event image
+  eventImageContainer: {
+    marginTop: 20,
+  },
+  eventPicture: {
     alignItems: 'center',
-    color: '#9C9C9C',
-    fontFamily: 'Ubuntu_400Regular',
-    fontSize: 15,
+    flexGrow: 1,
     justifyContent: 'center',
-    paddingVertical: 7,
+  },
+  eventImage: {
+    height: 200,
+    width: 400,
+  },
+
+  // styles for Event name, emoji
+  eventScheduledNoticeContainer: {
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: '#84D3FF',
+    width: '80%',
+    padding: 20,
+    backgroundColor: '#84D3FF',
+    marginBottom: 20,
+  },
+  eventExpiredNoticeTextContainer: {
+    paddingLeft: 10,
+  },
+  eventExpiredNoticeContainer: {
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: '#BEBEBE',
+    width: '80%',
+    padding: 20,
+    backgroundColor: '#BEBEBE',
+    marginBottom: 20,
+  },
+  eventNoticeTextContainer: {
+    paddingLeft: 10,
+  },
+  eventNoticeHeader: {
+    color: 'white',
+    fontSize: 18,
+    fontFamily: 'SourceSansPro_700Bold',
+  },
+  eventNoticeText: {
+    color: 'white',
+    fontSize: 15,
+    paddingTop: 5,
+    fontFamily: 'Roboto_400Regular',
+  },
+  eventNameEmojiContainer: {
+    flexDirection: 'row',
+    padding: 20,
+  },
+  eventNameAcceptedDeclinedContainer: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center',
+    paddingBottom: 20,
+  },
+
+  // styles for accepted/declined container#
+  acceptedDeclinedText: {
+    color: 'black',
+    fontFamily: 'Roboto_400Regular',
+    fontSize: 15,
+    paddingTop: 10,
+  },
+  acceptedDeclinedNumber: {
+    color: '#84D3FF',
+    fontFamily: 'SourceSansPro_700Bold',
+    fontSize: 30,
+  },
+  acceptedDeclinedButton: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: '#84D3FF',
+    width: '60%',
+    padding: 10,
+    backgroundColor: 'white',
+  },
+
+  // styles for event description
+  eventDescriptionAbout: {
+    color: '#9C9C9C',
+    fontFamily: 'Roboto_400Regular',
+    fontSize: 20,
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
+  eventDescriptionContainer: {
+    flexDirection: 'column',
+    alignContent: 'flex-start',
+    paddingBottom: 20,
+    paddingLeft: 20,
+    paddingTop: 20,
+  },
+
+  // styles for event time, address, and down threshold
+  otherEventDetailsContainer: {
+    flexDirection: 'column',
+    alignContent: 'flex-start',
+    paddingLeft: 20,
+    paddingTop: 10,
+    paddingBottom: 20,
+  },
+  eventTime: {
+    color: 'black',
+    fontFamily: 'Roboto_400Regular',
+    fontSize: 20,
+    paddingLeft: 10,
+  },
+  downThresholdText: {
+    color: 'black',
+    fontFamily: 'Roboto_400Regular',
+    fontSize: 20,
+    paddingLeft: 10,
+  },
+
+  // styles for buton row
+  acceptDeclineButtonText: {
+    fontSize: 20,
+  },
+  buttonRowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 40,
+    marginTop: 20,
+    marginLeft: 20,
+  },
+  acceptButtonContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: '#84D3FF',
+    width: 120,
+    height: 60,
+  },
+  declineButtonContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: '#FC6E5E',
+    width: 120,
+    height: 60,
+    marginRight: 80,
   },
 });
 

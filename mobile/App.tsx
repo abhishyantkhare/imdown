@@ -12,7 +12,8 @@ import {
 import { Inter_400Regular } from '@expo-google-fonts/inter';
 import { SourceSansPro_400Regular, SourceSansPro_700Bold, SourceSansPro_400Regular_Italic } from '@expo-google-fonts/source-sans-pro';
 import { Roboto_400Regular, Roboto_700Bold } from '@expo-google-fonts/roboto';
-import FlashMessage from 'react-native-flash-message';
+import FlashMessage from "react-native-flash-message";
+import AcceptedDeclinedScreen from "./events/AcceptedDeclinedScreen";
 
 import Login from './login/Login';
 import { AddNewSquad, AddExistingSquad } from './squads/AddSquad';
@@ -59,6 +60,9 @@ export type RootStackParamList = {
   EventDetails: {
     squadRouteParams: SquadRouteParams,
     eventId: number
+  };
+  AcceptedDeclinedScreen: {
+
   };
   EditEvent: {
     event: Event,
@@ -120,7 +124,8 @@ export default function App() {
           <Stack.Screen name='AddExistingSquad' component={AddExistingSquad} options={hiddenHeaderOptions} />
           <Stack.Screen name='Events' component={Events} options={hiddenHeaderOptions} />
           <Stack.Screen name='AddEditEvent' component={AddEditEvent} options={hiddenHeaderOptions} />
-          <Stack.Screen name='EventDetails' component={EventDetails} />
+          <Stack.Screen name='EventDetails' component={EventDetails} options={hiddenHeaderOptions} />
+          <Stack.Screen name="AcceptedDeclinedScreen" component={AcceptedDeclinedScreen} options={hiddenHeaderOptions} />
           <Stack.Screen name='EditEvent' component={EditEvent} />
           <Stack.Screen name='Squad Members' component={SquadMembers} options={hiddenHeaderOptions} />
         </Stack.Navigator>

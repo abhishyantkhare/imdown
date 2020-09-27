@@ -1,6 +1,5 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useLayoutEffect } from 'react';
 import {
-  FlatList,
   Image,
   Text,
   TouchableOpacity,
@@ -13,13 +12,10 @@ import { useFocusEffect } from '@react-navigation/native';
 import EventDetailsStyles from './EventDetailsStyles';
 import Divider from '../components/divider/Divider';
 import { callBackend, getUsersInSquad } from '../backend/backend';
+import TextStyles from '../TextStyles';
 import { RSVPUser } from './Events';
 import {
   DEFAULT_EVENT,
-  DOWN_EMOJI_HEIGHT,
-  DOWN_EMOJI_WIDTH,
-  EVENT_PIC_HEIGHT,
-  EVENT_PIC_WIDTH,
   ROW_BUTTON_HEIGHT,
   ROW_BUTTON_WIDTH,
 } from '../constants';
@@ -46,6 +42,8 @@ const backendEventResponseListToRSVPUser = (backendERList: any[]) => backendERLi
     {
       userId: backendUser.user_id,
       email: backendUser.email,
+      photo: backendUser.photo,
+      name: backendUser.name,
     }),
 );
 
@@ -74,11 +72,10 @@ type EventDetailsProps = {
   route: AppRouteProp<'EventDetails'>;
 };
 
-const deleteIcon = require('../assets/delete_icon.png');
-const editEvent = require('../assets/edit_event.png');
-const downButton = require('../assets/down.png');
-const cancelRSVP = require('../assets/cancel_rsvp.png');
-const acceptRSVP = require('../assets/accept_rsvp.png');
+const editEvent = require('../assets/create_24px.png');
+const eventScheduled = require('../assets/wb_sunny_24px.png');
+const eventTime = require('../assets/event_24px.png');
+const downThreshold = require('../assets/perm_contact_calendar_24px.png');
 
 const EventDetails = ({ route, navigation }: EventDetailsProps) => {
   const {
@@ -122,55 +119,33 @@ const EventDetails = ({ route, navigation }: EventDetailsProps) => {
     getEventDetails();
   }, []));
 
-  /* Event title + pic + details box */
-  const renderTitlePicDetailsBox = () => (
-    <View style={EventDetailsStyles.eventPicAndTitleContainer}>
-      {event.imageUrl
-        ? (
-          <View style={EventDetailsStyles.eventPicture}>
-            <Image
-              source={{ uri: event.imageUrl }}
-              style={{ width: EVENT_PIC_WIDTH, height: EVENT_PIC_HEIGHT, borderRadius: 15 }}
-            />
-          </View>
-        ) : <View />}
-      <View style={EventDetailsStyles.eventTitleContainer}>
-        <Text style={EventDetailsStyles.eventTitle}>
-          {event.name}
-        </Text>
-        <Text style={[EventDetailsStyles.eventTime, { paddingTop: 10 }]}>
-          {event.startMs ? `🗓 Starts: ${moment(event.startMs).format('llll').toLocaleString()}` : 'Starts: TBD'}
-        </Text>
-        <Text style={EventDetailsStyles.eventTime}>
-          {event.endMs ? `🗓 Ends: ${moment(event.endMs).format('llll').toLocaleString()}` : 'Ends: TBD'}
-        </Text>
-        {/* Commenting out URL for FMVP */}
-        {/* { renderURLField() } */}
-      </View>
-    </View>
-  );
 
-  // const renderURLField = () => (
-  //   event.url
-  //     ? (
-  //       <Text onPress={() => event.url && Linking.openURL(`https://${event.url}`)} style={EventDetailsStyles.event_url}>
-  //         {event.url}
-  //       </Text>
-  //     ) : null
-  // );
+  const renderEditButton = () => {
+    if (event.creatorUserId === userId) {
+      return (
+        <TouchableOpacity
+          onPress={() => { goToEditEvent(event); }}
+          style={EventDetailsStyles.editEventContainer}
+        >
+          <Image
+            source={editEvent}
+            style={{ width: ROW_BUTTON_HEIGHT, height: ROW_BUTTON_WIDTH }}
+          />
+        </TouchableOpacity>
+      );
+    }
+    return (<View />);
+  };
 
-  /* Event description box */
-  const renderEventDescriptionBox = () => (
-    <Text style={EventDetailsStyles.eventDescription}>
-      {event.description}
-    </Text>
-  );
-
-  const renderRSVPUser = ({ item }: { item: RSVPUser }) => ( // eslint-disable-line
-    <View>
-      <Text style={EventDetailsStyles.rsvpUser}>{item.email}</Text>
-    </View>
-  );
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <View style={EventDetailsStyles.headerRight}>
+          {renderEditButton()}
+        </View>
+      ),
+    });
+  }, [navigation]);
 
   const callBackendRefreshEventInfo = () => {
     const endpoint = `get_event?event_id=${event.id}`;
@@ -205,54 +180,53 @@ const EventDetails = ({ route, navigation }: EventDetailsProps) => {
     callBackend(endpoint, init).then(callBackendRefreshEventInfo);
   };
 
-  const calculateDownRSVPPercentage = (numAccepted: number) => (
-    Math.round((numAccepted * 100) / (numUsers))
-  );
+  const goToAcceptedDeclinedResponses = (tabViewIndex: number) => {
+    navigation.navigate('AcceptedDeclinedScreen', {
+      rsvpUsers: event.rsvpUsers,
+      declinedUsers: event.declinedUsers,
+      tabViewIndex,
+    });
+  };
 
-  const renderEventDownListBox = () => (
-    <View style={EventDetailsStyles.downListOuterContainer}>
-      <View style={EventDetailsStyles.downListEmoji}>
-        <Image source={downButton} style={{ width: DOWN_EMOJI_WIDTH, height: DOWN_EMOJI_HEIGHT }} />
-      </View>
-      <View style={EventDetailsStyles.downListInnerContainer}>
-        <Text style={EventDetailsStyles.downListTitle}>
-          {/* Hard code for now. Will calculate once hooked up */}
-          {`${calculateDownRSVPPercentage(event.rsvpUsers.length)}% Down (${event.rsvpUsers.length}/${numUsers})`}
-        </Text>
-        <FlatList
-          data={event.rsvpUsers}
-          renderItem={renderRSVPUser}
-          keyExtractor={(item) => item.userId.toString()}
-        />
-      </View>
+  /* Event Image */
+  const renderEventImage = () => (
+    <View style={EventDetailsStyles.eventImageContainer}>
+      {event.imageUrl
+        ? (
+          <View style={EventDetailsStyles.eventPicture}>
+            <Image
+              source={{ uri: event.imageUrl }}
+              style={EventDetailsStyles.eventImage}
+            />
+          </View>
+        )
+        : <View />}
+
     </View>
   );
 
-  const renderRSVPButton = () => {
-    if (isUserAccepted) {
+  /* Event name, emoji, and accepted/declined # */
+  const renderEventScheduledNotice = () => {
+    if (event.rsvpUsers.length === event.downThreshold) {
       return (
-        <TouchableOpacity
-          onPress={() => { callBackendRespondToEvent(false); }}
-          style={EventDetailsStyles.rsvpButtonContainer}
-        >
-          <Image
-            source={cancelRSVP}
-            style={{ width: ROW_BUTTON_HEIGHT, height: ROW_BUTTON_WIDTH }}
-          />
-          <Text style={EventDetailsStyles.buttonRowText}> decline </Text>
-        </TouchableOpacity>
+        <View style={EventDetailsStyles.eventScheduledNoticeContainer}>
+          <Image source={eventScheduled} />
+          <View style={EventDetailsStyles.eventNoticeTextContainer}>
+            <Text style={EventDetailsStyles.eventNoticeHeader}>
+              Event Scheduled!
+            </Text>
+            <Text style={EventDetailsStyles.eventNoticeText}>
+              {/* eslint-disable-next-line react/no-unescaped-entities */}
+              You'll receive a Calendar invite automatically if you accept the event.
+            </Text>
+          </View>
+        </View>
       );
     }
     return (
-      <TouchableOpacity
-        onPress={() => { callBackendRespondToEvent(true); }}
-        style={EventDetailsStyles.rsvpButtonContainer}
-      >
-        <Image source={acceptRSVP} style={{ width: ROW_BUTTON_HEIGHT, height: ROW_BUTTON_WIDTH }} />
-        <Text style={EventDetailsStyles.buttonRowText}> accept </Text>
-      </TouchableOpacity>
+      <View />
     );
-  };
+  }
 
   const goToEditEvent = (editEvent: Event) => { // eslint-disable-line
     navigation.navigate('AddEditEvent', {
@@ -262,81 +236,172 @@ const EventDetails = ({ route, navigation }: EventDetailsProps) => {
     });
   };
 
-  const renderEditButton = () => {
-    if (event.creatorUserId === squadRouteParams.userId) {
-      return (
-        <TouchableOpacity
-          onPress={() => { goToEditEvent(event); }}
-          style={EventDetailsStyles.editEventContainer}
-        >
-          <Image
-            source={editEvent}
-            style={{ width: ROW_BUTTON_HEIGHT, height: ROW_BUTTON_WIDTH }}
-          />
-          <Text style={EventDetailsStyles.buttonRowText}> edit </Text>
-        </TouchableOpacity>
-      );
-    }
-    return (<View />);
-  };
 
-  const deleteEvent = () => {
-    const endpoint = `event?event_id=${event.id}`;
-    const init: RequestInit = { // eslint-disable-line no-undef
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-    callBackend(endpoint, init).then(() => { navigation.pop(); });
-  };
+  // TODO: Show event expired after rsvp deadline feature has been implemented
 
-  const renderDeleteButton = () => {
-    if (event.creatorUserId === squadRouteParams.userId) {
-      return (
-        <TouchableOpacity
-          onPress={() => { deleteEvent(); }}
-          style={EventDetailsStyles.deleteEventContainer}
-        >
-          <Image
-            source={deleteIcon}
-            style={{ width: ROW_BUTTON_HEIGHT, height: ROW_BUTTON_WIDTH }}
-          />
-          <Text style={EventDetailsStyles.buttonRowText}> delete </Text>
-        </TouchableOpacity>
-      );
-    }
+  // <View style={EventDetailsStyles.event_expired_notice_container}>
+  //   <Image source={require('../assets/sentiment_dissatisfied_24px.png')} />
+  //   <View style={EventDetailsStyles.event_notice_text_container}>
+  //     <Text style={EventDetailsStyles.event_notice_header}>
+  //       Event Expired!
+  //     </Text>
+  //     <Text style={EventDetailsStyles.event_notice_text}>
+  //       Not enough people accepted the invitation in time.
+  //     </Text>
+  //   </View>
+  // </View>
 
-    return (<View />);
-  };
 
-  /* Button row */
-  const renderBottomRowButtons = () => (
-    <View style={EventDetailsStyles.buttonRowContainer}>
-      {renderDeleteButton()}
-      {renderRSVPButton()}
-      {renderEditButton()}
+  const renderAcceptedDeclinedButton = () => (
+    <View style={EventDetailsStyles.acceptedDeclinedButton}>
+      <TouchableOpacity onPress={() => { goToAcceptedDeclinedResponses(0); }}>
+        <View style={{ flexDirection: 'column', alignItems: 'center', alignContent: 'center' }}>
+          <Text style={EventDetailsStyles.acceptedDeclinedNumber}>
+            {event.rsvpUsers.length}
+          </Text>
+          <Text style={EventDetailsStyles.acceptedDeclinedText}>
+            ACCEPTED
+          </Text>
+        </View>
+      </TouchableOpacity>
+      <Divider vertical />
+      <TouchableOpacity onPress={() => { goToAcceptedDeclinedResponses(1); }}>
+        <View style={{ flexDirection: 'column', alignItems: 'center', alignContent: 'center' }}>
+          <Text style={EventDetailsStyles.acceptedDeclinedNumber}>
+            {event.declinedUsers.length}
+          </Text>
+          <Text style={EventDetailsStyles.acceptedDeclinedText}>
+            DECLINED
+          </Text>
+        </View>
+      </TouchableOpacity>
     </View>
   );
+
+  // const renderURLField = () => (
+  //   event.url
+  //     ? (
+  //       <Text onPress={() => event.url && Linking.openURL(`https://${event.url}`)} style={EventDetailsStyles.event_url}>
+  //         {event.url}
+  //       </Text>
+  //     ) : null
+  // );
+
+  /* Event description box */
+  const renderEventDescriptionBox = () => (
+    <View style={EventDetailsStyles.eventDescriptionContainer}>
+      <Text style={EventDetailsStyles.eventDescriptionAbout}>
+        About this event
+      </Text>
+      <Text style={TextStyles.paragraph}>
+        {event.description}
+      </Text>
+    </View>
+  );
+
+  /* Event time, down threshold, address */
+  const renderOtherDetails = () => (
+    <View style={EventDetailsStyles.otherEventDetailsContainer}>
+      <View style={{
+        flexDirection: 'row', alignItems: 'center', alignContent: 'center', paddingBottom: 20, paddingTop: 20,
+      }}
+      >
+        <Image source={eventTime} />
+        <View style={{ flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center' }}>
+          <Text style={EventDetailsStyles.eventTime}>
+            {event.startMs ? `${moment(event.startMs).format('LLLL').toLocaleString()}` : 'TBD'}
+            {' '}
+            -
+            {event.startMs ? `${moment(event.startMs).format('LLL').toLocaleString()}` : 'TBD'}
+          </Text>
+        </View>
+      </View>
+
+      {/* TODO: Address field will go here */}
+
+      <View style={{
+        flexDirection: 'row', alignItems: 'center', alignContent: 'center', paddingBottom: 20,
+      }}
+      >
+        <Image source={downThreshold} />
+        <Text style={EventDetailsStyles.downThresholdText}>
+          Minimum
+          {' '}
+          {event.downThreshold}
+          {' '}
+          attendees
+        </Text>
+      </View>
+    </View>
+  );
+
+  /* Button row */
+  const renderAcceptDeclineButtons = () => {
+    // eslint-disable-next-line max-len
+    if (event.rsvpUsers.some((item) => item.email === userEmail) || event.declinedUsers.some((item) => item.email === userEmail)) {
+      if (isUserAccepted) {
+        return (
+          <View style={EventDetailsStyles.buttonRowContainer}>
+            <TouchableOpacity onPress={() => { callBackendRespondToEvent(false); }} style={[EventDetailsStyles.declineButtonContainer, { backgroundColor: 'white' }]}>
+              <Text style={[EventDetailsStyles.acceptDeclineButtonText, { color: '#FC6E5E' }]}> Decline </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => { callBackendRespondToEvent(true); }} style={[EventDetailsStyles.acceptButtonContainer, { backgroundColor: '#84D3FF' }]}>
+              <Text style={[EventDetailsStyles.acceptDeclineButtonText, { color: 'white' }]}> Accept </Text>
+            </TouchableOpacity>
+          </View>
+        );
+      }
+      return (
+        <View style={EventDetailsStyles.buttonRowContainer}>
+          <TouchableOpacity onPress={() => { callBackendRespondToEvent(false); }} style={[EventDetailsStyles.declineButtonContainer, { backgroundColor: '#FC6E5E' }]}>
+            <Text style={[EventDetailsStyles.acceptDeclineButtonText, { color: 'white' }]}> Decline </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => { callBackendRespondToEvent(true); }} style={[EventDetailsStyles.acceptButtonContainer, { backgroundColor: 'white' }]}>
+            <Text style={[EventDetailsStyles.acceptDeclineButtonText, { color: '#84D3FF' }]}> Accept </Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+    return (
+      <View style={EventDetailsStyles.buttonRowContainer}>
+        <TouchableOpacity onPress={() => { callBackendRespondToEvent(false); }} style={[EventDetailsStyles.declineButtonContainer, { backgroundColor: 'white' }]}>
+          <Text style={[EventDetailsStyles.acceptDeclineButtonText, { color: '#FC6E5E' }]}> Decline </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => { callBackendRespondToEvent(true); }} style={[EventDetailsStyles.acceptButtonContainer, { backgroundColor: 'white' }]}>
+          <Text style={[EventDetailsStyles.acceptDeclineButtonText, { color: '#84D3FF' }]}> Accept </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
 
   return (
     <View style={EventDetailsStyles.container}>
       <ScrollView keyboardShouldPersistTaps='handled'>
-        {/* Event title + pic + details box */}
-        {renderTitlePicDetailsBox()}
+        {/* Event pic if set */}
+        {renderEventImage()}
+        {/* Event name, emoji, and accepted/declined # */}
+        <View style={EventDetailsStyles.eventNameAcceptedDeclinedContainer}>
+          <View style={EventDetailsStyles.eventNameEmojiContainer}>
+            <Text style={TextStyles.headerLarge}>
+              {event.emoji}
+            </Text>
+            <Text style={[TextStyles.headerLarge, { paddingLeft: 10 }]}>
+              {event.name}
+            </Text>
+          </View>
+          {renderEventScheduledNotice()}
+          {renderAcceptedDeclinedButton()}
+        </View>
         <Divider />
         {/* Event description box */}
         {renderEventDescriptionBox()}
         <Divider />
-        {/* Event 'down list' box */}
-        <Text style={EventDetailsStyles.downThresholdText}>
-          {`A calendar invite will be created once ${event.downThreshold} ${event.downThreshold > 1 ? 'people are' : 'person is'} down!`}
-        </Text>
-        {renderEventDownListBox()}
-        <Divider />
+        {/* Event time, down threshold, address */}
+        {renderOtherDetails()}
       </ScrollView>
+      <Divider />
       {/* Button row */}
-      {renderBottomRowButtons()}
+      {renderAcceptDeclineButtons()}
     </View>
   );
 };

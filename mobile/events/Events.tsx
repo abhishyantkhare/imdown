@@ -21,6 +21,8 @@ import AppNavRouteProp from '../types/navigation';
 export type RSVPUser = {
   userId: String;
   email: String;
+  name: String;
+  photo: String;
 };
 
 type EventsProps = AppNavRouteProp<'Events'>;

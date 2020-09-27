@@ -581,7 +581,7 @@ def getEventResponsesBatch(event_id_list):
         user = resp[0]
         event_resp = resp[1]
         resp_dict[event_resp.event_id][event_resp.response].append(
-            {"user_id": event_resp.user_id, "email": user.email})
+            {"user_id": event_resp.user_id, "email": user.email, "name": user.name, "photo": user.photo})
     return resp_dict
 
 
