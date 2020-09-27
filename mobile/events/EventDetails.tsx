@@ -11,9 +11,10 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import EventDetailsStyles from './EventDetailsStyles';
 import Divider from '../components/divider/Divider';
-import { callBackend, getUsersInSquad } from '../backend/backend';
+import { callBackend } from '../backend/backend';
 import TextStyles from '../TextStyles';
 import { RSVPUser } from './Events';
+import StandardButton from '../components/button/Button';
 import {
   DEFAULT_EVENT,
   ROW_BUTTON_HEIGHT,
@@ -82,9 +83,9 @@ const EventDetails = ({ route, navigation }: EventDetailsProps) => {
     eventId,
     squadRouteParams,
   } = route.params;
+  const { userId } = squadRouteParams;
   const [event, setEvent] = useState(DEFAULT_EVENT);
   const [isUserAccepted, setIsUserAccepted] = useState(false);
-  const [numUsers, setNumUsers] = useState<number>(1);
   const isUserEventAccepted = (acceptedEvent: Event) => (
     acceptedEvent.rsvpUsers.some((item) => item.email === squadRouteParams.userEmail)
   );
@@ -108,17 +109,9 @@ const EventDetails = ({ route, navigation }: EventDetailsProps) => {
       });
   };
 
-  const getNumUsers = () => {
-    getUsersInSquad(squadRouteParams.squadId).then((data) => {
-      setNumUsers(data.user_info.length);
-    });
-  };
-
   useFocusEffect(useCallback(() => {
-    getNumUsers();
     getEventDetails();
   }, []));
-
 
   const renderEditButton = () => {
     if (event.creatorUserId === userId) {
@@ -226,7 +219,7 @@ const EventDetails = ({ route, navigation }: EventDetailsProps) => {
     return (
       <View />
     );
-  }
+  };
 
   const goToEditEvent = (editEvent: Event) => { // eslint-disable-line
     navigation.navigate('AddEditEvent', {
@@ -235,7 +228,6 @@ const EventDetails = ({ route, navigation }: EventDetailsProps) => {
       squadRouteParams,
     });
   };
-
 
   // TODO: Show event expired after rsvp deadline feature has been implemented
 
@@ -251,30 +243,28 @@ const EventDetails = ({ route, navigation }: EventDetailsProps) => {
   //   </View>
   // </View>
 
+  const renderAcceptedDeclinedPartition = (
+    tabViewIndex: number,
+    userCount: number, text:
+    string,
+  ) => (
+    <TouchableOpacity onPress={() => { goToAcceptedDeclinedResponses(tabViewIndex); }}>
+      <View style={{ flexDirection: 'column', alignItems: 'center', alignContent: 'center' }}>
+        <Text style={EventDetailsStyles.acceptedDeclinedNumber}>
+          {userCount}
+        </Text>
+        <Text style={EventDetailsStyles.acceptedDeclinedText}>
+          {text}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
 
-  const renderAcceptedDeclinedButton = () => (
+  const renderAcceptedDeclinedSection = () => (
     <View style={EventDetailsStyles.acceptedDeclinedButton}>
-      <TouchableOpacity onPress={() => { goToAcceptedDeclinedResponses(0); }}>
-        <View style={{ flexDirection: 'column', alignItems: 'center', alignContent: 'center' }}>
-          <Text style={EventDetailsStyles.acceptedDeclinedNumber}>
-            {event.rsvpUsers.length}
-          </Text>
-          <Text style={EventDetailsStyles.acceptedDeclinedText}>
-            ACCEPTED
-          </Text>
-        </View>
-      </TouchableOpacity>
+      {renderAcceptedDeclinedPartition(0, event.rsvpUsers.length, 'ACCEPTED')}
       <Divider vertical />
-      <TouchableOpacity onPress={() => { goToAcceptedDeclinedResponses(1); }}>
-        <View style={{ flexDirection: 'column', alignItems: 'center', alignContent: 'center' }}>
-          <Text style={EventDetailsStyles.acceptedDeclinedNumber}>
-            {event.declinedUsers.length}
-          </Text>
-          <Text style={EventDetailsStyles.acceptedDeclinedText}>
-            DECLINED
-          </Text>
-        </View>
-      </TouchableOpacity>
+      {renderAcceptedDeclinedPartition(1, event.declinedUsers.length, 'DECLINED')}
     </View>
   );
 
@@ -335,41 +325,50 @@ const EventDetails = ({ route, navigation }: EventDetailsProps) => {
     </View>
   );
 
+  const renderAcceptDeclineButton = (
+    response: boolean,
+    borderColor: string,
+    backgroundColor: string,
+    textColor: string, text:
+    string,
+  ) => (
+    <StandardButton
+      onPress={() => { callBackendRespondToEvent(response); }}
+      overrideStyle={[EventDetailsStyles.buttonContainer,
+        {
+          borderColor,
+          backgroundColor,
+        }]}
+      textOverrideStyle={[EventDetailsStyles.acceptDeclineButtonText,
+        { color: textColor }]}
+      text={text}
+    />
+  );
+
   /* Button row */
   const renderAcceptDeclineButtons = () => {
-    // eslint-disable-next-line max-len
-    if (event.rsvpUsers.some((item) => item.email === userEmail) || event.declinedUsers.some((item) => item.email === userEmail)) {
-      if (isUserAccepted) {
-        return (
-          <View style={EventDetailsStyles.buttonRowContainer}>
-            <TouchableOpacity onPress={() => { callBackendRespondToEvent(false); }} style={[EventDetailsStyles.declineButtonContainer, { backgroundColor: 'white' }]}>
-              <Text style={[EventDetailsStyles.acceptDeclineButtonText, { color: '#FC6E5E' }]}> Decline </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => { callBackendRespondToEvent(true); }} style={[EventDetailsStyles.acceptButtonContainer, { backgroundColor: '#84D3FF' }]}>
-              <Text style={[EventDetailsStyles.acceptDeclineButtonText, { color: 'white' }]}> Accept </Text>
-            </TouchableOpacity>
-          </View>
-        );
-      }
-      return (
-        <View style={EventDetailsStyles.buttonRowContainer}>
-          <TouchableOpacity onPress={() => { callBackendRespondToEvent(false); }} style={[EventDetailsStyles.declineButtonContainer, { backgroundColor: '#FC6E5E' }]}>
-            <Text style={[EventDetailsStyles.acceptDeclineButtonText, { color: 'white' }]}> Decline </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => { callBackendRespondToEvent(true); }} style={[EventDetailsStyles.acceptButtonContainer, { backgroundColor: 'white' }]}>
-            <Text style={[EventDetailsStyles.acceptDeclineButtonText, { color: '#84D3FF' }]}> Accept </Text>
-          </TouchableOpacity>
-        </View>
-      );
-    }
+    const declineBorderColor = '#FC6E5E';
+    const acceptBorderColor = '#84D3FF';
+    const declineBackground = isUserAccepted ? 'white' : declineBorderColor;
+    const acceptBackground = isUserAccepted ? acceptBorderColor : 'white';
+    const declineTextColor = isUserAccepted ? declineBorderColor : 'white';
+    const acceptTextColor = isUserAccepted ? 'white' : acceptBorderColor;
     return (
       <View style={EventDetailsStyles.buttonRowContainer}>
-        <TouchableOpacity onPress={() => { callBackendRespondToEvent(false); }} style={[EventDetailsStyles.declineButtonContainer, { backgroundColor: 'white' }]}>
-          <Text style={[EventDetailsStyles.acceptDeclineButtonText, { color: '#FC6E5E' }]}> Decline </Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => { callBackendRespondToEvent(true); }} style={[EventDetailsStyles.acceptButtonContainer, { backgroundColor: 'white' }]}>
-          <Text style={[EventDetailsStyles.acceptDeclineButtonText, { color: '#84D3FF' }]}> Accept </Text>
-        </TouchableOpacity>
+        {renderAcceptDeclineButton(
+          false,
+          declineBorderColor,
+          declineBackground,
+          declineTextColor,
+          'Decline',
+        )}
+        {renderAcceptDeclineButton(
+          true,
+          acceptBorderColor,
+          acceptBackground,
+          acceptTextColor,
+          'Accept',
+        )}
       </View>
     );
   };
@@ -390,7 +389,7 @@ const EventDetails = ({ route, navigation }: EventDetailsProps) => {
             </Text>
           </View>
           {renderEventScheduledNotice()}
-          {renderAcceptedDeclinedButton()}
+          {renderAcceptedDeclinedSection()}
         </View>
         <Divider />
         {/* Event description box */}

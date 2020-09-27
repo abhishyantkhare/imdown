@@ -8,24 +8,18 @@ type DividerProps = {
 };
 
 const Divider = (props: DividerProps) => {
-  const { style } = props;
-  if (props.vertical) {
-    return (
-      <View
-        style={[DividerStyles.verticalDivider, style]}
-      />
-    );
-  } else {
-    return (
-      <View
-        style={[DividerStyles.divider, style]}
-      />
-    );
-  }
+  const { style, vertical } = props;
+  const alignmentStyle = vertical ? DividerStyles.verticalDivider : DividerStyles.divider;
+  return (
+    <View
+      style={[alignmentStyle, style]}
+    />
+  );
 };
 
 Divider.defaultProps = {
   style: {},
+  vertical: false,
 };
 
 export default Divider;

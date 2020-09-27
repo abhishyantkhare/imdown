@@ -153,7 +153,7 @@ const EventDetailsStyles = StyleSheet.create({
     marginTop: 20,
     marginLeft: 20,
   },
-  acceptButtonContainer: {
+  buttonContainer: {
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
@@ -161,16 +161,6 @@ const EventDetailsStyles = StyleSheet.create({
     borderColor: '#84D3FF',
     width: 120,
     height: 60,
-  },
-  declineButtonContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderRadius: 10,
-    borderColor: '#FC6E5E',
-    width: 120,
-    height: 60,
-    marginRight: 80,
   },
 });
 

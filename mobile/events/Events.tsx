@@ -19,10 +19,10 @@ import StandardButton from '../components/button/Button';
 import AppNavRouteProp from '../types/navigation';
 
 export type RSVPUser = {
-  userId: String;
-  email: String;
-  name: String;
-  photo: String;
+  userId: string;
+  email: string;
+  name: string;
+  photo: string;
 };
 
 type EventsProps = AppNavRouteProp<'Events'>;
