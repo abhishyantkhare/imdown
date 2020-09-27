@@ -7,10 +7,10 @@ import DateTimeModal from './DateTimeModal';
 import Label from '../label/Label';
 
 type DateTimeModalDisplayProps = {
-    style?: object,
-    mode: 'date' | 'time',
-    onSet: (dateTime: Date) => void, // eslint-disable-line no-unused-vars
-    initialDateTime: Date
+  style?: object,
+  mode: 'date' | 'time',
+  onSet: (dateTime: Date) => void, // eslint-disable-line no-unused-vars
+  initialDateTime: Date
 }
 
 const DateTimeModalDisplay = (props: DateTimeModalDisplayProps) => {

@@ -50,9 +50,8 @@ def hello():
 def login():
     """Sign in using Google, and create a session with Flask."""
     content = request.get_json()
-    validate_request_args(content, 'googleServerCode', 'deviceToken')
+    validate_request_args(content, 'googleServerCode')
     google_server_code = content['googleServerCode']
-    device_token = content['deviceToken']
 
     # Obtain credentials from Google.
     credentials = fetch_google_credentials(google_server_code)
@@ -75,7 +74,6 @@ def login():
 
     # Ensure the user is up-to-date.
     user.google_access_token = credentials.token
-    user.device_token = device_token
     # The refresh token will be provided only upon initial authentication.
     if credentials.refresh_token:
         user.google_refresh_token = credentials.refresh_token

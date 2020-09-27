@@ -62,8 +62,6 @@ const Events = ({ route, navigation }: EventsProps) => {
   const [squadEmoji, setSquadEmoji] = useState(route.params.squadEmoji);
   // eslint-disable-next-line no-unused-vars
   const [squadImage, setSquadImage] = useState(route.params.squadImage);
-  // eslint-disable-next-line no-unused-vars
-  const [userEmail, setUserEmail] = useState(route.params.userEmail);
   const [numUsers, setNumUsers] = useState(0);
   const [tabViewIndex, setTabViewIndex] = React.useState(0);
 
@@ -86,8 +84,8 @@ const Events = ({ route, navigation }: EventsProps) => {
     ))
   );
 
-  const goToAddEvent = () => {
-    navigation.navigate('AddEvent', route.params);
+  const goToAddEditEvent = () => {
+    navigation.navigate('AddEditEvent', { isEditView: false, squadRouteParams: route.params });
   };
 
   const goToViewSquadSettings = (squadIdVal: number, squadNameVal: string,
@@ -113,9 +111,7 @@ const Events = ({ route, navigation }: EventsProps) => {
   const goToEventDetailsPage = (event: EventLite) => {
     navigation.navigate('EventDetails', {
       eventId: event.id,
-      userEmail,
-      userId,
-      numUsers,
+      squadRouteParams: route.params,
     });
   };
 
@@ -371,7 +367,7 @@ const Events = ({ route, navigation }: EventsProps) => {
         </View>
       </ScrollView>
       <View style={EventsStyles.addEventButtonContainer}>
-        <StandardButton text='Add event' onPress={() => goToAddEvent()} />
+        <StandardButton text='Add event' onPress={() => goToAddEditEvent()} />
       </View>
     </View>
   );

@@ -7,6 +7,7 @@ type RobotoTextInputProps = {
   multiline?: boolean;
   onChangeText: (newText: string) => void; // eslint-disable-line no-unused-vars
   style?: object;
+  defaultText?: string;
 }
 
 const RobotoTextInput = (props: RobotoTextInputProps) => {
@@ -15,12 +16,14 @@ const RobotoTextInput = (props: RobotoTextInputProps) => {
     multiline,
     onChangeText,
     placeholder,
+    defaultText,
   } = props;
   return (
     <TextInput
       placeholder={placeholder}
       multiline={multiline}
       onChangeText={onChangeText}
+      defaultValue={defaultText}
       style={[
         TextStyles.paragraph,
         {
@@ -40,6 +43,7 @@ const RobotoTextInput = (props: RobotoTextInputProps) => {
 RobotoTextInput.defaultProps = {
   multiline: false,
   style: {},
+  defaultText: '',
 };
 
 export default RobotoTextInput;

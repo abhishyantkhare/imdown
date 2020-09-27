@@ -18,20 +18,10 @@ const Login = ({ navigation }: LoginProps) => {
   const IOS_CLIENT_ID = '1097983281822-8qr8vltrud1hj3rfme2khn1lmbj2s522.apps.googleusercontent.com';
   const WEB_ID = '1097983281822-8k2kede3hrgrqi15r869mf3u5at6q6ib.apps.googleusercontent.com';
 
-  let deviceToken: string;
   const [isSignedIn, setIsSignedIn] = useState<boolean | undefined>(undefined);
 
-  const requestNotificationPermission = async () => {
-    await messaging().requestPermission();
-  };
-
-  const getDeviceToken = async () => {
-    deviceToken = await messaging().getToken();
-  };
-
   const notificationsSetup = async () => {
-    await requestNotificationPermission();
-    await getDeviceToken();
+    await messaging().requestPermission();
   };
 
   const googleSetup = () => {
@@ -43,8 +33,9 @@ const Login = ({ navigation }: LoginProps) => {
     });
   };
 
-  const setBackendDeviceToken = () => {
+  const setBackendDeviceToken = async () => {
     const endpoint = 'device_token';
+    const deviceToken = await messaging().getToken();
     const data = {
       deviceToken,
     };
@@ -97,7 +88,7 @@ const Login = ({ navigation }: LoginProps) => {
 
   const signInOnBackend = (user: User, googleServerCode: string | null) => {
     const loginUrl = `${BACKEND_URL}login`;
-    const data = { googleServerCode, deviceToken };
+    const data = { googleServerCode };
     fetch(loginUrl, {
       method: 'POST',
       mode: 'no-cors',
