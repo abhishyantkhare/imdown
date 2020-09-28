@@ -15,7 +15,7 @@ import requests
 
 from imdown_backend.config import Config
 from imdown_backend.notifications import notify_squad_members
-from imdown_backend import application, db, SECRETS, scheduler
+from imdown_backend import application, db, scheduler
 from imdown_backend.errors import HttpError, BadRequest, Unauthorized, Forbidden, NotFound
 from imdown_backend.models.user import User
 from imdown_backend.models.event_response import EventResponse
