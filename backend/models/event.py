@@ -5,6 +5,8 @@ from datetime import datetime
 import shortuuid
 from models.event_response import EventResponse
 from notifications import notify_squad_members
+from sqlalchemy.dialects import mysql
+
 
 EVENT_UUID_ALPHABET = 'abcdefghijklmnopqrstuv0123456789'
 
@@ -15,7 +17,7 @@ class Event(db.Model):
     description = db.Column(db.String(512), index=False, unique=False)
     event_emoji = db.Column(db.String(64), index=False, unique=False)
     event_url = db.Column(db.String(1024), index=False, unique=False)
-    image_url = db.Column(db.Text(), index=False, unique=False)
+    image_url = db.Column(mysql.MEDIUMTEXT(), index=False, unique=False)
     start_time = db.Column(db.BigInteger, index=False, unique=False)
     end_time = db.Column(db.BigInteger, index=False, unique=False)
     address = db.Column(db.String(256), index=False, unique=False)
