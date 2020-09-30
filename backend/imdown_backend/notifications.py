@@ -1,10 +1,11 @@
-from models.user import User
-from config import Config
-from models.squadmembership import SquadMembership
+from imdown_backend.config import Config
+from imdown_backend.models.user import User
+from imdown_backend.models.squadmembership import SquadMembership
+from imdown_backend.errors import HttpError
 import firebase_admin
 from firebase_admin import messaging
 import os
-from errors import HttpError
+
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = Config.FIREBASE_SECRET_FILE
 firebase_app = firebase_admin.initialize_app()

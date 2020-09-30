@@ -1,4 +1,4 @@
-from init import db
+from imdown_backend import db
 from flask import jsonify
 import time
 import shortuuid

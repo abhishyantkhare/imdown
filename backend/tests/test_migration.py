@@ -6,9 +6,8 @@ SKIP_FILENAMES = ["bd3858beccdd_update_event_fields.py",
                   "__pycache__"
                   ]
 
-
 def test_migrations():
-    migrations_dir = "backend/migrations/versions/"
+    migrations_dir = "./migrations/versions/"
     revisions = {}
     for filename in os.listdir(migrations_dir):
         full_file = os.path.join(migrations_dir, filename)

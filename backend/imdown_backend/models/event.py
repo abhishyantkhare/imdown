@@ -1,12 +1,12 @@
-from init import db, application
+from imdown_backend import db, application
 from flask import jsonify
 import json
 from datetime import datetime
 import shortuuid
-from models.event_response import EventResponse
-from notifications import notify_squad_members
 from sqlalchemy.dialects import mysql
 
+from imdown_backend.models.event_response import EventResponse
+from imdown_backend.notifications import notify_squad_members
 
 EVENT_UUID_ALPHABET = 'abcdefghijklmnopqrstuv0123456789'
 

@@ -1,10 +1,12 @@
 import json
 
-from config import Config
-from extensions import db
 from flask import jsonify
 from flask_login import UserMixin
 import requests
+
+from imdown_backend.extensions import db
+from imdown_backend.config import Config
+
 
 
 class User(UserMixin, db.Model):

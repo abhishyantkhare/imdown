@@ -1,27 +1,28 @@
+import json
+import time
+from collections import defaultdict
+
 import apiclient
 from flask import request, make_response
 from flask import jsonify
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
-
-from config import Config
-from init import application, scheduler
-from extensions import db
-from errors import HttpError, BadRequest, Unauthorized, Forbidden, NotFound
-from models.user import User
-from models.event_response import EventResponse
-from models.event import Event
-from models.event_time import EventTime
-from models.squad import Squad
-from models.squadmembership import SquadMembership, GetUsersBySquadId
+from flask import request
+from flask import jsonify
 from flask_login import login_user, login_required, logout_user, current_user
-from collections import defaultdict
 from sqlalchemy.orm import load_only
 import requests
-import json
-import time
-from notifications import notify_squad_members
 
+from imdown_backend.config import Config
+from imdown_backend.notifications import notify_squad_members
+from imdown_backend import application, db, SECRETS, scheduler
+from imdown_backend.errors import HttpError, BadRequest, Unauthorized, Forbidden, NotFound
+from imdown_backend.models.user import User
+from imdown_backend.models.event_response import EventResponse
+from imdown_backend.models.event import Event
+from imdown_backend.models.event_time import EventTime
+from imdown_backend.models.squad import Squad
+from imdown_backend.models.squadmembership import SquadMembership, GetUsersBySquadId
 
 # This must match the scope we request in login.tsx.
 GOOGLE_API_SCOPE = [

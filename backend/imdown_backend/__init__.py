@@ -1,12 +1,13 @@
-from flask import Flask
-from config import Config
-from flask_login import LoginManager
-from models.user import User
-from extensions import db, migrate
+import os
 import json
+from flask import Flask
+from flask_login import LoginManager
 import boto3
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
+from imdown_backend.config import Config
+from imdown_backend.models.user import User
+from imdown_backend.extensions import db, migrate
 
 
 login_manager = LoginManager()
@@ -48,3 +49,5 @@ scheduler = BackgroundScheduler(jobstores={
         'default': SQLAlchemyJobStore(url=Config.SQLALCHEMY_DATABASE_URI)
         })
 scheduler.start()
+
+import imdown_backend.app

@@ -1,6 +1,6 @@
-from init import db
+from imdown_backend import db
 from flask import jsonify
-from models.user import User
+from imdown_backend.models.user import User
 
 
 class SquadMembership(db.Model):
