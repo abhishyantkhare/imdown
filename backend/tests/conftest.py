@@ -1,7 +1,19 @@
 import os
+
 import pytest
+import botocore.session
+from botocore.stub import Stubber
+
+os.environ['TEST_FLAG'] = "True"
+os.environ['DATABASE_URL'] = "mysql://root:@/imdowndb?charset=utf8mb4"
+@pytest.fixture(autouse=True)
+def s3_stub():
+    s3 = botocore.session.get_session().create_client('s3')
+    with Stubber(s3) as stubber:
+        yield stubber
+        stubber.assert_no_pending_responses()
+
 from imdown_backend import application as _app, db as _db
-    
 
 
 @pytest.yield_fixture(scope='session')

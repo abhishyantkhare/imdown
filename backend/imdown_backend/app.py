@@ -15,7 +15,8 @@ import requests
 
 from imdown_backend.config import Config
 from imdown_backend.notifications import notify_squad_members
-from imdown_backend import application, db, scheduler
+from imdown_backend import application, db
+from imdown_backend.scheduler import scheduler
 from imdown_backend.errors import HttpError, BadRequest, Unauthorized, Forbidden, NotFound
 from imdown_backend.models.user import User
 from imdown_backend.models.event_response import EventResponse
@@ -33,7 +34,6 @@ GOOGLE_API_SCOPE = [
 ]
 GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token'
 GOOGLE_CALENDAR_API = 'https://www.googleapis.com/calendar/v3/calendars/primary/events'
-
 
 def validate_request_args(content: dict, *required_args):
     """Verify that all required arguments are present in the request."""
@@ -53,7 +53,6 @@ def login():
     content = request.get_json()
     validate_request_args(content, 'googleServerCode')
     google_server_code = content['googleServerCode']
-
     # Obtain credentials from Google.
     credentials = fetch_google_credentials(google_server_code)
     # Use credentials to fetch user information.
@@ -81,6 +80,7 @@ def login():
 
     # Persist this update and sign in the user.
     login_user(user)
+    db.session.add(user)
     db.session.commit()
     return make_response()
 
