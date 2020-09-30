@@ -138,7 +138,7 @@ const EventDetails = ({ route, navigation }: EventDetailsProps) => {
         </View>
       ),
     });
-  }, [navigation]);
+  }, [navigation, event]);
 
   const callBackendRefreshEventInfo = () => {
     const endpoint = `get_event?event_id=${event.id}`;
@@ -302,7 +302,7 @@ const EventDetails = ({ route, navigation }: EventDetailsProps) => {
             {event.startMs ? `${moment(event.startMs).format('LLLL').toLocaleString()}` : 'TBD'}
             {' '}
             -
-            {event.startMs ? `${moment(event.startMs).format('LLL').toLocaleString()}` : 'TBD'}
+            {event.endMs ? `${moment(event.endMs).format('LLL').toLocaleString()}` : 'TBD'}
           </Text>
         </View>
       </View>

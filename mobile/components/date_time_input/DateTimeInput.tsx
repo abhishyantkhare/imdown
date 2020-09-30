@@ -26,6 +26,8 @@ const DateTimeInput = (props: DateTimeInputProps) => {
       time.getSeconds(),
     );
     onSetDateTime(newDateTime);
+    setDate(newDateTime);
+    setTime(newDateTime);
   };
 
   const setTimeForDateTime = (newTime: Date) => {
@@ -38,6 +40,8 @@ const DateTimeInput = (props: DateTimeInputProps) => {
       newTime.getSeconds(),
     );
     onSetDateTime(newDateTime);
+    setDate(newDateTime);
+    setTime(newDateTime);
   };
 
   return (
