@@ -266,11 +266,17 @@ def respondToEvent(event_id, response):
     if not existing_entry_exists:
         user_event_response = EventResponse(
             user_id=user_id, event_id=event_id, response=response, response_time=responded_at_time)
-        db.session.add(user_event_response)
+        
+
+    # Add event time
+    user_event_response.event_time_id = EventTime.get_event_time_id_for_time(user_event_response.event_id)
+    db.session.add(user_event_response)
     db.session.commit()
     threshold_passed = getEventResponsesAndCheckDownThresh(event)
     if not user_event_response.response:
         removeEventFromCalendarIfExists(event, user_id)
+
+
 
     # send notification
     # we send a notification if the person responding is not the event creator and they are saying they're down
