@@ -13,6 +13,16 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: imdowndb
+          MYSQL_USER: root
+        ports:
+            - 3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     strategy:
       matrix:
         python-version: [3.8]
@@ -26,9 +36,9 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pytest
         cd backend
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        cd tests
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
@@ -37,4 +47,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
+        sudo /etc/init.d/mysql start
         pytest
+      env:
+        DATABASE_URL: mysql://root:password@/imdowndb?charset=utf8mb4

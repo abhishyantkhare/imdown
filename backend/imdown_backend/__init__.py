@@ -1,12 +1,13 @@
-from flask import Flask
-from config import Config
-from flask_login import LoginManager
-from models.user import User
-from extensions import db, migrate
+import os
 import json
+from flask import Flask
+from flask_login import LoginManager
 import boto3
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
+from imdown_backend.config import Config
+from imdown_backend.models.user import User
+from imdown_backend.extensions import db, migrate
 
 
 login_manager = LoginManager()
@@ -28,23 +29,24 @@ def download_secret(secret_file):
 application = Flask(__name__)
 application.config.from_object(Config)
 
+application.secret_key = os.urandom(16)    
+# We don't need to do the following in tests
+if not os.environ.get('TEST_FLAG'):
+    # Update secrets on disk.
+    print(__name__)
 
-# Update secrets on disk.
-download_secret(Config.FLASK_SECRET_FILE)
-download_secret(Config.GOOGLE_SECRET_FILE)
-download_secret(Config.FIREBASE_SECRET_FILE)
+    download_secret(Config.FLASK_SECRET_FILE)
+    download_secret(Config.GOOGLE_SECRET_FILE)
+    download_secret(Config.FIREBASE_SECRET_FILE)
 
-with open(Config.FLASK_SECRET_FILE, "r") as fp:
-    application.secret_key = json.load(fp)['secret_key']
+    with open(Config.FLASK_SECRET_FILE, "r") as fp:
+        application.secret_key = json.load(fp)['secret_key']
 
 
 login_manager.init_app(application)
 db.init_app(application)
 migrate.init_app(application, db)
 
-# Scheduler
 
-scheduler = BackgroundScheduler(jobstores={
-        'default': SQLAlchemyJobStore(url=Config.SQLALCHEMY_DATABASE_URI)
-        })
-scheduler.start()
+
+import imdown_backend.app
