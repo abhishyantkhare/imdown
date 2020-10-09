@@ -203,7 +203,7 @@ const AddEditEvent = ({ route, navigation }: AddEditEventProps) => {
         ? (
           <Image
             source={{ uri: imageUrl }}
-            style={{ height: 300 }}
+            style={{ height: 200, width: 350, alignSelf: 'center' }}
           />
         )
         : null}
@@ -213,7 +213,7 @@ const AddEditEvent = ({ route, navigation }: AddEditEventProps) => {
           onImagePicked={setImageUrl}
           image={imageUrl}
           imageHeight={200}
-          imageWidth={200}
+          imageWidth={350}
         >
           <View style={AddEditEventStyles.uploadLabelRow}>
             <Image

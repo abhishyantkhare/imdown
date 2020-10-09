@@ -293,15 +293,14 @@ const EventDetails = ({ route, navigation }: EventDetailsProps) => {
   const renderOtherDetails = () => (
     <View style={EventDetailsStyles.otherEventDetailsContainer}>
       <View style={{
-        flexDirection: 'row', alignItems: 'center', alignContent: 'center', paddingBottom: 20, paddingTop: 20,
+        flexDirection: 'row', paddingBottom: 20, paddingTop: 20,
       }}
       >
-        <Image source={eventTime} />
+        <Image source={eventTime} style={{ marginLeft: -2 }} />
         <View style={{ flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center' }}>
           <Text style={EventDetailsStyles.eventTime}>
             {event.startMs ? `${moment(event.startMs).format('LLLL').toLocaleString()}` : 'TBD'}
-            {' '}
-            -
+            {'\n- '}
             {event.endMs ? `${moment(event.endMs).format('LLL').toLocaleString()}` : 'TBD'}
           </Text>
         </View>
@@ -310,7 +309,7 @@ const EventDetails = ({ route, navigation }: EventDetailsProps) => {
       {/* TODO: Address field will go here */}
 
       <View style={{
-        flexDirection: 'row', alignItems: 'center', alignContent: 'center', paddingBottom: 20,
+        flexDirection: 'row', alignItems: 'center', paddingBottom: 20,
       }}
       >
         <Image source={downThreshold} />
