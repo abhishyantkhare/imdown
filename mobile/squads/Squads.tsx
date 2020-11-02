@@ -10,6 +10,7 @@ import {
 import { SwipeRow, SwipeListView } from 'react-native-swipe-list-view';
 import { useFocusEffect } from '@react-navigation/native';
 
+import { SearchBar } from 'react-native-elements';
 import SquadsStyles from './SquadsStyles';
 import TextStyles from '../TextStyles';
 import { callBackend, deleteRequest } from '../backend/backend';
@@ -28,14 +29,18 @@ export type Squad = {
 type SquadsProps = AppNavRouteProp<'Squads'>;
 
 const searchButton = require('../assets/search_button.png');
+const searchButtonCancel = require('../assets/delete_icon.png');
 const addSquadButton = require('../assets/add_squad_button.png');
 
 const Squads = ({ route, navigation }: SquadsProps) => {
   const sheetRef = React.useRef(null);
   const [bottomSheetRefIndex, setBottomSheetRefIndex] = useState(0);
   const [squads, setSquads] = useState([]);
+  const [squadsListView, setSquadsListView] = useState([]);
   const [email, setEmail] = useState(route.params.email); // eslint-disable-line no-unused-vars
   const [userId, setUserId] = useState();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
 
   const hideBottomSheet = () => {
     setBottomSheetRefIndex(0);
@@ -111,7 +116,10 @@ const Squads = ({ route, navigation }: SquadsProps) => {
       },
     };
     callBackend(endpoint, init).then((response) => response.json())
-      .then((data) => { setSquads(convertToKeyValDict(data.squads)); });
+      .then((data) => {
+        setSquads(convertToKeyValDict(data.squads));
+        setSquadsListView(convertToKeyValDict(data.squads));
+      });
   };
 
   useFocusEffect(
@@ -219,8 +227,20 @@ const Squads = ({ route, navigation }: SquadsProps) => {
   );
 
   const renderSearchButton = () => (
-    <TouchableOpacity style={SquadsStyles.searchButtonContainer}>
+    <TouchableOpacity
+      style={SquadsStyles.searchButtonContainer}
+      onPress={() => setIsSearchVisible(true)}
+    >
       <Image source={searchButton} style={SquadsStyles.searchButtonIcon} />
+    </TouchableOpacity>
+  );
+
+  const renderSearchCancelButton = () => (
+    <TouchableOpacity
+      style={SquadsStyles.searchButtonCancelContainer}
+      onPress={() => { setIsSearchVisible(false); setSquadsListView(squads); }}
+    >
+      <Image source={searchButtonCancel} style={SquadsStyles.searchButtonCancelIcon} />
     </TouchableOpacity>
   );
 
@@ -273,16 +293,43 @@ const Squads = ({ route, navigation }: SquadsProps) => {
     </SwipeRow>
   );
 
+  const searchFilterFunction = (text: string) => {
+    setSearchQuery(text);
+    const newData = squads.filter((item) => {
+      const itemData = item.squad.name.toUpperCase();
+      const textData = text.toUpperCase();
+      return itemData.indexOf(textData) > -1;
+    });
+
+    setSquadsListView(newData);
+  };
+
   return (
     <View style={SquadsStyles.squadsContainer}>
-      {renderSearchButton()}
+      <View style={SquadsStyles.searchContainer}>
+        { isSearchVisible && (
+          <View style={SquadsStyles.searchBarContiner}>
+            <SearchBar
+              containerStyle={{ backgroundColor: 'white', borderBottomColor: 'transparent', borderTopColor: 'transparent' }}
+              inputContainerStyle={{ backgroundColor: '#E7EAF6' }}
+              inputStyle={{ backgroundColor: '#E7EAF6' }}
+              onChangeText={(text) => searchFilterFunction(text)}
+              placeholder='Search Squads'
+              value={searchQuery}
+              lightTheme
+              round
+            />
+          </View>
+        ) }
+        { isSearchVisible ? renderSearchCancelButton() : renderSearchButton() }
+      </View>
       <View style={SquadsStyles.squadsTitleContainer}>
         <Text style={[TextStyles.title, SquadsStyles.squadsTitleText]}>Squads</Text>
         {renderAddSquadButton()}
       </View>
       {squads.length > 0 ? (
         <SwipeListView
-          data={squads}
+          data={squadsListView}
           renderItem={renderSquadItem}
         />
       ) : renderNoSquadsView()}
