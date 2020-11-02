@@ -31,7 +31,7 @@ const BlurModal = (props: BlurModalProps) => {
               </TouchableOpacity>
             ) : null}
           <View style={{
-            marginHorizontal: 15,
+            width: '100%',
             justifyContent: 'center',
             alignItems: 'center',
           }}

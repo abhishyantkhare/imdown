@@ -6,12 +6,32 @@ const SquadsStyles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: '#fff',
   },
+  searchContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    height: '8%',
+  },
+  searchBarContiner: {
+    justifyContent: 'center',
+    marginLeft: '5%',
+    width: '80%',
+  },
   searchButtonContainer: {
-    justifyContent: 'flex-end',
-    marginRight: '10%',
-    marginTop: 20,
+    alignItems: 'center',
+    position: 'absolute',
+    right: '10%',
   },
   searchButtonIcon: {
+    alignSelf: 'flex-end',
+    height: 40,
+    width: 40,
+  },
+  searchButtonCancelContainer: {
+    alignSelf: 'center',
+    position: 'absolute',
+    right: '5%',
+  },
+  searchButtonCancelIcon: {
     alignSelf: 'flex-end',
     height: 40,
     width: 40,
