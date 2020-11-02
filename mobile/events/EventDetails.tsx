@@ -9,6 +9,7 @@ import {
 import moment from 'moment';
 import { useFocusEffect } from '@react-navigation/native';
 
+import BlurModal from '../components/blurmodal/BlurModal';
 import EventDetailsStyles from './EventDetailsStyles';
 import Divider from '../components/divider/Divider';
 import { callBackend } from '../backend/backend';
@@ -77,6 +78,7 @@ const editEvent = require('../assets/create_24px.png');
 const eventScheduled = require('../assets/wb_sunny_24px.png');
 const eventTime = require('../assets/event_24px.png');
 const downThreshold = require('../assets/perm_contact_calendar_24px.png');
+const excitedIcon = require('../assets/excited_notif.png');
 
 const EventDetails = ({ route, navigation }: EventDetailsProps) => {
   const {
@@ -86,6 +88,7 @@ const EventDetails = ({ route, navigation }: EventDetailsProps) => {
   const { userId } = squadRouteParams;
   const [event, setEvent] = useState(DEFAULT_EVENT);
   const [isUserAccepted, setIsUserAccepted] = useState(false);
+  const [excitedModalVisible, setExcitedModalVisible] = useState(false);
   const isUserEventAccepted = (acceptedEvent: Event) => (
     acceptedEvent.rsvpUsers.some((item) => item.email === squadRouteParams.userEmail)
   );
@@ -332,7 +335,13 @@ const EventDetails = ({ route, navigation }: EventDetailsProps) => {
     string,
   ) => (
     <StandardButton
-      onPress={() => { callBackendRespondToEvent(response); }}
+      onPress={() => {
+        if (response && isUserAccepted) {
+          setExcitedModalVisible(true);
+        } else {
+          callBackendRespondToEvent(response);
+        }
+      }}
       overrideStyle={[EventDetailsStyles.buttonContainer,
         {
           borderColor,
@@ -344,6 +353,30 @@ const EventDetails = ({ route, navigation }: EventDetailsProps) => {
     />
   );
 
+  const renderExcitedModal = () => (
+    <BlurModal visible={excitedModalVisible}>
+      <Image source={excitedIcon} style={EventDetailsStyles.excitedIcon} />
+      <View style={EventDetailsStyles.excitedModalTextContainer}>
+        <Text style={[TextStyles.paragraph, { textAlign: 'center' }]}>{'You have already accepted the invitation for this event.\n\nIf excited, you can send the squad a notification, prompting others to respond as well.'}</Text>
+      </View>
+      <View style={EventDetailsStyles.excitedModalButtonRow}>
+        <StandardButton
+          text='Cancel'
+          overrideStyle={EventDetailsStyles.excitedModalCancelButton}
+          textOverrideStyle={{ color: '#FC6E5E' }}
+          onPress={() => { setExcitedModalVisible(false); }}
+        />
+        <StandardButton
+          text='Proceed'
+          overrideStyle={EventDetailsStyles.excitedModalProceedButton}
+          onPress={() => {
+            callBackendRespondToEvent(true); setExcitedModalVisible(false);
+          }}
+        />
+      </View>
+    </BlurModal>
+  );
+
   /* Button row */
   const renderAcceptDeclineButtons = () => {
     const declineBorderColor = '#FC6E5E';
@@ -352,6 +385,7 @@ const EventDetails = ({ route, navigation }: EventDetailsProps) => {
     const acceptBackground = isUserAccepted ? acceptBorderColor : 'white';
     const declineTextColor = isUserAccepted ? declineBorderColor : 'white';
     const acceptTextColor = isUserAccepted ? 'white' : acceptBorderColor;
+    const acceptText = isUserAccepted ? 'I\'m excited!' : 'Accept';
     return (
       <View style={EventDetailsStyles.buttonRowContainer}>
         {renderAcceptDeclineButton(
@@ -366,7 +400,7 @@ const EventDetails = ({ route, navigation }: EventDetailsProps) => {
           acceptBorderColor,
           acceptBackground,
           acceptTextColor,
-          'Accept',
+          acceptText,
         )}
       </View>
     );
@@ -400,6 +434,7 @@ const EventDetails = ({ route, navigation }: EventDetailsProps) => {
       <Divider />
       {/* Button row */}
       {renderAcceptDeclineButtons()}
+      {renderExcitedModal()}
     </View>
   );
 };

@@ -80,6 +80,7 @@ def login():
 
     # Persist this update and sign in the user.
     login_user(user)
+    db.session.add(user)
     db.session.commit()
     return make_response()
 
@@ -234,6 +235,9 @@ def respond_to_event():
 def respondToEvent(event_id, response):
     existing_entry_exists = False
     user_id = current_user.id
+    user = User.query.get(user_id)
+    if not user:
+        raise NotFound(f"Could not find User {user_id}")
     event = Event.query.get(event_id)
     if not event:
         raise NotFound(f"Could not find Event {event_id}")
@@ -248,7 +252,6 @@ def respondToEvent(event_id, response):
     responded_at_time = int(round(time.time() * 1000))
     user_event_response = EventResponse.query.filter_by(
         event_id=event.id, user_id=user_id).first()
-
     if user_event_response is not None:
         if user_event_response.response is not response:
             response_msg = "User {} already responded to event {} with response of {}." \
@@ -262,6 +265,11 @@ def respondToEvent(event_id, response):
             response_msg = "User {} already responded to event {} with response of {}. User gave same response.".format(
                 user_id, event_id, user_event_response.response)
             print(response_msg)
+            if response:
+                print("sending notif to others")
+                push_notif_body = f"{user.name} has already accepted the event invite and is excited about the event! Notify others if you will be attending by RSVPing now."
+                notify_squad_members(
+                    event_squad_id, event.title, body=push_notif_body, users_to_exclude={user_id})
             return response_msg, 200
     if not existing_entry_exists:
         user_event_response = EventResponse(

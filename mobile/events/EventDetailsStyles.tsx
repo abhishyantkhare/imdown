@@ -163,6 +163,34 @@ const EventDetailsStyles = StyleSheet.create({
     width: 120,
     height: 60,
   },
+  excitedIcon: {
+    height: 80,
+    width: 80,
+    marginBottom: '10%',
+    marginTop: '20%',
+  },
+  excitedModalTextContainer: {
+    width: '80%',
+  },
+  excitedModalText: {
+    color: '#FC6E5E',
+    marginLeft: '3%',
+  },
+  excitedModalButtonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginVertical: '15%',
+  },
+  excitedModalCancelButton: {
+    backgroundColor: '#ffffff',
+    borderColor: '#FC6E5E',
+    borderWidth: 2,
+    width: 125,
+  },
+  excitedModalProceedButton: {
+    backgroundColor: '#84D3FF',
+    width: 125,
+  },
 });
 
 export default EventDetailsStyles;
