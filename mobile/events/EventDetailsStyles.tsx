@@ -29,7 +29,7 @@ const EventDetailsStyles = StyleSheet.create({
   },
   eventImage: {
     height: 200,
-    width: 400,
+    width: 350,
   },
 
   // styles for Event name, emoji
@@ -58,6 +58,7 @@ const EventDetailsStyles = StyleSheet.create({
   },
   eventNoticeTextContainer: {
     paddingLeft: 10,
+    paddingRight: 5,
   },
   eventNoticeHeader: {
     color: 'white',
@@ -132,13 +133,13 @@ const EventDetailsStyles = StyleSheet.create({
   eventTime: {
     color: 'black',
     fontFamily: 'Roboto_400Regular',
-    fontSize: 20,
+    fontSize: 18,
     paddingLeft: 10,
   },
   downThresholdText: {
     color: 'black',
     fontFamily: 'Roboto_400Regular',
-    fontSize: 20,
+    fontSize: 18,
     paddingLeft: 10,
   },
 
