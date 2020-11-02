@@ -37,6 +37,7 @@ const DateTimeModal = (props: DateTimeModalProps) => {
         />
         <StandardButton
           text='Set'
+          overrideStyle={{ width: '100%' }}
           onPress={() => {
             props.onSetPress(dateTime);
             props.hideDatePicker();
