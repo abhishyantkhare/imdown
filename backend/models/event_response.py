@@ -8,6 +8,7 @@ class EventResponse(db.Model):
     user_id = db.Column(db.Integer,  index=True, unique=False)
     response = db.Column(db.Boolean,  index=False, unique=False)
     response_time = db.Column(db.BigInteger, index=False, unique=False)
+    event_time_id = db.Column(db.Integer, index=True, unique=False)
 
     def __repr__(self):
         return 'EventResponse event_id: {} user_id:{} response: {} response_time: {}'.format(self.event_id, self.user_id, self.response, self.response_time)
